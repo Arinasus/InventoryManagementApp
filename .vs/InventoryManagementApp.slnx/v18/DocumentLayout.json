@@ -3,24 +3,36 @@
   "WorkspaceRootPath": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\model\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|solutionrelative:model\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\model\\fieldtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:model\\fieldtype.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\model\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|solutionrelative:model\\items.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\model\\inventoryfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:model\\inventoryfield.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\inventorymanagementapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
-      "RelativeMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|solutionrelative:inventorymanagementapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\model\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:model\\inventory.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\model\\itemfieldvalue.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:model\\itemfieldvalue.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{07B9B877-42CA-460B-9356-1EEDCB7852A7}|InventoryManagementApp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\model\\inventoryitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:model\\inventoryitem.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:data\\appdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|d:\\\u043A\u0443\u0440\u0441\u044B\\inventorymanagementapp\\inventorymanagementapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
+      "RelativeMoniker": "D:0:0:{5FD42BCE-8624-89D7-ECAC-1660DE89F759}|InventoryManagementApp.csproj|solutionrelative:inventorymanagementapp.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     }
   ],
   "DocumentGroupContainers": [
@@ -30,37 +42,76 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 1,
+          "SelectedChildIndex": 0,
           "Children": [
             {
               "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "Items.cs",
-              "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\Items.cs",
-              "RelativeDocumentMoniker": "Model\\Items.cs",
-              "ToolTip": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\Items.cs",
-              "RelativeToolTip": "Model\\Items.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAwAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 0,
+              "Title": "FieldType.cs",
+              "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\FieldType.cs",
+              "RelativeDocumentMoniker": "Model\\FieldType.cs",
+              "ToolTip": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\FieldType.cs",
+              "RelativeToolTip": "Model\\FieldType.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T13:33:08.076Z",
+              "WhenOpened": "2026-02-19T15:17:02.041Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
+              "DocumentIndex": 2,
               "Title": "Inventory.cs",
               "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\Inventory.cs",
               "RelativeDocumentMoniker": "Model\\Inventory.cs",
               "ToolTip": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\Inventory.cs",
               "RelativeToolTip": "Model\\Inventory.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwAUAAAA5AAAAAAAAAA==",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAFAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-02-19T13:22:15.646Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "InventoryField.cs",
+              "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\InventoryField.cs",
+              "RelativeDocumentMoniker": "Model\\InventoryField.cs",
+              "ToolTip": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\InventoryField.cs",
+              "RelativeToolTip": "Model\\InventoryField.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA4AAAAFAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T15:10:55.556Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 3,
+              "Title": "ItemFieldValue.cs",
+              "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\ItemFieldValue.cs",
+              "RelativeDocumentMoniker": "Model\\ItemFieldValue.cs",
+              "ToolTip": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\ItemFieldValue.cs",
+              "RelativeToolTip": "Model\\ItemFieldValue.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAsAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T15:14:07.028Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "InventoryItem.cs",
+              "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\InventoryItem.cs",
+              "RelativeDocumentMoniker": "Model\\InventoryItem.cs",
+              "ToolTip": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Model\\InventoryItem.cs",
+              "RelativeToolTip": "Model\\InventoryItem.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAA8wBQAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-19T13:33:08.076Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
               "Title": "AppDbContext.cs",
               "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Data\\AppDbContext.cs",
               "RelativeDocumentMoniker": "Data\\AppDbContext.cs",
@@ -68,12 +119,11 @@
               "RelativeToolTip": "Data\\AppDbContext.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAYAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T13:21:04.149Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-19T13:21:04.149Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 4,
+              "DocumentIndex": 6,
               "Title": "Program.cs",
               "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\Program.cs",
               "RelativeDocumentMoniker": "Program.cs",
@@ -81,21 +131,19 @@
               "RelativeToolTip": "Program.cs",
               "ViewState": "AgIAAAEAAAAAAAAAAAAqwBkAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-19T13:08:56.38Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-19T13:08:56.38Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
-              "Title": "InventoryManagementApp",
+              "DocumentIndex": 7,
+              "Title": "InventoryManagementApp.csproj",
               "DocumentMoniker": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\InventoryManagementApp.csproj",
               "RelativeDocumentMoniker": "InventoryManagementApp.csproj",
               "ToolTip": "D:\\\u041A\u0443\u0440\u0441\u044B\\InventoryManagementApp\\InventoryManagementApp.csproj",
               "RelativeToolTip": "InventoryManagementApp.csproj",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000758|",
-              "WhenOpened": "2026-02-19T13:08:52.756Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-02-19T13:08:52.756Z"
             }
           ]
         }

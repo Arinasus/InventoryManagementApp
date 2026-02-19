@@ -10,6 +10,7 @@
         public int CreatedByUserId { get; set; }
         public DateTime CreatedAt  { get; set; }
         public DateTime UpdatedAt  { get; set; }
-        public float Version { get; set; }
+        public int Version { get; set; }
+        public List<InventoryItem> Items { get; set; }
     }
 }

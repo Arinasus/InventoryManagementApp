@@ -10,7 +10,8 @@
         public int CreatedByUserId { get; set; }
         public DateTime CreatedAt  { get; set; }
         public DateTime UpdatedAt  { get; set; }
-        public int Version { get; set; }
-        public List<InventoryItem> Items { get; set; }
+        public int Version { get; set; } //номер версии для автосохранения
+        public List<InventoryField> Fields { get; set; } = new();// список кастомных полей
+        public List<InventoryItem> Items { get; set; }//список элементов
     }
 }

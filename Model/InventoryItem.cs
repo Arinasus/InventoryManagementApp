@@ -1,6 +1,6 @@
 ﻿namespace InventoryManagementApp.Model
 {
-    public class InventoryItem
+    public class InventoryItem // конкретный объект, элемент
     {
         public int Id { get; set; }
 
@@ -16,6 +16,6 @@
 
         public int Version { get; set; }
 
-        public List<ItemFieldValue> FieldValues { get; set; } = new();
+        public List<ItemFieldValue> FieldValues { get; set; } = new(); //каждый элемент хранит значения полей
     }
 }

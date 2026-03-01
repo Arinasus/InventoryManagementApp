@@ -1,0 +1,36 @@
+﻿@page "/register"
+@using InventoryManagementApp.DTOs
+@inject HttpClient Http
+
+<h3>Register</h3>
+@if (!string.IsNullOrEmpty(Message))
+{
+    <div>@Message</div>
+}
+<div class="form">
+    <label for="email">Email</label>
+    <input id="email" name="email" @bind="Model.Email" placeholder="Email"/>
+    <label for="username">Имя пользователя</label>
+    <input id="username" name="username" @bind="Model.UserName" placeholder="Имя пользователя" />
+    <label for="password">Пароль</label>
+    <input id="password" name="password" @bind="Model.Password" type="password" placeholder="Пароль" />
+    <button type="button" @onclick="RegisterUser">Зарегестрироваться</button>
+</div>
+
+@code {
+    private RegisterDTO Model = new();
+    private string Message = "";
+    private async Task RegisterUser()
+    {
+        var response = await Http.PostAsJsonAsync("api/auth/register", Model);
+        if (response.IsSuccessStatusCode)
+        {
+            Message = "Регистрация успешна";
+        }
+        else
+        {
+            var error = await response.Content.ReadAsStringAsync();
+            Message = $"Ошибка: {error}";
+        }
+    }
+}

@@ -23,7 +23,7 @@ namespace InventoryManagerApp.Controllers
             var inventories = await _db.Inventories
                 .Include(i => i.InventoryAccesses)
                 .Where(i => i.CreatedByUserId == user.Id
-                         || i.InventoryAccesses != null && i.InventoryAccesses.Any(a => a.UserId == user.Id))
+                         || i.InventoryAccesses.Any() && i.InventoryAccesses.Any(a => a.UserId == user.Id))
                 .ToListAsync();
 
             return View(inventories);

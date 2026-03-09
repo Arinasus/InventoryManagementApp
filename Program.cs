@@ -76,15 +76,15 @@ else
 
 app.UseHttpsRedirection();
 app.UseRouting();
-app.MapStaticAssets();
+//app.MapStaticAssets();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}")
-    .WithStaticAssets();
+    pattern: "{controller=Home}/{action=Index}/{id?}");
+//    .WithStaticAssets();
 
-app.MapRazorPages()
-    .WithStaticAssets();
+app.MapRazorPages();
+//    .WithStaticAssets();
 app.Run();

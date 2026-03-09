@@ -1,4 +1,3 @@
-using InventoryManagementApp.Components;
 using InventoryManagementApp.Data;
 using InventoryManagementApp.Model;
 using Microsoft.AspNetCore.Identity;
@@ -6,37 +5,70 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = builder.Configuration.GetConnectionString("DefaultConnection");
+// Подключение к PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+builder.Services.AddDatabaseDeveloperPageExceptionFilter();
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath = "/AuthPage/Login"; // твоя MVC-страница логина
+});
+
+// Identity с ApplicationUser
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
+    options.Password.RequireNonAlphanumeric = false;
+    options.Password.RequireUppercase = false;
 })
-    .AddEntityFrameworkStores<AppDbContext>()
-    .AddDefaultTokenProviders()
-    .AddDefaultUI();
-builder.Services.AddRazorComponents()
-    .AddInteractiveServerComponents();
+.AddEntityFrameworkStores<AppDbContext>()
+.AddDefaultTokenProviders();
+
+// MVC
+builder.Services.AddControllersWithViews();
+
+// Razor Pages (ОБЯЗАТЕЛЬНО!)
 builder.Services.AddRazorPages();
-builder.Services.AddHttpClient();
-builder.Services.AddControllers(); 
+
+// HttpClient для API
+builder.Services.AddHttpClient("api", client =>
+{
+    client.BaseAddress = new Uri("https://localhost:7155/");
+});
 
 var app = builder.Build();
 
-if (!app.Environment.IsDevelopment())
+// Pipeline
+if (app.Environment.IsDevelopment())
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseMigrationsEndPoint();
+}
+else
+{
+    app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
-app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
+
 app.UseHttpsRedirection();
 
-app.UseAntiforgery();
-app.MapControllers();
+// Статические файлы
 app.MapStaticAssets();
-app.MapRazorComponents<App>()
-    .AddInteractiveServerRenderMode();
-app.MapRazorPages();
+
+app.UseRouting();
+
+// ВАЖНО: включаем аутентификацию
+app.UseAuthentication();
+app.UseAuthorization();
+
+// Маршруты MVC
+app.MapControllerRoute(
+    name: "default",
+    pattern: "{controller=Home}/{action=Index}/{id?}")
+    .WithStaticAssets();
+
+// Razor Pages (ОБЯЗАТЕЛЬНО!)
+app.MapRazorPages()
+   .WithStaticAssets();
+
 app.Run();

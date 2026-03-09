@@ -1,0 +1,27 @@
+﻿@model IEnumerable<InventoryManagementApp.Model.Inventory>
+
+<h2>Мои инвентари</h2>
+
+<a class="btn btn-primary" href="/Inventory/Create">Создать новый инвентарь</a>
+
+<table class="table mt-3">
+    <thead>
+        <tr>
+            <th>Название</th>
+            <th>Описание</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var inv in Model)
+        {
+            <tr>
+                <td>@inv.Title</td>
+                <td>@inv.Description</td>
+                <td>
+                    <a href="/Inventory/Details/@inv.Id" class="btn btn-sm btn-info">Открыть</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

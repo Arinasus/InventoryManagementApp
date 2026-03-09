@@ -9,7 +9,7 @@
     "Parameters": [
       {
         "Name": "dto",
-        "Type": "InventoryManagerApp.DTOs.LoginDTO",
+        "Type": "InventoryManagementApp.DTOs.LoginDTO",
         "IsRequired": true
       }
     ],

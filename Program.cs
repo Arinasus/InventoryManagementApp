@@ -5,17 +5,15 @@ using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Подключение к PostgreSQL
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.ConfigureApplicationCookie(options =>
 {
-    options.LoginPath = "/AuthPage/Login"; // твоя MVC-страница логина
+    options.LoginPath = "/Identity/Account/Login";
 });
 
-// Identity с ApplicationUser
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
     options.SignIn.RequireConfirmedAccount = false;
@@ -25,21 +23,20 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// MVC
 builder.Services.AddControllersWithViews();
 
-// Razor Pages (ОБЯЗАТЕЛЬНО!)
 builder.Services.AddRazorPages();
 
-// HttpClient для API
 builder.Services.AddHttpClient("api", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7155/");
 });
-
+/*builder.Services.AddAuthentication()
+    .AddGoogle(options => { ... })
+    .AddFacebook(options => { ... });
+*/
 var app = builder.Build();
 
-// Pipeline
 if (app.Environment.IsDevelopment())
 {
     app.UseMigrationsEndPoint();
@@ -51,24 +48,16 @@ else
 }
 
 app.UseHttpsRedirection();
-
-// Статические файлы
-app.MapStaticAssets();
-
 app.UseRouting();
-
-// ВАЖНО: включаем аутентификацию
+app.MapStaticAssets();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Маршруты MVC
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}")
     .WithStaticAssets();
 
-// Razor Pages (ОБЯЗАТЕЛЬНО!)
 app.MapRazorPages()
-   .WithStaticAssets();
-
+    .WithStaticAssets();
 app.Run();

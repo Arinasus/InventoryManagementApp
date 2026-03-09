@@ -1,4 +1,4 @@
-﻿namespace InventoryManagerApp.DTOs
+﻿namespace InventoryManagementApp.DTOs
 {
     public class LoginDTO
     {

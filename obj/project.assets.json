@@ -3417,11 +3417,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "D:\\Курсы\\InventoryManagerApp\\InventoryManagerApp.csproj",
-      "projectName": "InventoryManagerApp",
-      "projectPath": "D:\\Курсы\\InventoryManagerApp\\InventoryManagerApp.csproj",
+      "projectUniqueName": "D:\\Курсы\\InventoryManagementApp\\InventoryManagementApp.csproj",
+      "projectName": "InventoryManagementApp",
+      "projectPath": "D:\\Курсы\\InventoryManagementApp\\InventoryManagementApp.csproj",
       "packagesPath": "C:\\Users\\HP\\.nuget\\packages\\",
-      "outputPath": "D:\\Курсы\\InventoryManagerApp\\obj\\",
+      "outputPath": "D:\\Курсы\\InventoryManagementApp\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

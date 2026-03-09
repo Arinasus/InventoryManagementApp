@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using InventoryManagementApp.Model;
 using Microsoft.AspNetCore.Identity;
 using InventoryManagementApp.DTOs;
-using InventoryManagerApp.DTOs;
 
 namespace InventoryManagementApp.Controllers
 {

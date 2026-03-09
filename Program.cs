@@ -33,17 +33,18 @@ builder.Services.AddHttpClient("api", client =>
 {
     client.BaseAddress = new Uri("https://localhost:7155/");
 });
-/*builder.Services.AddAuthentication()
+builder.Services.AddAuthentication()
     .AddGoogle(options =>
     {
-        options.ClientId = "...";
-        options.ClientSecret = "...";
-    })
-    .AddFacebook(options =>
-    {
-        options.AppId = "...";
-        options.AppSecret = "...";
+        options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
+
+/*.AddFacebook(options =>
+{
+    options.AppId = "...";
+    options.AppSecret = "...";
+});
 */
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

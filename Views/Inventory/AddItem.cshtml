@@ -1,0 +1,17 @@
+﻿@using InventoryManagementApp.Models
+@model AddItemViewModel
+
+<div class="container mt-4">
+    <h2>Добавить предмет</h2>
+
+    <form asp-action="AddItem" method="post">
+        <input type="hidden" asp-for="InventoryId" />
+
+        <div class="mb-3">
+            <label class="form-label">Название предмета (пока не используется)</label>
+            <input class="form-control" placeholder="Пока можно оставить пустым" disabled />
+        </div>
+
+        <button type="submit" class="btn btn-primary">Создать предмет</button>
+    </form>
+</div>

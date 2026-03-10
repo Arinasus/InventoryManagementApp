@@ -18,6 +18,8 @@ namespace InventoryManagementApp.Model
         public ApplicationUser CreatedByUser { get; set; } = new();
         public List<InventoryAccess> InventoryAccesses { get; set; } = new();
         public List<InventoryTag> Tags { get; set; } = new();
+        public string CustomIdPrefix { get; set; } = "";
+        public int NextCustomIdNumber { get; set; } = 1;
 
     }
 }

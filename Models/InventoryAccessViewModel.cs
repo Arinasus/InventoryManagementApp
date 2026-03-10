@@ -1,4 +1,6 @@
-﻿namespace InventoryManagementApp.Models
+﻿using InventoryManagementApp.Model;
+
+namespace InventoryManagementApp.Models
 {
     public class InventoryAccessViewModel
     {

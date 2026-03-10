@@ -1,4 +1,4 @@
-namespace InventoryManagerApp.Models
+namespace InventoryManagmentApp.Models
 {
     public class ErrorViewModel
     {

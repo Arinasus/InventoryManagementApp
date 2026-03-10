@@ -232,16 +232,6 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddItem(AddItemViewModel model)
         {
-            if (!ModelState.IsValid)
-            {
-                model.Fields = await _context.InventoryFields
-                    .Where(f => f.InventoryId == model.InventoryId)
-                    .OrderBy(f => f.Order)
-                    .ToListAsync();
-
-                return View(model);
-            }
-
             var item = new InventoryItem
             {
                 InventoryId = model.InventoryId,

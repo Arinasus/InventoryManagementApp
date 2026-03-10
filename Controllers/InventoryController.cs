@@ -102,6 +102,25 @@ namespace InventoryManagerApp.Controllers
 
             return PartialView("_TabItems", model);
         }
+        public async Task<IActionResult> Index()
+        {
+            var inventories = await _context.Inventories.ToListAsync();
+            return View(inventories);
+        }
+        public async Task<IActionResult> Item(int id)
+        {
+            var item = await _context.InventoryItems
+                .Include(i => i.Inventory)
+                .Include(i => i.FieldValues)
+                    .ThenInclude(f => f.Field)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (item == null)
+                return NotFound();
+
+            return View(item);
+        }
+
         public IActionResult AddItem(int id)
         {
             var model = new AddItemViewModel { InventoryId = id };

@@ -1,59 +1,62 @@
 ﻿@using InventoryManagementApp.Model
-@model InventoryItem
+@model EditItemViewModel
 
 <div class="container mt-4">
+    <h2>Редактировать предмет</h2>
 
-    <h2>Предмет @Model.CustomId</h2>
+    <form asp-action="EditItem" method="post">
+        <input type="hidden" asp-for="ItemId" />
+        <input type="hidden" asp-for="InventoryId" />
 
-    <div class="card mt-3">
-        <div class="card-body">
+        @foreach (var field in Model.Fields)
+        {
+            <div class="mb-3">
+                <label class="form-label">@field.Title</label>
 
-            <h5 class="card-title">Основная информация</h5>
+                @switch (field.Type)
+                {
+                    case FieldType.SingleLineText:
+                        <input class="form-control"
+                               name="Values[@field.Id]"
+                               value="@Model.Values[field.Id]" />
+                        break;
 
-            <p><strong>ID:</strong> @Model.Id</p>
-            <p><strong>Custom ID:</strong> @Model.CustomId</p>
-            <p><strong>Создан:</strong> @Model.CreatedAt.ToLocalTime()</p>
-            <p><strong>Обновлён:</strong> @Model.UpdatedAt.ToLocalTime()</p>
-            <p><strong>Лайков:</strong> @Model.Likes?.Count ?? 0</p>
+                    case FieldType.MultiLineText:
+                        <textarea class="form-control"
+                      name="Values[@field.Id]"
+                      rows="3">@Model.Values[field.Id]</textarea>
+                        break;
 
-            <hr />
+                    case FieldType.Number:
+                        <input class="form-control"
+                               type="number"
+                               name="Values[@field.Id]"
+                               value="@Model.Values[field.Id]" />
+                        break;
 
-            <h5 class="card-title">Поля</h5>
+                    case FieldType.DocumentLink:
+                        <input class="form-control"
+                               type="url"
+                               name="Values[@field.Id]"
+                               value="@Model.Values[field.Id]" />
+                        break;
 
-            @if (Model.FieldValues != null && Model.FieldValues.Any())
-            {
-                <table class="table table-bordered">
-                    <thead>
-                        <tr>
-                            <th>Поле</th>
-                            <th>Значение</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var fv in Model.FieldValues)
-                        {
-                            <tr>
-                                <td>@fv.Field?.Title</td>
-                                <td>@fv.Value</td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
-            }
-            else
-            {
-                <p class="text-muted">Нет заполненных полей.</p>
-            }
-
-            <hr />
-
-            <div class="mt-3">
-                <a class="btn btn-secondary" href="/Inventory/Details/@Model.InventoryId">Назад к инвентарю</a>
-                <a class="btn btn-warning disabled">Редактировать (пока не работает)</a>
-                <a class="btn btn-danger disabled">Удалить (пока не работает)</a>
+                    case FieldType.Boolean:
+                        var isChecked = Model.Values[field.Id] == "true";
+                        <div class="form-check">
+                            <input class="form-check-input"
+                                   type="checkbox"
+                                   name="Values[@field.Id]"
+                                   value="true"
+                                   @(isChecked ? "checked" : "") />
+                            <label class="form-check-label">Да</label>
+                        </div>
+                        break;
+                }
             </div>
+        }
 
-        </div>
-    </div>
-
+        <button type="submit" class="btn btn-primary">Сохранить</button>
+        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">Назад</a>
+    </form>
 </div>

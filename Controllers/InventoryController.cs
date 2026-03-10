@@ -201,16 +201,32 @@ namespace InventoryManagementApp.Controllers
         public async Task<IActionResult> Item(int id)
         {
             var item = await _context.InventoryItems
-                .Include(i => i.Inventory)
                 .Include(i => i.FieldValues)
-                    .ThenInclude(f => f.Field)
+                .Include(i => i.Inventory)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (item == null)
                 return NotFound();
 
-            return View(item);
+            var fields = await _context.InventoryFields
+                .Where(f => f.InventoryId == item.InventoryId)
+                .OrderBy(f => f.Order)
+                .ToListAsync();
+
+            var model = new EditItemViewModel
+            {
+                ItemId = item.Id,
+                InventoryId = item.InventoryId,
+                Fields = fields,
+                Values = fields.ToDictionary(
+                    f => f.Id,
+                    f => item.FieldValues.FirstOrDefault(v => v.FieldId == f.Id)?.Value ?? ""
+                )
+            };
+
+            return View(model);
         }
+
 
         public async Task<IActionResult> AddItem(int id)
         {
@@ -263,6 +279,43 @@ namespace InventoryManagementApp.Controllers
 
                 await _context.SaveChangesAsync();
             }
+
+            return RedirectToAction("Item", new { id = item.Id });
+        }
+        [HttpPost]
+        public async Task<IActionResult> EditItem(EditItemViewModel model)
+        {
+            var item = await _context.InventoryItems
+                .Include(i => i.FieldValues)
+                .FirstOrDefaultAsync(i => i.Id == model.ItemId);
+
+            if (item == null)
+                return NotFound();
+
+            foreach (var kvp in model.Values)
+            {
+                var fieldId = kvp.Key;
+                var value = kvp.Value ?? "";
+
+                var existing = item.FieldValues.FirstOrDefault(v => v.FieldId == fieldId);
+
+                if (existing == null)
+                {
+                    _context.ItemFieldValues.Add(new ItemFieldValue
+                    {
+                        ItemId = item.Id,
+                        FieldId = fieldId,
+                        Value = value
+                    });
+                }
+                else
+                {
+                    existing.Value = value;
+                }
+            }
+
+            item.UpdatedAt = DateTime.UtcNow;
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Item", new { id = item.Id });
         }

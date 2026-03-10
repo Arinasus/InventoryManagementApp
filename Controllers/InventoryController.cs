@@ -51,7 +51,16 @@ namespace InventoryManagerApp.Controllers
             if (inventory == null)
                 return NotFound();
 
-            return View(inventory);
+            var itemsModel = await GetItemsModel(id);
+
+            var vm = new InventoryDetailsViewModel
+            {
+                Inventory = inventory,
+                Items = itemsModel
+            };
+
+            return View(vm);
+
         }
         public async Task<IActionResult> Items(int id)
         {
@@ -125,6 +134,42 @@ namespace InventoryManagerApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", new { id = item.InventoryId });
+        }
+        private async Task<InventoryItemsViewModel> GetItemsModel(int id)
+        {
+            var inventory = await _context.Inventories
+                .Include(i => i.Fields)
+                .Include(i => i.Items).ThenInclude(it => it.FieldValues)
+                .Include(i => i.Items).ThenInclude(it => it.Likes)
+                .FirstOrDefaultAsync(i => i.Id == id);
+
+            if (inventory == null)
+                return null;
+
+            var tableFields = inventory.Fields
+                .Where(f => f.ShowInTable)
+                .OrderBy(f => f.Order)
+                .ToList();
+
+            var items = inventory.Items.Select(item => new InventoryItemRowViewModel
+            {
+                Id = item.Id,
+                CustomId = item.CustomId,
+                CreatedAt = item.CreatedAt,
+                Likes = item.Likes.Count,
+                FieldValues = tableFields.ToDictionary(
+                    f => f.Title,
+                    f => item.FieldValues.FirstOrDefault(v => v.FieldId == f.Id)?.Value ?? ""
+                )
+            }).ToList();
+
+            return new InventoryItemsViewModel
+            {
+                InventoryId = inventory.Id,
+                InventoryTitle = inventory.Title,
+                Items = items,
+                TableFields = tableFields
+            };
         }
 
     }

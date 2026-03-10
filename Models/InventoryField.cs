@@ -8,7 +8,7 @@ namespace InventoryManagementApp.Model
         public int InventoryId { get; set; } // к какому инвентарю относится
         public Inventory Inventory { get; set; }
         public string Title { get; set; } = string.Empty;
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public FieldType Type { get; set; }
         public bool ShowInTable { get; set; } //показывать ли в таблице
         public int Order {  get; set; }// порядок

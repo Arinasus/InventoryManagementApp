@@ -331,6 +331,7 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddField(InventoryField field)
         {
+            field.Id = 0;
             field.Order = await _context.InventoryFields
                 .Where(f => f.InventoryId == field.InventoryId)
                 .CountAsync() + 1;

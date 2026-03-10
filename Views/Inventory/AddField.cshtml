@@ -6,6 +6,7 @@
 
     <form asp-action="AddField" method="post">
 
+        <input type="hidden" asp-for="Id" />
         <input type="hidden" asp-for="InventoryId" />
 
         <div class="mb-3">
@@ -23,10 +24,11 @@
         <div class="mb-3">
             <label class="form-label">Тип поля</label>
             <select asp-for="Type" class="form-select">
-                <option value="Text">Текст</option>
+                <option value="SingleLineText">Однострочный текст</option>
+                <option value="MultiLineText">Многострочный текст</option>
                 <option value="Number">Число</option>
                 <option value="Boolean">Да/Нет</option>
-                <option value="Date">Дата</option>
+                <option value="DocumentLink">Ссылка на документ</option>
             </select>
         </div>
 

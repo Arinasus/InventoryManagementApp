@@ -56,12 +56,99 @@ namespace InventoryManagerApp.Controllers
             var vm = new InventoryDetailsViewModel
             {
                 Inventory = inventory,
-                Items = itemsModel
+                Items =  await GetItemsModel(id),
+                Discussion = await GetDiscussionModel(id),
+                Settings = GetSettingsModel(inventory),
+                CustomId = GetCustomIdModel(inventory),
+                Access = await GetAccessModel(id),
+                Fields = await GetFieldsModel(id),
+                Stats = await GetStatsModel(id)
             };
 
             return View(vm);
 
         }
+        private async Task<InventoryDiscussionViewModel> GetDiscussionModel(int id)
+        {
+            var posts = await _context.DiscussionPosts
+                .Where(p => p.InventoryId == id)
+                .Include(p => p.User)
+                .OrderByDescending(p => p.CreatedAt)
+                .ToListAsync();
+
+            return new InventoryDiscussionViewModel
+            {
+                InventoryId = id,
+                Posts = posts,
+                CurrentUserId = _userManager.GetUserId(User)
+            };
+        }
+        private InventorySettingsViewModel GetSettingsModel(Inventory inv)
+        {
+            return new InventorySettingsViewModel
+            {
+                InventoryId = inv.Id,
+                Title = inv.Title,
+                Description = inv.Description,
+                Category = inv.Category,
+                IsPublic = inv.IsPublic
+            };
+        }
+        private InventoryCustomIdViewModel GetCustomIdModel(Inventory inv)
+        {
+            return new InventoryCustomIdViewModel
+            {
+                InventoryId = inv.Id,
+                Prefix = inv.CustomIdPrefix,
+                NextNumber = inv.NextCustomIdNumber
+            };
+        }
+        private async Task<InventoryAccessViewModel> GetAccessModel(int id)
+        {
+            var access = await _context.InventoryAccesses
+                .Where(a => a.InventoryId == id)
+                .Include(a => a.User)
+                .ToListAsync();
+
+            return new InventoryAccessViewModel
+            {
+                InventoryId = id,
+                AccessList = access
+            };
+        }
+        private async Task<InventoryFieldsViewModel> GetFieldsModel(int id)
+        {
+            var fields = await _context.InventoryFields
+                .Where(f => f.InventoryId == id)
+                .OrderBy(f => f.Order)
+                .ToListAsync();
+
+            return new InventoryFieldsViewModel
+            {
+                InventoryId = id,
+                Fields = fields
+            };
+        }
+        private async Task<InventoryStatsViewModel> GetStatsModel(int id)
+        {
+            var items = await _context.InventoryItems
+                .Where(i => i.InventoryId == id)
+                .Include(i => i.Likes)
+                .ToListAsync();
+
+            var posts = await _context.DiscussionPosts
+                .Where(p => p.InventoryId == id)
+                .CountAsync();
+
+            return new InventoryStatsViewModel
+            {
+                InventoryId = id,
+                TotalItems = items.Count,
+                TotalLikes = items.Sum(i => i.Likes.Count),
+                TotalPosts = posts
+            };
+        }
+
         public async Task<IActionResult> Items(int id)
         {
             var inventory = await _context.Inventories

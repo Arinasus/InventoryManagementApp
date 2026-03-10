@@ -34,30 +34,30 @@
             @await Html.PartialAsync("_TabItems", Model.Items)
         </div>
 
-        @*<div class="tab-pane fade" id="discussion">
-            @await Html.PartialAsync("_TabDiscussion", Model)
+        <div class="tab-pane fade" id="discussion">
+            @await Html.PartialAsync("_TabDiscussion", Model.Discussion)
         </div>
 
         <div class="tab-pane fade" id="settings">
-            @await Html.PartialAsync("_TabSettings", Model)
+            @await Html.PartialAsync("_TabSettings", Model.Settings)
         </div>
 
         <div class="tab-pane fade" id="customid">
-            @await Html.PartialAsync("_TabCustomId", Model)
+            @await Html.PartialAsync("_TabCustomId", Model.CustomId)
         </div>
 
         <div class="tab-pane fade" id="access">
-            @await Html.PartialAsync("_TabAccess", Model)
+            @await Html.PartialAsync("_TabAccess", Model.Access)
         </div>
 
         <div class="tab-pane fade" id="fields">
-            @await Html.PartialAsync("_TabFields", Model)
+            @await Html.PartialAsync("_TabFields", Model.Fields)
         </div>
 
         <div class="tab-pane fade" id="stats">
-            @await Html.PartialAsync("_TabStats", Model)
+            @await Html.PartialAsync("_TabStats", Model.Stats)
         </div>
-        *@
+        
     </div>
 
 </div>

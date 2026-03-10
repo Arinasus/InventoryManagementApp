@@ -7,6 +7,7 @@
     <form asp-action="EditItem" method="post">
         <input type="hidden" asp-for="ItemId" />
         <input type="hidden" asp-for="InventoryId" />
+        <input type="hidden" asp-for="Version" />
 
         @foreach (var field in Model.Fields)
         {

@@ -217,6 +217,7 @@ namespace InventoryManagementApp.Controllers
             {
                 ItemId = item.Id,
                 InventoryId = item.InventoryId,
+                Version = item.Version,
                 Fields = fields,
                 Values = fields.ToDictionary(
                     f => f.Id,
@@ -291,7 +292,21 @@ namespace InventoryManagementApp.Controllers
 
             if (item == null)
                 return NotFound();
+            if (item.Version != model.Version)
+            {
+                ModelState.AddModelError("", "Этот предмет был изменён другим пользователем. Обновите страницу.");
+                model.Fields = await _context.InventoryFields
+                    .Where(f => f.InventoryId == model.InventoryId)
+                    .OrderBy(f => f.Order)
+                    .ToListAsync();
 
+                model.Values = model.Fields.ToDictionary(
+                    f => f.Id,
+                    f => item.FieldValues.FirstOrDefault(v => v.FieldId == f.Id)?.Value ?? ""
+                );
+
+                return View("Item", model);
+            }
             foreach (var kvp in model.Values)
             {
                 var fieldId = kvp.Key;
@@ -313,7 +328,7 @@ namespace InventoryManagementApp.Controllers
                     existing.Value = value;
                 }
             }
-
+            item.Version++;
             item.UpdatedAt = DateTime.UtcNow;
             await _context.SaveChangesAsync();
 

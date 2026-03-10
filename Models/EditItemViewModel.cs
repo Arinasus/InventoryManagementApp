@@ -6,6 +6,7 @@ namespace InventoryManagementApp.Models
     {
         public int ItemId { get; set; }
         public int InventoryId { get; set; }
+        public int Version { get; set; }
         public List<InventoryField> Fields { get; set; }
         public Dictionary<int, string> Values { get; set; } = new();
     }

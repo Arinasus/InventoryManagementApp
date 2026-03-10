@@ -84,7 +84,18 @@ app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
 //    .WithStaticAssets();
+app.UseStaticFiles();
 
 app.MapRazorPages();
 //    .WithStaticAssets();
+using (var scope = app.Services.CreateScope())
+{
+    var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+    var user = await userManager.FindByEmailAsync("allyut12zk@gmail.com");
+    if (user != null)
+    {
+        await userManager.AddToRoleAsync(user, "Admin");
+    }
+}
+
 app.Run();

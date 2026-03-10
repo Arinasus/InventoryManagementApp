@@ -15,6 +15,7 @@
         public DateTime UpdatedAt { get; set; }
 
         public int Version { get; set; }
+        public List<ItemLike> Likes { get; set; } = new();
 
         public List<ItemFieldValue> FieldValues { get; set; } = new(); //каждый элемент хранит значения полей
     }

@@ -1,0 +1,66 @@
+﻿@using InventoryManagementApp.Model
+@model Inventory
+
+<div class="container mt-4">
+
+    <h2>@Model.Title</h2>
+    <p class="text-muted">@Model.Description</p>
+
+    <ul class="nav nav-tabs mt-4" id="inventoryTabs">
+        <li class="nav-item">
+            <a class="nav-link active" href="#items" data-bs-toggle="tab">Предметы</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#discussion" data-bs-toggle="tab">Обсуждение</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#settings" data-bs-toggle="tab">Общие настройки</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#customid" data-bs-toggle="tab">Пользовательские ID</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#access" data-bs-toggle="tab">Доступ</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#fields" data-bs-toggle="tab">Поля</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#stats" data-bs-toggle="tab">Статистика</a>
+        </li>
+    </ul>
+
+    <div class="tab-content mt-3">
+
+        <div class="tab-pane fade show active" id="items">
+            @await Html.PartialAsync("_TabItems", Model)
+        </div>
+
+        <div class="tab-pane fade" id="discussion">
+            @await Html.PartialAsync("_TabDiscussion", Model)
+        </div>
+
+        <div class="tab-pane fade" id="settings">
+            @await Html.PartialAsync("_TabSettings", Model)
+        </div>
+
+        <div class="tab-pane fade" id="customid">
+            @await Html.PartialAsync("_TabCustomId", Model)
+        </div>
+
+        <div class="tab-pane fade" id="access">
+            @await Html.PartialAsync("_TabAccess", Model)
+        </div>
+
+        <div class="tab-pane fade" id="fields">
+            @await Html.PartialAsync("_TabFields", Model)
+        </div>
+
+        <div class="tab-pane fade" id="stats">
+            @await Html.PartialAsync("_TabStats", Model)
+        </div>
+
+    </div>
+
+</div>
+

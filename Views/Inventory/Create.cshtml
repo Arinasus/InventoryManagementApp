@@ -1,0 +1,36 @@
+﻿@using InventoryManagementApp.Model
+@model Inventory
+
+<div class="container mt-4">
+    <h2>Создать инвентарную книгу</h2>
+
+    <form method="post">
+        <div class="mb-3">
+            <label class="form-label">Название</label>
+            <input asp-for="Title" class="form-control" required />
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Описание</label>
+            <textarea asp-for="Description" class="form-control"></textarea>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Категория</label>
+            <select asp-for="Category" class="form-select">
+                <option>Оборудование</option>
+                <option>Мебель</option>
+                <option>Книга</option>
+                <option>Документы</option>
+                <option>Другое</option>
+            </select>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="IsPublic" class="form-check-input" />
+            <label class="form-check-label">Публичная книга</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Создать</button>
+    </form>
+</div>

@@ -249,6 +249,43 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddItem(AddItemViewModel model)
         {
+            var fields = await _context.InventoryFields
+                .Where(f => f.InventoryId == model.InventoryId)
+                .ToListAsync();
+
+            // Проверка значений
+            foreach (var field in fields)
+            {
+                model.Values.TryGetValue(field.Id, out var rawValue);
+                rawValue ??= "";
+
+                switch (field.Type)
+                {
+                    case FieldType.Number:
+                        if (!double.TryParse(rawValue, out _))
+                            ModelState.AddModelError($"Values[{field.Id}]", $"Поле «{field.Title}» должно быть числом.");
+                        break;
+
+                    case FieldType.DocumentLink:
+                        if (!Uri.IsWellFormedUriString(rawValue, UriKind.Absolute))
+                            ModelState.AddModelError($"Values[{field.Id}]", $"Поле «{field.Title}» должно быть ссылкой (URL).");
+                        break;
+
+                    case FieldType.Boolean:
+                        // Checkbox отправляет только "true" или ничего
+                        if (rawValue != "true" && rawValue != "")
+                            ModelState.AddModelError($"Values[{field.Id}]", $"Поле «{field.Title}» должно быть галочкой.");
+                        break;
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Fields = fields;
+                return View(model);
+            }
+
+            // Создание предмета
             var item = new InventoryItem
             {
                 InventoryId = model.InventoryId,
@@ -261,28 +298,21 @@ namespace InventoryManagementApp.Controllers
             _context.InventoryItems.Add(item);
             await _context.SaveChangesAsync();
 
-            if (model.Values != null && model.Values.Any())
+            foreach (var kvp in model.Values)
             {
-                foreach (var kvp in model.Values)
+                _context.ItemFieldValues.Add(new ItemFieldValue
                 {
-                    var fieldId = kvp.Key;
-                    var value = kvp.Value;
-
-                    var fieldValue = new ItemFieldValue
-                    {
-                        ItemId = item.Id,
-                        FieldId = fieldId,
-                        Value = value
-                    };
-
-                    _context.ItemFieldValues.Add(fieldValue);
-                }
-
-                await _context.SaveChangesAsync();
+                    ItemId = item.Id,
+                    FieldId = kvp.Key,
+                    Value = kvp.Value ?? ""
+                });
             }
+
+            await _context.SaveChangesAsync();
 
             return RedirectToAction("Item", new { id = item.Id });
         }
+
         [HttpPost]
         public async Task<IActionResult> EditItem(EditItemViewModel model)
         {
@@ -292,21 +322,55 @@ namespace InventoryManagementApp.Controllers
 
             if (item == null)
                 return NotFound();
+
+            var fields = await _context.InventoryFields
+                .Where(f => f.InventoryId == model.InventoryId)
+                .OrderBy(f => f.Order)
+                .ToListAsync();
+
+            foreach (var field in fields)
+            {
+                model.Values.TryGetValue(field.Id, out var rawValue);
+                rawValue ??= "";
+
+                switch (field.Type)
+                {
+                    case FieldType.Number:
+                        if (!double.TryParse(rawValue, out _))
+                            ModelState.AddModelError($"Values[{field.Id}]", $"Поле «{field.Title}» должно быть числом.");
+                        break;
+
+                    case FieldType.DocumentLink:
+                        if (!Uri.IsWellFormedUriString(rawValue, UriKind.Absolute))
+                            ModelState.AddModelError($"Values[{field.Id}]", $"Поле «{field.Title}» должно быть ссылкой (URL).");
+                        break;
+
+                    case FieldType.Boolean:
+                        if (rawValue != "true" && rawValue != "")
+                            ModelState.AddModelError($"Values[{field.Id}]", $"Поле «{field.Title}» должно быть галочкой.");
+                        break;
+                }
+            }
+
+            if (!ModelState.IsValid)
+            {
+                model.Fields = fields;
+                return View("Item", model);
+            }
+            
             if (item.Version != model.Version)
             {
                 ModelState.AddModelError("", "Этот предмет был изменён другим пользователем. Обновите страницу.");
-                model.Fields = await _context.InventoryFields
-                    .Where(f => f.InventoryId == model.InventoryId)
-                    .OrderBy(f => f.Order)
-                    .ToListAsync();
 
-                model.Values = model.Fields.ToDictionary(
+                model.Fields = fields;
+                model.Values = fields.ToDictionary(
                     f => f.Id,
                     f => item.FieldValues.FirstOrDefault(v => v.FieldId == f.Id)?.Value ?? ""
                 );
 
                 return View("Item", model);
             }
+
             foreach (var kvp in model.Values)
             {
                 var fieldId = kvp.Key;
@@ -328,8 +392,10 @@ namespace InventoryManagementApp.Controllers
                     existing.Value = value;
                 }
             }
+
             item.Version++;
             item.UpdatedAt = DateTime.UtcNow;
+
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Item", new { id = item.Id });

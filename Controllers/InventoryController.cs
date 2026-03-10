@@ -6,7 +6,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
-namespace InventoryManagerApp.Controllers
+namespace InventoryManagementApp.Controllers
 {
     [Authorize]
     public class InventoryController : Controller

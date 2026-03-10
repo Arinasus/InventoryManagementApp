@@ -1,0 +1,43 @@
+﻿@using InventoryManagementApp.Model
+@model InventoryField
+
+<div class="container mt-4">
+    <h2>Добавить поле</h2>
+
+    <form asp-action="AddField" method="post">
+
+        <input type="hidden" asp-for="InventoryId" />
+
+        <div class="mb-3">
+            <label class="form-label">Название поля</label>
+            <input asp-for="Title" class="form-control" required />
+            <span class="text-muted">Например: Цена, Цвет, Вес, Состояние</span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Описание</label>
+            <textarea asp-for="Description" class="form-control" rows="2"></textarea>
+            <span class="text-muted">Необязательно. Показывается как подсказка при вводе значения.</span>
+        </div>
+
+        <div class="mb-3">
+            <label class="form-label">Тип поля</label>
+            <select asp-for="Type" class="form-select">
+                <option value="Text">Текст</option>
+                <option value="Number">Число</option>
+                <option value="Boolean">Да/Нет</option>
+                <option value="Date">Дата</option>
+            </select>
+        </div>
+
+        <div class="form-check mb-3">
+            <input asp-for="ShowInTable" class="form-check-input" />
+            <label class="form-check-label">Показывать в таблице предметов</label>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Добавить</button>
+        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">Отмена</a>
+    </form>
+</div>
+
+

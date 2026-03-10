@@ -1,0 +1,54 @@
+﻿@using InventoryManagementApp.Models
+@model InventoryFieldsViewModel
+
+<div class="d-flex justify-content-between align-items-center mb-3">
+    <h4>Поля инвентаря</h4>
+
+    <a class="btn btn-primary" href="/Inventory/AddField/@Model.InventoryId">
+        + Добавить поле
+    </a>
+</div>
+
+@if (Model.Fields == null || !Model.Fields.Any())
+{
+    <p class="text-muted">Пока нет ни одного поля.</p>
+}
+else
+{
+    <table class="table table-bordered">
+        <thead class="table-dark">
+            <tr>
+                <th>Название</th>
+                <th>Тип</th>
+                <th>Порядок</th>
+                <th>В таблице</th>
+                <th></th>
+            </tr>
+        </thead>
+
+        <tbody>
+            @foreach (var field in Model.Fields)
+            {
+                <tr>
+                    <td>@field.Title</td>
+                    <td>@field.Type</td>
+                    <td>@field.Order</td>
+
+                    <td>
+                        <form method="post" action="/Inventory/ToggleShowInTable/@field.Id">
+                            <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+                            <input type="checkbox" onchange="this.form.submit()" @(field.ShowInTable ? "checked" : "") />
+                        </form>
+                    </td>
+
+                    <td class="text-end">
+                        <a href="/Inventory/DeleteField/@field.Id?inventoryId=@Model.InventoryId"
+                           class="btn btn-sm btn-danger">
+                            Удалить
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}

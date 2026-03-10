@@ -9,43 +9,56 @@
     </a>
 </div>
 
-<table class="table table-hover">
-    <thead class="table-dark">
-        <tr>
-            <th>ID</th>
-            @foreach (var field in Model.TableFields)
-            {
-                <th>@field.Title</th>
-            }
-            <th>Лайки</th>
-            <th></th>
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach (var item in Model.Items)
-        {
-            <tr class="item-row" onclick="location.href='/Inventory/Item/@item.Id'">
-                <td>@item.CustomId</td>
+@if (Model.Items == null || !Model.Items.Any())
+{
+    <p class="text-muted">В этом инвентаре пока нет предметов.</p>
+}
+else
+{
+    <table class="table table-hover">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Custom ID</th>
+                <th>Создан</th>
 
                 @foreach (var field in Model.TableFields)
                 {
-                    <td>@item.FieldValues[field.Title]</td>
+                    <th>@field.Title</th>
                 }
 
-                <td>@item.Likes</td>
-
-                <td class="text-end">
-                    <div class="actions" style="display:none;">
-                        <a href="/Inventory/DeleteItem/@item.Id" class="text-danger me-2">
-                            <i class="bi bi-trash"></i>
-                        </a>
-                    </div>
-                </td>
+                <th>Лайки</th>
+                <th></th>
             </tr>
-        }
-    </tbody>
-</table>
+        </thead>
+
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr class="item-row" onclick="location.href='/Inventory/Item/@item.Id'">
+                    <td>@item.Id</td>
+                    <td>@item.CustomId</td>
+                    <td>@item.CreatedAt.ToLocalTime()</td>
+
+                    @foreach (var field in Model.TableFields)
+                    {
+                        <td>@item.FieldValues[field.Title]</td>
+                    }
+
+                    <td>@item.Likes</td>
+
+                    <td class="text-end">
+                        <div class="actions" style="display:none;">
+                            <a href="/Inventory/DeleteItem/@item.Id" class="text-danger me-2">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
 
 <script>
     document.querySelectorAll(".item-row").forEach(row => {

@@ -8,6 +8,10 @@
         <li class="nav-item">
             <a class="nav-link active" href="#items" data-bs-toggle="tab">Предметы</a>
         </li>
+        <li class="nav-item">
+            <a class="nav-link" href="#fields" data-bs-toggle="tab">Поля</a>
+        </li>
+
        @* <li class="nav-item">
             <a class="nav-link" href="#discussion" data-bs-toggle="tab">Обсуждение</a>
         </li>
@@ -32,6 +36,9 @@
 
         <div class="tab-pane fade show active" id="items">
             @await Html.PartialAsync("_TabItems", Model.Items)
+        </div>
+        <div class="tab-pane fade" id="fields">
+            @await Html.PartialAsync("_TabFields", Model.Fields)
         </div>
 
        @*<div class="tab-pane fade" id="discussion">

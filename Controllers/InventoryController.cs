@@ -280,6 +280,44 @@ namespace InventoryManagementApp.Controllers
                 TableFields = tableFields
             };
         }
+        public IActionResult AddField(int id)
+        {
+            return View(new InventoryField { InventoryId = id });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddField(InventoryField field)
+        {
+            field.Order = await _context.InventoryFields
+                .Where(f => f.InventoryId == field.InventoryId)
+                .CountAsync() + 1;
+
+            _context.InventoryFields.Add(field);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = field.InventoryId });
+        }
+        public async Task<IActionResult> DeleteField(int id, int inventoryId)
+        {
+            var field = await _context.InventoryFields.FindAsync(id);
+            if (field == null) return NotFound();
+
+            _context.InventoryFields.Remove(field);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = inventoryId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ToggleShowInTable(int id, int inventoryId)
+        {
+            var field = await _context.InventoryFields.FindAsync(id);
+            if (field == null) return NotFound();
+
+            field.ShowInTable = !field.ShowInTable;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = inventoryId });
+        }
 
     }
 }

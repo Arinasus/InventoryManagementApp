@@ -60,11 +60,12 @@ namespace InventoryManagementApp.Controllers
             {
                 Inventory = inventory,
                 Items =  await GetItemsModel(id),
+                Fields = await GetFieldsModel(id)
                 /*Discussion = await GetDiscussionModel(id),
                 Settings = GetSettingsModel(inventory),
                 CustomId = GetCustomIdModel(inventory),
                 Access = await GetAccessModel(id),
-                Fields = await GetFieldsModel(id),
+                ,
                 Stats = await GetStatsModel(id)*/
             };
 

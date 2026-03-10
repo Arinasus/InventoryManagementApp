@@ -1,6 +1,5 @@
 using InventoryManagementApp.Data;
 using InventoryManagementApp.Models;
-using InventoryManagerApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;

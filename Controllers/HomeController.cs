@@ -1,25 +1,82 @@
+using InventoryManagementApp.Data;
+using InventoryManagementApp.Models;
 using InventoryManagerApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace InventoryManagerApp.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly AppDbContext _context;
+
+        public HomeController(AppDbContext context)
         {
-            return View();
+            _context = context;
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Index(string search)
         {
-            return View();
-        }
+            var query = _context.Inventories
+                .Include(i => i.CreatedByUser)
+                .Include(i => i.Items)
+                .Include(i => i.Tags)
+                .AsQueryable();
 
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
-        public IActionResult Error()
-        {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(i =>
+                    i.Title.Contains(search) ||
+                    i.Description.Contains(search) ||
+                    i.Tags.Any(t => t.Name.Contains(search)));
+            }
+
+            var latest = await query
+                .OrderByDescending(i => i.CreatedAt)
+                .Take(10)
+                .Select(i => new InventoryCardViewModel
+                {
+                    Id = i.Id,
+                    Title = i.Title,
+                    Description = i.Description,
+                    CreatorName = i.CreatedByUser.UserName,
+                    ItemsCount = i.Items.Count,
+                    CreatedAt = i.CreatedAt
+                })
+                .ToListAsync();
+
+            var popular = await query
+                .OrderByDescending(i => i.Items.Count)
+                .Take(5)
+                .Select(i => new InventoryCardViewModel
+                {
+                    Id = i.Id,
+                    Title = i.Title,
+                    Description = i.Description,
+                    CreatorName = i.CreatedByUser.UserName,
+                    ItemsCount = i.Items.Count,
+                    CreatedAt = i.CreatedAt
+                })
+                .ToListAsync();
+
+            var tags = await _context.InventoryTags
+                .Select(t => new TagViewModel
+                {
+                    Name = t.Name,
+                    Count = t.Inventories.Count
+                })
+                .ToListAsync();
+
+            var model = new HomePageViewModel
+            {
+                LatestInventories = latest,
+                PopularInventories = popular,
+                Tags = tags,
+                SearchQuery = search
+            };
+
+            return View(model);
         }
     }
 }

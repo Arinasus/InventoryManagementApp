@@ -1,4 +1,6 @@
-﻿namespace InventoryManagementApp.Model
+﻿using InventoryManagementApp.Models;
+
+namespace InventoryManagementApp.Model
 {
     public class Inventory
     {
@@ -15,5 +17,7 @@
         public List<InventoryItem> Items { get; set; } = new();//список элементов
         public ApplicationUser CreatedByUser { get; set; } = new();
         public List<InventoryAccess> InventoryAccesses { get; set; } = new();
+        public List<InventoryTag> Tags { get; set; } = new();
+
     }
 }

@@ -28,7 +28,10 @@ namespace InventoryManagementApp.Controllers
         public async Task<IActionResult> Create(Inventory model)
         {
             var user = await _userManager.GetUserAsync(User);
-
+            if (user == null)
+            {
+                return Content("USER IS NULL");
+            }
             model.CreatedByUserId = user.Id;
             model.CreatedAt = DateTime.UtcNow;
             model.UpdatedAt = DateTime.UtcNow;
@@ -57,12 +60,12 @@ namespace InventoryManagementApp.Controllers
             {
                 Inventory = inventory,
                 Items =  await GetItemsModel(id),
-                Discussion = await GetDiscussionModel(id),
+                /*Discussion = await GetDiscussionModel(id),
                 Settings = GetSettingsModel(inventory),
                 CustomId = GetCustomIdModel(inventory),
                 Access = await GetAccessModel(id),
                 Fields = await GetFieldsModel(id),
-                Stats = await GetStatsModel(id)
+                Stats = await GetStatsModel(id)*/
             };
 
             return View(vm);

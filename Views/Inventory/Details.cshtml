@@ -8,7 +8,7 @@
         <li class="nav-item">
             <a class="nav-link active" href="#items" data-bs-toggle="tab">Предметы</a>
         </li>
-        <li class="nav-item">
+       @* <li class="nav-item">
             <a class="nav-link" href="#discussion" data-bs-toggle="tab">Обсуждение</a>
         </li>
         <li class="nav-item">
@@ -25,7 +25,7 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#stats" data-bs-toggle="tab">Статистика</a>
-        </li>
+        </li>*@
     </ul>
 
     <div class="tab-content mt-3">
@@ -34,7 +34,7 @@
             @await Html.PartialAsync("_TabItems", Model.Items)
         </div>
 
-        <div class="tab-pane fade" id="discussion">
+       @*<div class="tab-pane fade" id="discussion">
             @await Html.PartialAsync("_TabDiscussion", Model.Discussion)
         </div>
 
@@ -57,7 +57,7 @@
         <div class="tab-pane fade" id="stats">
             @await Html.PartialAsync("_TabStats", Model.Stats)
         </div>
-        
+        *@ 
     </div>
 
 </div>

@@ -14,40 +14,66 @@
 }
 else
 {
-    <table class="table table-bordered">
-        <thead class="table-dark">
-            <tr>
-                <th>Название</th>
-                <th>Тип</th>
-                <th>Порядок</th>
-                <th>В таблице</th>
-                <th></th>
-            </tr>
-        </thead>
+    <ul id="fields-list" class="list-group">
+        @foreach (var field in Model.Fields)
+        {
+            <li class="list-group-item d-flex justify-content-between align-items-center"
+                data-id="@field.Id">
 
-        <tbody>
-            @foreach (var field in Model.Fields)
-            {
-                <tr>
-                    <td>@field.Title</td>
-                    <td>@field.Type</td>
-                    <td>@field.Order</td>
+                <div>
+                    <span class="handle me-2">☰</span>
+                    <strong>@field.Title</strong>
+                    <span class="text-muted">(@field.Type)</span>
+                </div>
 
-                    <td>
-                        <form method="post" action="/Inventory/ToggleShowInTable/@field.Id">
-                            <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
-                            <input type="checkbox" onchange="this.form.submit()" @(field.ShowInTable ? "checked" : "") />
-                        </form>
-                    </td>
+                <div class="d-flex align-items-center">
 
-                    <td class="text-end">
-                        <a href="/Inventory/DeleteField/@field.Id?inventoryId=@Model.InventoryId"
-                           class="btn btn-sm btn-danger">
-                            Удалить
-                        </a>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                    <form method="post" action="/Inventory/ToggleShowInTable/@field.Id" class="me-3">
+                        <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+                        <input type="checkbox"
+                               onchange="this.form.submit()"
+                               @(field.ShowInTable ? "checked" : "") />
+                    </form>
+
+                    <a href="/Inventory/DeleteField/@field.Id?inventoryId=@Model.InventoryId"
+                       class="btn btn-sm btn-danger">
+                        Удалить
+                    </a>
+                </div>
+            </li>
+        }
+    </ul>
 }
+
+<style>
+    .handle {
+        cursor: grab;
+        font-size: 18px;
+    }
+
+    #fields-list .list-group-item {
+        user-select: none;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script>
+    const list = document.getElementById('fields-list');
+
+    new Sortable(list, {
+        animation: 150,
+        handle: '.handle',
+        onEnd: function () {
+            const ids = [...list.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
+
+            fetch('/Inventory/ReorderFields', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(ids)
+            });
+        }
+    });
+</script>

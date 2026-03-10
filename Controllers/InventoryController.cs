@@ -447,6 +447,26 @@ namespace InventoryManagementApp.Controllers
                 TableFields = tableFields
             };
         }
+        [HttpPost]
+        public async Task<IActionResult> ReorderFields([FromBody] List<int> orderedIds)
+        {
+            // orderedIds = [5, 3, 7, 2] — новый порядок Id полей
+
+            var fields = await _context.InventoryFields
+                .Where(f => orderedIds.Contains(f.Id))
+                .ToListAsync();
+
+            for (int i = 0; i < orderedIds.Count; i++)
+            {
+                var field = fields.First(f => f.Id == orderedIds[i]);
+                field.Order = i + 1;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
+        }
+
         public IActionResult AddField(int id)
         {
             return View(new InventoryField { InventoryId = id });

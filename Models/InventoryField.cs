@@ -1,4 +1,4 @@
-﻿using Microsoft.VisualBasic.FileIO;
+﻿using InventoryManagementApp.Models;
 
 namespace InventoryManagementApp.Model
 {

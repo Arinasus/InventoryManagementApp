@@ -13,5 +13,8 @@ namespace InventoryManagementApp.Model
         public List<InventoryAccess> InventoryAccesses { get; set; } = new();
         public List<ItemLike> LikedItems { get; set; } = new();
         public List<DiscussionPost> Posts { get; set; } = new();
+        public DateTime? LastLogin { get; internal set; }
+        public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
     }
 }

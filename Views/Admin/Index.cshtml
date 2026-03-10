@@ -1,5 +1,46 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
-@{
-}
+﻿@using InventoryManagementApp.Model
+@model IEnumerable<ApplicationUser>
+
+<h2>Управление пользователями</h2>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Email</th>
+            <th>Роль</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Email</td>
+                <td>@(user.IsAdmin ? "Admin" : "User")</td>
+                <td>@(user.IsBlocked ? "Заблокирован" : "Активен")</td>
+                <td>
+                    @if (!user.IsAdmin)
+                    {
+                        <a href="/Admin/MakeAdmin/@user.Id" class="btn btn-sm btn-success">Сделать админом</a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/RemoveAdmin/@user.Id" class="btn btn-sm btn-warning">Снять админа</a>
+                    }
+
+                    @if (!user.IsBlocked)
+                    {
+                        <a href="/Admin/Block/@user.Id" class="btn btn-sm btn-danger">Блокировать</a>
+                    }
+                    else
+                    {
+                        <a href="/Admin/Unblock/@user.Id" class="btn btn-sm btn-primary">Разблокировать</a>
+                    }
+
+                    <a href="/Admin/Delete/@user.Id" class="btn btn-sm btn-outline-danger">Удалить</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

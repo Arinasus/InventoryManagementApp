@@ -1,4 +1,4 @@
-﻿namespace InventoryManagementApp.Model
+﻿namespace InventoryManagementApp.Models
 {
     public enum FieldType
     {

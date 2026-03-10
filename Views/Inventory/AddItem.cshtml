@@ -1,5 +1,4 @@
-﻿@using InventoryManagementApp.Models
-@model AddItemViewModel
+﻿@model AddItemViewModel
 
 <div class="container mt-4">
     <h2>Добавить предмет</h2>
@@ -7,11 +6,73 @@
     <form asp-action="AddItem" method="post">
         <input type="hidden" asp-for="InventoryId" />
 
-        <div class="mb-3">
-            <label class="form-label">Название предмета (пока не используется)</label>
-            <input class="form-control" placeholder="Пока можно оставить пустым" disabled />
-        </div>
+        @if (Model.Fields == null || !Model.Fields.Any())
+        {
+            <p class="text-muted">Для этой инвентарной книги пока нет пользовательских полей.</p>
+        }
+        else
+        {
+            @foreach (var field in Model.Fields)
+            {
+                <div class="mb-3">
+                    <label class="form-label">@field.Title</label>
+                    @if (!string.IsNullOrEmpty(field.Description))
+                    {
+                        <div class="form-text">@field.Description</div>
+                    }
+
+                    @switch ((InventoryManagementApp.Models.FieldType)field.Type)
+                    {
+                        case FieldType.SingleLineText:
+                            {
+                                <input class="form-control"
+                                       name="Values[@field.Id]" />
+                                break;
+                            }
+                        case FieldType.MultiLineText:
+                            {
+                                <textarea class="form-control"
+                      name="Values[@field.Id]"
+                      rows="3"></textarea>
+                                break;
+                            }
+                        case FieldType.Number:
+                            {
+                                <input class="form-control"
+                                       type="number"
+                                       name="Values[@field.Id]" />
+                                break;
+                            }
+                        case FieldType.DocumentLink:
+                            {
+                                <input class="form-control"
+                                       type="url"
+                                       name="Values[@field.Id]" />
+                                break;
+                            }
+                        case FieldType.Boolean:
+                            {
+                                <div class="form-check">
+                                    <input class="form-check-input"
+                                           type="checkbox"
+                                           value="true"
+                                           name="Values[@field.Id]" />
+                                    <label class="form-check-label">Да</label>
+                                </div>
+                                break;
+                            }
+                        default:
+                            {
+                                <input class="form-control"
+                                       name="Values[@field.Id]" />
+                                break;
+                            }
+                    }
+                </div>
+            }
+        }
 
         <button type="submit" class="btn btn-primary">Создать предмет</button>
+        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">Отмена</a>
     </form>
 </div>

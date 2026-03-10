@@ -212,29 +212,71 @@ namespace InventoryManagementApp.Controllers
             return View(item);
         }
 
-        public IActionResult AddItem(int id)
+        public async Task<IActionResult> AddItem(int id)
         {
-            var model = new AddItemViewModel { InventoryId = id };
+            var fields = await _context.InventoryFields
+                .Where(f => f.InventoryId == id)
+                .OrderBy(f => f.Order)
+                .ToListAsync();
+
+            var model = new AddItemViewModel
+            {
+                InventoryId = id,
+                Fields = fields
+            };
+
             return View(model);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> AddItem(AddItemViewModel model)
         {
+            if (!ModelState.IsValid)
+            {
+                model.Fields = await _context.InventoryFields
+                    .Where(f => f.InventoryId == model.InventoryId)
+                    .OrderBy(f => f.Order)
+                    .ToListAsync();
+
+                return View(model);
+            }
+
             var item = new InventoryItem
             {
                 InventoryId = model.InventoryId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
                 Version = 1,
-                CustomId = "TEMP" // позже заменим генерацией
+                CustomId = "TEMP"
             };
 
             _context.InventoryItems.Add(item);
             await _context.SaveChangesAsync();
 
+            if (model.Values != null && model.Values.Any())
+            {
+                foreach (var kvp in model.Values)
+                {
+                    var fieldId = kvp.Key;
+                    var value = kvp.Value;
+
+                    var fieldValue = new ItemFieldValue
+                    {
+                        ItemId = item.Id,
+                        FieldId = fieldId,
+                        Value = value
+                    };
+
+                    _context.ItemFieldValues.Add(fieldValue);
+                }
+
+                await _context.SaveChangesAsync();
+            }
+
             return RedirectToAction("Item", new { id = item.Id });
         }
+
         public async Task<IActionResult> DeleteItem(int id)
         {
             var item = await _context.InventoryItems.FindAsync(id);

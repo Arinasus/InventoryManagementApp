@@ -2,7 +2,8 @@ using InventoryManagementApp.Data;
 using InventoryManagementApp.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using System.Diagnostics;
+using NpgsqlTypes;
+
 
 namespace InventoryManagementApp.Controllers
 {
@@ -23,16 +24,26 @@ namespace InventoryManagementApp.Controllers
                 .Include(i => i.Tags)
                 .AsQueryable();
 
+            NpgsqlTsQuery? tsQuery = null;
+
             if (!string.IsNullOrWhiteSpace(search))
             {
-                query = query.Where(i =>
-                    i.Title.Contains(search) ||
-                    i.Description.Contains(search) ||
-                    i.Tags.Any(t => t.Name.Contains(search)));
+                var normalized = string.Join(" & ",
+                    search.Split(' ', StringSplitOptions.RemoveEmptyEntries));
+
+                tsQuery = EF.Functions.ToTsQuery(normalized);
+
+                query = query
+                    .Where(i => i.SearchVector != null &&
+                                i.SearchVector.Matches(tsQuery))
+                    .OrderByDescending(i => i.SearchVector.Rank(tsQuery));
+            }
+            else
+            {
+                query = query.OrderByDescending(i => i.CreatedAt);
             }
 
             var latest = await query
-                .OrderByDescending(i => i.CreatedAt)
                 .Take(10)
                 .Select(i => new InventoryCardViewModel
                 {
@@ -45,7 +56,9 @@ namespace InventoryManagementApp.Controllers
                 })
                 .ToListAsync();
 
-            var popular = await query
+            var popular = await _context.Inventories
+                .Include(i => i.CreatedByUser)
+                .Include(i => i.Items)
                 .OrderByDescending(i => i.Items.Count)
                 .Take(5)
                 .Select(i => new InventoryCardViewModel
@@ -77,5 +90,6 @@ namespace InventoryManagementApp.Controllers
 
             return View(model);
         }
+
     }
 }

@@ -1,5 +1,5 @@
 ﻿using InventoryManagementApp.Models;
-
+using NpgsqlTypes;
 namespace InventoryManagementApp.Model
 {
     public class Inventory
@@ -21,6 +21,6 @@ namespace InventoryManagementApp.Model
         public string CustomIdPrefix { get; set; } = "";
         public int NextCustomIdNumber { get; set; } = 1;
         public List<InventoryCustomIdPart> CustomIdParts { get; set; }
-
+        public NpgsqlTsVector? SearchVector { get; set; } = null!;
     }
 }

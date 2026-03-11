@@ -5,13 +5,11 @@
 
     <h2 class="mb-4">Личная страница: @Model.UserName</h2>
 
-    <!-- Поиск -->
     <form method="get" class="mb-4">
         <input type="text" name="search" value="@Model.SearchQuery"
                class="form-control" placeholder="Поиск по книгам..." />
     </form>
 
-    <!-- Таблица своих книг -->
     <h3 class="mb-3">Мои инвентарные книги</h3>
 
     <table class="table table-hover">
@@ -42,7 +40,6 @@
         </tbody>
     </table>
 
-    <!-- Таблица книг с доступом -->
     <h3 class="mt-5 mb-3">Книги, к которым у меня есть доступ</h3>
 
     <table class="table table-hover">

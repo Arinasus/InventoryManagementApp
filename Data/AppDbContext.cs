@@ -2,7 +2,8 @@
 using InventoryManagementApp.Models;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
-
+using NpgsqlTypes;
+using System.Reflection.Emit;
 namespace InventoryManagementApp.Data
 {
     public class AppDbContext : IdentityDbContext<ApplicationUser>
@@ -21,6 +22,15 @@ namespace InventoryManagementApp.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
+            base.OnModelCreating(builder);
+
+            builder.Entity<Inventory>()
+                .Property(i => i.SearchVector)
+                .HasColumnType("tsvector");
+
+            builder.Entity<Inventory>()
+                .HasIndex(i => i.SearchVector)
+                .HasMethod("GIN");
             base.OnModelCreating(builder);
             builder.Entity<Inventory>()
                 .HasMany(i => i.Tags)

@@ -81,8 +81,11 @@ else
     app.UseExceptionHandler("/Home/Error");
     app.UseHsts();
 }
+if (!app.Environment.IsProduction())
+{
+    app.UseHttpsRedirection();
+}
 
-app.UseHttpsRedirection();
 app.UseRouting();
 //app.MapStaticAssets();
 app.UseAuthentication();

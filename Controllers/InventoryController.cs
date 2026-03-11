@@ -18,9 +18,6 @@ namespace InventoryManagementApp.Controllers
             _context = db;
             _userManager = userManager;
         }
-        // ---------------------------
-        // ПРАВА ДОСТУПА
-        // ---------------------------
 
         private async Task<ApplicationUser?> GetCurrentUser()
         {
@@ -44,7 +41,6 @@ namespace InventoryManagementApp.Controllers
             if (user == null)
                 return false;
 
-            // Админ может всё
             if (await IsAdmin(user))
                 return true;
 
@@ -52,22 +48,18 @@ namespace InventoryManagementApp.Controllers
             if (inv == null)
                 return false;
 
-            // Создатель может всё
             if (inv.CreatedByUserId == user.Id)
                 return true;
 
-            // Публичная книга → любой аутентифицированный может писать
             if (inv.IsPublic)
                 return true;
 
-            // Проверяем доступ на запись
             return await _context.InventoryAccesses
                 .AnyAsync(a => a.InventoryId == inventoryId && a.UserId == user.Id && a.CanWrite);
         }
 
         private async Task<bool> HasReadAccess(int inventoryId)
         {
-            // Любой пользователь (включая неаутентифицированных) может читать
             return true;
         }
 
@@ -77,13 +69,11 @@ namespace InventoryManagementApp.Controllers
             if (user == null)
                 return false;
 
-            // Админ = владелец всех книг
             if (await IsAdmin(user))
                 return true;
 
             return await IsOwner(inventoryId, user);
         }
-
         public IActionResult Create()
         {
             return View();
@@ -135,7 +125,6 @@ namespace InventoryManagementApp.Controllers
             };
 
             return View(vm);
-
         }
         private async Task<InventoryDiscussionViewModel> GetDiscussionModel(int id)
         {
@@ -299,7 +288,6 @@ namespace InventoryManagementApp.Controllers
             return View(model);
         }
 
-
         public async Task<IActionResult> AddItem(int id)
         {
             var fields = await _context.InventoryFields
@@ -315,7 +303,6 @@ namespace InventoryManagementApp.Controllers
 
             return View(model);
         }
-
 
         [HttpPost]
         public async Task<IActionResult> AddItem(AddItemViewModel model)
@@ -387,6 +374,8 @@ namespace InventoryManagementApp.Controllers
                 .Where(p => p.InventoryId == inventoryId)
                 .OrderBy(p => p.Order)
                 .ToListAsync();
+            if (!parts.Any())
+                return Guid.NewGuid().ToString("N");
 
             var sb = new System.Text.StringBuilder();
 
@@ -525,7 +514,6 @@ namespace InventoryManagementApp.Controllers
 
             return RedirectToAction("Item", new { id = item.Id });
         }
-
         public async Task<IActionResult> DeleteItem(int id)
         {
 
@@ -772,6 +760,5 @@ namespace InventoryManagementApp.Controllers
 
             return Ok();
         }
-
     }
 }

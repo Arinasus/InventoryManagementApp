@@ -164,15 +164,21 @@ namespace InventoryManagementApp.Controllers
                 IsPublic = inv.IsPublic
             };
         }
-        private InventoryCustomIdViewModel GetCustomIdModel(Inventory inv)
+        private async Task<InventoryCustomIdViewModel> GetCustomIdModel(Inventory inv)
         {
+            var parts = await _context.InventoryCustomIdParts
+                .Where(p => p.InventoryId == inv.Id)
+                .OrderBy(p => p.Order)
+                .ToListAsync();
+
             return new InventoryCustomIdViewModel
             {
                 InventoryId = inv.Id,
-                Prefix = inv.CustomIdPrefix,
-                NextNumber = inv.NextCustomIdNumber
+                Parts = parts,
+                Preview = GenerateCustomIdPreview(parts)
             };
         }
+
         private async Task<InventoryAccessViewModel> GetAccessModel(int id)
         {
             var access = await _context.InventoryAccesses
@@ -358,9 +364,10 @@ namespace InventoryManagementApp.Controllers
                 InventoryId = model.InventoryId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Version = 1,
-                CustomId = "TEMP"
+                Version = 1
             };
+
+            item.CustomId = await GenerateCustomId(item.InventoryId);
 
             _context.InventoryItems.Add(item);
             await _context.SaveChangesAsync();
@@ -378,6 +385,59 @@ namespace InventoryManagementApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Item", new { id = item.Id });
+        }
+        private async Task<string> GenerateCustomId(int inventoryId)
+        {
+            var parts = await _context.InventoryCustomIdParts
+                .Where(p => p.InventoryId == inventoryId)
+                .OrderBy(p => p.Order)
+                .ToListAsync();
+
+            var sb = new System.Text.StringBuilder();
+
+            foreach (var p in parts)
+            {
+                switch (p.Type)
+                {
+                    case CustomIdPartType.FixedText:
+                        sb.Append(p.Value);
+                        break;
+
+                    case CustomIdPartType.Random20Bit:
+                        sb.Append(new Random().Next(0, 1 << 20));
+                        break;
+
+                    case CustomIdPartType.Random32Bit:
+                        sb.Append(new Random().Next());
+                        break;
+
+                    case CustomIdPartType.Random6Digits:
+                        sb.Append(new Random().Next(0, 999999).ToString("D6"));
+                        break;
+
+                    case CustomIdPartType.Random9Digits:
+                        sb.Append(new Random().Next(0, 999999999).ToString("D9"));
+                        break;
+
+                    case CustomIdPartType.Guid:
+                        sb.Append(Guid.NewGuid().ToString("N"));
+                        break;
+
+                    case CustomIdPartType.DateTime:
+                        sb.Append(DateTime.UtcNow.ToString("yyyyMMddHHmmss"));
+                        break;
+
+                    case CustomIdPartType.Sequence:
+                        var max = await _context.InventoryItems
+                            .Where(i => i.InventoryId == inventoryId)
+                            .MaxAsync(i => (int?)i.SequenceNumber) ?? 0;
+
+                        sb.Append(max + 1);
+                        break;
+                }
+            }
+
+            return sb.ToString();
         }
 
         [HttpPost]
@@ -592,6 +652,131 @@ namespace InventoryManagementApp.Controllers
             await _context.SaveChangesAsync();
 
             return RedirectToAction("Details", new { id = inventoryId });
+        }
+        public async Task<IActionResult> CustomId(int id)
+        {
+            if (!await HasOwnerAccess(id))
+                return Forbid();
+
+            var parts = await _context.InventoryCustomIdParts
+                .Where(p => p.InventoryId == id)
+                .OrderBy(p => p.Order)
+                .ToListAsync();
+
+            var preview = GenerateCustomIdPreview(parts);
+
+            var model = new InventoryCustomIdViewModel
+            {
+                InventoryId = id,
+                Parts = parts,
+                Preview = preview
+            };
+
+            return PartialView("_TabCustomId", model);
+        }
+        private string GenerateCustomIdPreview(List<InventoryCustomIdPart> parts)
+        {
+            var sb = new System.Text.StringBuilder();
+
+            foreach (var p in parts)
+            {
+                switch (p.Type)
+                {
+                    case CustomIdPartType.FixedText:
+                        sb.Append(p.Value);
+                        break;
+
+                    case CustomIdPartType.Random20Bit:
+                        sb.Append(new Random().Next(0, 1 << 20).ToString());
+                        break;
+
+                    case CustomIdPartType.Random32Bit:
+                        sb.Append(new Random().Next().ToString());
+                        break;
+
+                    case CustomIdPartType.Random6Digits:
+                        sb.Append(new Random().Next(0, 999999).ToString("D6"));
+                        break;
+
+                    case CustomIdPartType.Random9Digits:
+                        sb.Append(new Random().Next(0, 999999999).ToString("D9"));
+                        break;
+
+                    case CustomIdPartType.Guid:
+                        sb.Append(Guid.NewGuid().ToString("N"));
+                        break;
+
+                    case CustomIdPartType.DateTime:
+                        sb.Append(DateTime.UtcNow.ToString("yyyyMMddHHmmss"));
+                        break;
+
+                    case CustomIdPartType.Sequence:
+                        sb.Append("###"); // placeholder
+                        break;
+                }
+            }
+
+            return sb.ToString();
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddCustomIdPart(int inventoryId, CustomIdPartType type)
+        {
+            if (!await HasOwnerAccess(inventoryId))
+                return Forbid();
+
+            var order = await _context.InventoryCustomIdParts
+                .Where(p => p.InventoryId == inventoryId)
+                .CountAsync() + 1;
+
+            var part = new InventoryCustomIdPart
+            {
+                InventoryId = inventoryId,
+                Type = type,
+                Order = order,
+                Value = type == CustomIdPartType.FixedText ? "TEXT" : null
+            };
+
+            _context.InventoryCustomIdParts.Add(part);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = inventoryId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> DeleteCustomIdPart(int id, int inventoryId)
+        {
+            if (!await HasOwnerAccess(inventoryId))
+                return Forbid();
+
+            var part = await _context.InventoryCustomIdParts.FindAsync(id);
+            if (part == null) return NotFound();
+
+            _context.InventoryCustomIdParts.Remove(part);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = inventoryId });
+        }
+        [HttpPost]
+        public async Task<IActionResult> ReorderCustomIdParts([FromBody] List<int> orderedIds)
+        {
+            var first = await _context.InventoryCustomIdParts.FindAsync(orderedIds.First());
+            if (first == null) return NotFound();
+
+            if (!await HasOwnerAccess(first.InventoryId))
+                return Forbid();
+
+            var parts = await _context.InventoryCustomIdParts
+                .Where(p => orderedIds.Contains(p.Id))
+                .ToListAsync();
+
+            for (int i = 0; i < orderedIds.Count; i++)
+            {
+                var part = parts.First(p => p.Id == orderedIds[i]);
+                part.Order = i + 1;
+            }
+
+            await _context.SaveChangesAsync();
+
+            return Ok();
         }
 
     }

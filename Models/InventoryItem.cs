@@ -18,5 +18,7 @@
         public List<ItemLike> Likes { get; set; } = new();
 
         public List<ItemFieldValue> FieldValues { get; set; } = new(); //каждый элемент хранит значения полей
+
+        public int SequenceNumber { get; set; }
     }
 }

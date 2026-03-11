@@ -1,0 +1,79 @@
+﻿@model InventoryCustomIdViewModel
+
+<h4>Пользовательский ID</h4>
+
+<div class="alert alert-info">
+    Пример: <strong>@Model.Preview</strong>
+</div>
+
+<h5>Элементы ID</h5>
+
+<ul id="id-parts" class="list-group mb-3">
+    @foreach (var part in Model.Parts)
+    {
+        <li class="list-group-item d-flex justify-content-between align-items-center"
+            data-id="@part.Id">
+
+            <div>
+                <span class="handle me-2">☰</span>
+                <strong>@part.Type</strong>
+
+                @if (part.Type == CustomIdPartType.FixedText)
+                {
+                    <span class="text-muted">(@part.Value)</span>
+                }
+            </div>
+
+            <form method="post" action="/Inventory/DeleteCustomIdPart/@part.Id">
+                <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+                <button class="btn btn-sm btn-danger">Удалить</button>
+            </form>
+        </li>
+    }
+</ul>
+
+<h5>Добавить элемент</h5>
+
+<form method="post" action="/Inventory/AddCustomIdPart">
+    <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+
+    <select name="type" class="form-select mb-2">
+        <option value="FixedText">Фиксированный текст</option>
+        <option value="Random20Bit">20‑битное случайное число</option>
+        <option value="Random32Bit">32‑битное случайное число</option>
+        <option value="Random6Digits">6 цифр</option>
+        <option value="Random9Digits">9 цифр</option>
+        <option value="Guid">GUID</option>
+        <option value="DateTime">Дата/время</option>
+        <option value="Sequence">Последовательность</option>
+    </select>
+
+    <button class="btn btn-primary">Добавить</button>
+</form>
+
+<style>
+    .handle {
+        cursor: grab;
+        font-size: 18px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script>
+    const list = document.getElementById('id-parts');
+
+    new Sortable(list, {
+        animation: 150,
+        handle: '.handle',
+        onEnd: function () {
+            const ids = [...list.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
+
+            fetch('/Inventory/ReorderCustomIdParts', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(ids)
+            });
+        }
+    });
+</script>

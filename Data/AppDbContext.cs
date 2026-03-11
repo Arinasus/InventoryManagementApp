@@ -17,6 +17,7 @@ namespace InventoryManagementApp.Data
         public DbSet<DiscussionPost> DiscussionPosts { get; set; }
         public DbSet<InventoryTag> InventoryTags { get; set; }
         public DbSet<ItemFieldValue> ItemFieldValues { get; set; }
+        public DbSet<InventoryCustomIdPart> InventoryCustomIdParts { get; set; }
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

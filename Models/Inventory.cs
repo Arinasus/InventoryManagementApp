@@ -20,6 +20,7 @@ namespace InventoryManagementApp.Model
         public List<InventoryTag> Tags { get; set; } = new();
         public string CustomIdPrefix { get; set; } = "";
         public int NextCustomIdNumber { get; set; } = 1;
+        public List<InventoryCustomIdPart> CustomIdParts { get; set; }
 
     }
 }

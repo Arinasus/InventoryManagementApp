@@ -126,12 +126,11 @@ namespace InventoryManagementApp.Controllers
             {
                 Inventory = inventory,
                 Items =  await GetItemsModel(id),
-                Fields = await GetFieldsModel(id)
+                Fields = await GetFieldsModel(id),
+                CustomId = await GetCustomIdModel(inventory)
                 /*Discussion = await GetDiscussionModel(id),
                 Settings = GetSettingsModel(inventory),
-                CustomId = GetCustomIdModel(inventory),
                 Access = await GetAccessModel(id),
-                ,
                 Stats = await GetStatsModel(id)*/
             };
 
@@ -327,7 +326,6 @@ namespace InventoryManagementApp.Controllers
                 .Where(f => f.InventoryId == model.InventoryId)
                 .ToListAsync();
 
-            // Проверка значений
             foreach (var field in fields)
             {
                 model.Values.TryGetValue(field.Id, out var rawValue);
@@ -346,7 +344,6 @@ namespace InventoryManagementApp.Controllers
                         break;
 
                     case FieldType.Boolean:
-                        // Checkbox отправляет только "true" или ничего
                         if (rawValue != "true" && rawValue != "")
                             ModelState.AddModelError($"Values[{field.Id}]", $"Поле «{field.Title}» должно быть галочкой.");
                         break;
@@ -364,10 +361,8 @@ namespace InventoryManagementApp.Controllers
                 InventoryId = model.InventoryId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
-                Version = 1
+                CustomId = await GenerateCustomId(model.InventoryId)
             };
-
-            item.CustomId = await GenerateCustomId(item.InventoryId);
 
             _context.InventoryItems.Add(item);
             await _context.SaveChangesAsync();
@@ -583,7 +578,6 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ReorderFields([FromBody] List<int> orderedIds)
         {
-            // Нужно получить inventoryId по первому полю
             var firstField = await _context.InventoryFields.FindAsync(orderedIds.First());
             if (firstField == null) return NotFound();
 
@@ -711,7 +705,7 @@ namespace InventoryManagementApp.Controllers
                         break;
 
                     case CustomIdPartType.Sequence:
-                        sb.Append("###"); // placeholder
+                        sb.Append("###");
                         break;
                 }
             }

@@ -117,11 +117,12 @@ namespace InventoryManagementApp.Controllers
                 Inventory = inventory,
                 Items =  await GetItemsModel(id),
                 Fields = await GetFieldsModel(id),
-                CustomId = await GetCustomIdModel(inventory)
-                /*Discussion = await GetDiscussionModel(id),
-                Settings = GetSettingsModel(inventory),
+                CustomId = await GetCustomIdModel(inventory),
+                Discussion = await GetDiscussionModel(id),
+                Stats = await GetStatsModel(id)
+                /*Settings = GetSettingsModel(inventory),
                 Access = await GetAccessModel(id),
-                Stats = await GetStatsModel(id)*/
+                */
             };
 
             return View(vm);
@@ -197,6 +198,7 @@ namespace InventoryManagementApp.Controllers
         {
             var items = await _context.InventoryItems
                 .Where(i => i.InventoryId == id)
+                .Include(i => i.FieldValues)
                 .Include(i => i.Likes)
                 .ToListAsync();
 
@@ -204,14 +206,55 @@ namespace InventoryManagementApp.Controllers
                 .Where(p => p.InventoryId == id)
                 .CountAsync();
 
+            var fields = await _context.InventoryFields
+                .Where(f => f.InventoryId == id)
+                .ToListAsync();
+
+            var numeric = new Dictionary<string, double>();
+            var common = new Dictionary<string, string>();
+
+            foreach (var f in fields)
+            {
+                var values = items
+                    .Select(i => i.FieldValues.FirstOrDefault(v => v.FieldId == f.Id)?.Value)
+                    .Where(v => v != null)
+                    .ToList();
+
+                if (f.Type == FieldType.Number)
+                {
+                    var nums = values
+                        .Select(v => double.TryParse(v, out var n) ? n : (double?)null)
+                        .Where(n => n.HasValue)
+                        .Select(n => n.Value)
+                        .ToList();
+
+                    if (nums.Any())
+                        numeric[f.Title] = nums.Average();
+                }
+                else if (f.Type == FieldType.SingleLineText || f.Type == FieldType.MultiLineText)
+                {
+                    var most = values
+                        .Where(v => !string.IsNullOrWhiteSpace(v))
+                        .GroupBy(v => v)
+                        .OrderByDescending(g => g.Count())
+                        .FirstOrDefault();
+
+                    if (most != null)
+                        common[f.Title] = most.Key;
+                }
+            }
+
             return new InventoryStatsViewModel
             {
                 InventoryId = id,
                 TotalItems = items.Count,
                 TotalLikes = items.Sum(i => i.Likes.Count),
-                TotalPosts = posts
+                TotalPosts = posts,
+                AverageNumericFields = numeric,
+                MostCommonStringFields = common
             };
         }
+
 
         public async Task<IActionResult> Items(int id)
         {
@@ -762,5 +805,47 @@ namespace InventoryManagementApp.Controllers
 
             return Ok();
         }
+        public async Task<IActionResult> Discussion(int id)
+        {
+            if (!await HasReadAccess(id))
+                return Forbid();
+
+            var model = await GetDiscussionModel(id);
+            return PartialView("_TabDiscussion", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AddPost(int inventoryId, string content)
+        {
+            if (!await HasWriteAccess(inventoryId))
+                return Forbid();
+
+            var user = await _userManager.GetUserAsync(User);
+            if (user == null) return Forbid();
+
+            if (string.IsNullOrWhiteSpace(content))
+                return RedirectToAction("Details", new { id = inventoryId });
+
+            var post = new DiscussionPost
+            {
+                InventoryId = inventoryId,
+                UserId = user.Id,
+                Content = content,
+                CreatedAt = DateTime.UtcNow
+            };
+
+            _context.DiscussionPosts.Add(post);
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = inventoryId });
+        }
+        public async Task<IActionResult> DiscussionPosts(int id)
+        {
+            if (!await HasReadAccess(id))
+                return Forbid();
+
+            var model = await GetDiscussionModel(id);
+            return PartialView("_DiscussionPosts", model);
+        }
+
     }
 }

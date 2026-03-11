@@ -6,5 +6,8 @@
         public int TotalItems { get; set; }
         public int TotalLikes { get; set; }
         public int TotalPosts { get; set; }
+
+        public Dictionary<string, double> AverageNumericFields { get; set; }
+        public Dictionary<string, string> MostCommonStringFields { get; set; }
     }
 }

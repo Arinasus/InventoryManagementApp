@@ -9,5 +9,6 @@
         public ApplicationUser User { get; set; }
         public string ContentMarkdown { get; set; } = string.Empty;
         public DateTime CreatedAt { get; set; }
+        public string Content { get; set; } = string.Empty;
     }
 }

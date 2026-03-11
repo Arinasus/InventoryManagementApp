@@ -1,0 +1,28 @@
+﻿@model InventoryDiscussionViewModel
+
+<div class="mb-3">
+    <form method="post" action="/Inventory/AddPost">
+        <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+
+        <label class="form-label">Новый пост (Markdown)</label>
+        <textarea name="content" class="form-control" rows="3"></textarea>
+
+        <button class="btn btn-primary mt-2">Отправить</button>
+    </form>
+</div>
+
+<hr />
+
+<div id="discussion-posts">
+    @await Html.PartialAsync("_DiscussionPosts", Model)
+</div>
+
+<script>
+    setInterval(function () {
+        fetch('/Inventory/DiscussionPosts/@Model.InventoryId')
+            .then(r => r.text())
+            .then(html => {
+                document.getElementById('discussion-posts').innerHTML = html;
+            });
+    }, 5000);
+</script>

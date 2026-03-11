@@ -8,5 +8,7 @@
         public string UserId { get; set; }
         public ApplicationUser User { get; set;  }
         public DateTime GrantedAt { get; set; }
+        public bool CanWrite { get; set; } // доступ на запись
+
     }
 }

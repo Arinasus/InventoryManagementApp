@@ -18,6 +18,72 @@ namespace InventoryManagementApp.Controllers
             _context = db;
             _userManager = userManager;
         }
+        // ---------------------------
+        // ПРАВА ДОСТУПА
+        // ---------------------------
+
+        private async Task<ApplicationUser?> GetCurrentUser()
+        {
+            return await _userManager.GetUserAsync(User);
+        }
+
+        private async Task<bool> IsAdmin(ApplicationUser user)
+        {
+            return await _userManager.IsInRoleAsync(user, "Admin");
+        }
+
+        private async Task<bool> IsOwner(int inventoryId, ApplicationUser user)
+        {
+            var inv = await _context.Inventories.FindAsync(inventoryId);
+            return inv != null && inv.CreatedByUserId == user.Id;
+        }
+
+        private async Task<bool> HasWriteAccess(int inventoryId)
+        {
+            var user = await GetCurrentUser();
+            if (user == null)
+                return false;
+
+            // Админ может всё
+            if (await IsAdmin(user))
+                return true;
+
+            var inv = await _context.Inventories.FindAsync(inventoryId);
+            if (inv == null)
+                return false;
+
+            // Создатель может всё
+            if (inv.CreatedByUserId == user.Id)
+                return true;
+
+            // Публичная книга → любой аутентифицированный может писать
+            if (inv.IsPublic)
+                return true;
+
+            // Проверяем доступ на запись
+            return await _context.InventoryAccesses
+                .AnyAsync(a => a.InventoryId == inventoryId && a.UserId == user.Id && a.CanWrite);
+        }
+
+        private async Task<bool> HasReadAccess(int inventoryId)
+        {
+            // Любой пользователь (включая неаутентифицированных) может читать
+            return true;
+        }
+
+        private async Task<bool> HasOwnerAccess(int inventoryId)
+        {
+            var user = await GetCurrentUser();
+            if (user == null)
+                return false;
+
+            // Админ = владелец всех книг
+            if (await IsAdmin(user))
+                return true;
+
+            return await IsOwner(inventoryId, user);
+        }
+
         public IActionResult Create()
         {
             return View();
@@ -249,6 +315,8 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddItem(AddItemViewModel model)
         {
+            if (!await HasWriteAccess(model.InventoryId))
+                return Forbid();
             var fields = await _context.InventoryFields
                 .Where(f => f.InventoryId == model.InventoryId)
                 .ToListAsync();
@@ -285,7 +353,6 @@ namespace InventoryManagementApp.Controllers
                 return View(model);
             }
 
-            // Создание предмета
             var item = new InventoryItem
             {
                 InventoryId = model.InventoryId,
@@ -316,6 +383,9 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> EditItem(EditItemViewModel model)
         {
+            if (!await HasWriteAccess(model.InventoryId))
+                return Forbid();
+
             var item = await _context.InventoryItems
                 .Include(i => i.FieldValues)
                 .FirstOrDefaultAsync(i => i.Id == model.ItemId);
@@ -403,8 +473,11 @@ namespace InventoryManagementApp.Controllers
 
         public async Task<IActionResult> DeleteItem(int id)
         {
+
             var item = await _context.InventoryItems.FindAsync(id);
             if (item == null) return NotFound();
+            if (!await HasWriteAccess(item.InventoryId))
+                return Forbid();
 
             _context.InventoryItems.Remove(item);
             await _context.SaveChangesAsync();
@@ -450,7 +523,12 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ReorderFields([FromBody] List<int> orderedIds)
         {
-            // orderedIds = [5, 3, 7, 2] — новый порядок Id полей
+            // Нужно получить inventoryId по первому полю
+            var firstField = await _context.InventoryFields.FindAsync(orderedIds.First());
+            if (firstField == null) return NotFound();
+
+            if (!await HasOwnerAccess(firstField.InventoryId))
+                return Forbid();
 
             var fields = await _context.InventoryFields
                 .Where(f => orderedIds.Contains(f.Id))
@@ -475,6 +553,9 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> AddField(InventoryField field)
         {
+            if (!await HasOwnerAccess(field.InventoryId))
+                return Forbid();
+
             field.Id = 0;
             field.Order = await _context.InventoryFields
                 .Where(f => f.InventoryId == field.InventoryId)
@@ -487,6 +568,9 @@ namespace InventoryManagementApp.Controllers
         }
         public async Task<IActionResult> DeleteField(int id, int inventoryId)
         {
+            if (!await HasOwnerAccess(inventoryId))
+                return Forbid();
+
             var field = await _context.InventoryFields.FindAsync(id);
             if (field == null) return NotFound();
 
@@ -498,6 +582,9 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> ToggleShowInTable(int id, int inventoryId)
         {
+            if (!await HasOwnerAccess(inventoryId))
+                return Forbid();
+
             var field = await _context.InventoryFields.FindAsync(id);
             if (field == null) return NotFound();
 

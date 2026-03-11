@@ -342,12 +342,14 @@ namespace InventoryManagementApp.Controllers
                 model.Fields = fields;
                 return View(model);
             }
-
+            var user = await _userManager.GetUserAsync(User);
             var item = new InventoryItem
             {
                 InventoryId = model.InventoryId,
                 CreatedAt = DateTime.UtcNow,
                 UpdatedAt = DateTime.UtcNow,
+                CreatedByUserId = user.Id,
+                Version = 1,
                 CustomId = await GenerateCustomId(model.InventoryId)
             };
 

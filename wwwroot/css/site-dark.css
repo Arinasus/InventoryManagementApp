@@ -1,0 +1,13 @@
+﻿body {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
+}
+
+.navbar, .table {
+    background-color: #1e1e1e !important;
+    color: #fff !important;
+}
+
+a {
+    color: #9ecbff !important;
+}

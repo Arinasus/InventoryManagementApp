@@ -11,10 +11,17 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
-/*builder.Services.ConfigureApplicationCookie(options =>
+builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+
+builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
-    options.LoginPath = "/Identity/Account/Login";
-});*/
+    var supportedCultures = new[] { "ru", "en" };
+
+    options.SetDefaultCulture("ru");
+    options.AddSupportedCultures(supportedCultures);
+    options.AddSupportedUICultures(supportedCultures);
+});
+
 
 builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 {
@@ -50,6 +57,7 @@ builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
 var app = builder.Build();
+app.UseRequestLocalization();
 using (var scope = app.Services.CreateScope())
 {
     var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();

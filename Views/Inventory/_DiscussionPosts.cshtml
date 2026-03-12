@@ -22,7 +22,7 @@
     @foreach (var post in Model.Posts)
     {
         <div class="discussion-post mb-3">
-            <div class="fw-bold">@post.Author.UserName</div>
+            <div class="fw-bold">@post.User.UserName</div>
             <div>@Html.Raw(Markdown.ToHtml(post.Content, pipeline))</div>
             <div class="text-muted small">@post.CreatedAt.ToString("g")</div>
         </div>

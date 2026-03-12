@@ -5,49 +5,11 @@
     var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 }
 
-<div class="mb-3">
-    <form method="post" action="/Inventory/AddPost">
-        <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
-
-        <label class="form-label">Новый пост (Markdown)</label>
-        <textarea name="content" class="form-control" rows="3"></textarea>
-
-        <button class="btn btn-primary mt-2">Отправить</button>
-    </form>
-</div>
-
-<hr />
-
-<div id="discussion-posts" style="max-height: 500px; overflow-y: auto;">
-    @foreach (var post in Model.Posts)
-    {
-        <div class="discussion-post mb-3">
-            <div class="fw-bold">@post.User.UserName</div>
-            <div>@Html.Raw(Markdown.ToHtml(post.Content, pipeline))</div>
-            <div class="text-muted small">@post.CreatedAt.ToString("g")</div>
-        </div>
-    }
-</div>
-
-<script>
-    let lastHtml = "";
-
-    function updateDiscussion() {
-        fetch('/Inventory/DiscussionPosts/@Model.InventoryId')
-            .then(r => r.text())
-            .then(html => {
-                if (html !== lastHtml) {
-                    document.getElementById('discussion-posts').innerHTML = html;
-                    lastHtml = html;
-                    scrollToBottom();
-                }
-            });
-    }
-
-    function scrollToBottom() {
-        const el = document.getElementById('discussion-posts');
-        el.scrollTop = el.scrollHeight;
-    }
-
-    setInterval(updateDiscussion, 5000);
-</script>
+@foreach (var post in Model.Posts)
+{
+    <div class="discussion-post mb-3">
+        <div class="fw-bold">@post.User.UserName</div>
+        <div>@Html.Raw(Markdown.ToHtml(post.Content, pipeline))</div>
+        <div class="text-muted small">@post.CreatedAt.ToString("g")</div>
+    </div>
+}

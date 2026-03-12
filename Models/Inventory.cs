@@ -24,7 +24,7 @@ namespace InventoryManagementApp.Model
         public List<InventoryCustomIdPart> CustomIdParts { get; set; }
         public NpgsqlTsVector? SearchVector { get; set; } = null!;
         [Timestamp]
-        public byte[] RowVersion { get; set; }
+        public byte[] RowVersion { get; set; } = Array.Empty<byte>();
 
     }
 }

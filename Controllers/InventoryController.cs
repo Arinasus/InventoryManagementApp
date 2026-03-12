@@ -149,9 +149,12 @@ namespace InventoryManagementApp.Controllers
             {
                 InventoryId = inv.Id,
                 Title = inv.Title,
-                Description = inv.Description,
+                Description = inv.Description ?? "",
                 Category = inv.Category,
-                IsPublic = inv.IsPublic
+                IsPublic = inv.IsPublic,
+                RowVersion = inv.RowVersion ?? Array.Empty<byte>(),
+                AvailableCategories = new List<string> { "Оборудование", "Мебель", "Книга", "Другое" },
+                Tags = inv.Tags?.Select(t => t.Name).ToList() ?? new List<string>()
             };
         }
         private async Task<InventoryCustomIdViewModel> GetCustomIdModel(Inventory inv)

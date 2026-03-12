@@ -12,7 +12,7 @@
 </div>
 <div class="mb-3">
     <label class="form-label">Теги (через запятую)</label>
-    <input id="inv-tags" value='@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tags)' />
+    <input id="inv-tags" value='@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tags ?? new List<string>())' />
 </div>
 
 <div class="mb-3">
@@ -31,7 +31,8 @@
 </div>
 
 <input type="hidden" id="inv-id" value="@Model.InventoryId" />
-<input type="hidden" id="inv-rowversion" value="@Convert.ToBase64String(Model.RowVersion)" />
+<input type="hidden" id="inv-rowversion" value="@(Model.RowVersion != null ? Convert.ToBase64String(Model.RowVersion) : "")" />
+
 
 <div id="autosave-status" class="text-muted small mt-2"></div>
 

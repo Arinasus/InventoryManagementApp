@@ -1,4 +1,9 @@
 ﻿@model InventoryDiscussionViewModel
+@using Markdig
+
+@{
+    var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
+}
 
 <div class="mb-3">
     <form method="post" action="/Inventory/AddPost">
@@ -13,16 +18,23 @@
 
 <hr />
 
-<div id="discussion-posts">
+<div id="discussion-posts" style="max-height: 500px; overflow-y: auto;">
     @await Html.PartialAsync("_DiscussionPosts", Model)
 </div>
 
 <script>
-    setInterval(function () {
+    let lastHtml = "";
+
+    function updateDiscussion() {
         fetch('/Inventory/DiscussionPosts/@Model.InventoryId')
             .then(r => r.text())
             .then(html => {
-                document.getElementById('discussion-posts').innerHTML = html;
+                if (html !== lastHtml) {
+                    document.getElementById('discussion-posts').innerHTML = html;
+                    lastHtml = html;
+                }
             });
-    }, 5000);
+    }
+
+    setInterval(updateDiscussion, 5000);
 </script>

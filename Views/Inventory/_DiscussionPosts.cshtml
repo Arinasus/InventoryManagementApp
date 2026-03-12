@@ -5,31 +5,42 @@
     var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
 }
 
-@if (!Model.Posts.Any())
-{
-    <p class="text-muted">Пока нет сообщений.</p>
-}
-else
-{
-    <ul class="list-group">
-        @foreach (var p in Model.Posts)
-        {
-            <li class="list-group-item">
-                <div class="d-flex justify-content-between">
-                    <div>
-                        <a href="/User/Profile/@p.UserId">
-                            @p.User.UserName
-                        </a>
-                        <span class="text-muted small">
-                            @p.CreatedAt.ToLocalTime().ToString("g")
-                        </span>
-                    </div>
-                </div>
+<div class="mb-3">
+    <form method="post" action="/Inventory/AddPost">
+        <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
 
-                <div class="mt-2">
-                    @Html.Raw(Markdown.ToHtml(p.Content ?? "", pipeline))
-                </div>
-            </li>
-        }
-    </ul>
-}
+        <label class="form-label">Новый пост (Markdown)</label>
+        <textarea name="content" class="form-control" rows="3"></textarea>
+
+        <button class="btn btn-primary mt-2">Отправить</button>
+    </form>
+</div>
+
+<hr />
+
+<div id="discussion-posts" style="max-height: 500px; overflow-y: auto;">
+    @await Html.PartialAsync("_DiscussionPosts", Model)
+</div>
+
+<script>
+    let lastHtml = "";
+
+    function updateDiscussion() {
+        fetch('/Inventory/DiscussionPosts/@Model.InventoryId')
+            .then(r => r.text())
+            .then(html => {
+                if (html !== lastHtml) {
+                    document.getElementById('discussion-posts').innerHTML = html;
+                    lastHtml = html;
+                    scrollToBottom();
+                }
+            });
+    }
+
+    function scrollToBottom() {
+        const el = document.getElementById('discussion-posts');
+        el.scrollTop = el.scrollHeight;
+    }
+
+    setInterval(updateDiscussion, 5000);
+</script>

@@ -120,16 +120,19 @@
   <data name="CreateInventory" xml:space="preserve">
     <value>CreateInventory</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Home</value>
-  </data>
-  <data name="Inventories" xml:space="preserve">
-    <value>Inventories</value>
+  <data name="Profile" xml:space="preserve">
+    <value>Profile</value>
   </data>
   <data name="Privacy" xml:space="preserve">
     <value>Privacy</value>
   </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Profile</value>
+  <data name="Inventories" xml:space="preserve">
+    <value>Inventories</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Home</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Logout</value>
   </data>
 </root>

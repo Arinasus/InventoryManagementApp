@@ -14,12 +14,12 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="#discussion" data-bs-toggle="tab">Обсуждение</a>
-            @*</li>
+            </li>
         <li class="nav-item">
             <a class="nav-link" href="#settings" data-bs-toggle="tab">Общие настройки</a>
         </li>
         
-        <li class="nav-item">
+        @*<li class="nav-item">
             <a class="nav-link" href="#access" data-bs-toggle="tab">Доступ</a>
         </li>*@
         <li class="nav-item">
@@ -42,11 +42,11 @@
             @await Html.PartialAsync("_TabDiscussion", Model.Discussion)
         </div>
 
-        @*<div class="tab-pane fade" id="settings">
+        <div class="tab-pane fade" id="settings">
             @await Html.PartialAsync("_TabSettings", Model.Settings)
         </div>
 
-        <div class="tab-pane fade" id="access">
+        @*<div class="tab-pane fade" id="access">
             @await Html.PartialAsync("_TabAccess", Model.Access)
         </div>
         *@ 

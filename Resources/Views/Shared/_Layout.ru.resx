@@ -120,16 +120,19 @@
   <data name="CreateInventory" xml:space="preserve">
     <value>Создать инвентарь</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Главная</value>
-  </data>
-  <data name="Inventories" xml:space="preserve">
-    <value>Инвентари</value>
+  <data name="Profile" xml:space="preserve">
+    <value>Профиль</value>
   </data>
   <data name="Privacy" xml:space="preserve">
     <value>Политика конфиденциальности</value>
   </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Профиль</value>
+  <data name="Inventories" xml:space="preserve">
+    <value>Инвентари</value>
+  </data>
+  <data name="Home" xml:space="preserve">
+    <value>Главная</value>
+  </data>
+  <data name="Logout" xml:space="preserve">
+    <value>Выход</value>
   </data>
 </root>

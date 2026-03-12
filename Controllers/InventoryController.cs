@@ -1,4 +1,5 @@
 ﻿using InventoryManagementApp.Data;
+using InventoryManagementApp.DTOs;
 using InventoryManagementApp.Model;
 using InventoryManagementApp.Models;
 using Microsoft.AspNetCore.Authorization;
@@ -119,9 +120,9 @@ namespace InventoryManagementApp.Controllers
                 Fields = await GetFieldsModel(id),
                 CustomId = await GetCustomIdModel(inventory),
                 Discussion = await GetDiscussionModel(id),
-                Stats = await GetStatsModel(id)
-                /*Settings = GetSettingsModel(inventory),
-                Access = await GetAccessModel(id),
+                Stats = await GetStatsModel(id),
+                Settings = GetSettingsModel(inventory)
+                /*Access = await GetAccessModel(id),
                 */
             };
 
@@ -829,6 +830,7 @@ namespace InventoryManagementApp.Controllers
             {
                 InventoryId = inventoryId,
                 UserId = user.Id,
+                ContentMarkdown = content,
                 Content = content,
                 CreatedAt = DateTime.UtcNow
             };
@@ -845,6 +847,69 @@ namespace InventoryManagementApp.Controllers
 
             var model = await GetDiscussionModel(id);
             return PartialView("_DiscussionPosts", model);
+        }
+        [HttpPost]
+        public async Task<IActionResult> AutoSave([FromBody] InventoryAutoSaveDto dto)
+        {
+            var inventory = await _context.Inventories
+                .FirstOrDefaultAsync(i => i.Id == dto.Id);
+            if (inventory == null)
+                return NotFound();
+            if (!await HasWriteAccess(dto.Id))
+                return Forbid();
+            inventory.Title = dto.Title;
+            inventory.Description = dto.Description;
+            inventory.Category = dto.Category;
+            if (dto.Tags != null)
+            {
+                await _context.Entry(inventory)
+                    .Collection(i => i.Tags)
+                    .LoadAsync();
+
+                inventory.Tags.Clear();
+
+                foreach (var tagName in dto.Tags)
+                {
+                    var tag = await _context.InventoryTags
+                        .FirstOrDefaultAsync(t => t.Name == tagName);
+                    if (tag == null)
+                    {
+                        tag = new InventoryTag { Name = tagName };
+                        _context.InventoryTags.Add(tag);
+                    }
+                    inventory.Tags.Add(tag);
+                }
+            }
+            _context.Entry(inventory).Property("RowVersion").OriginalValue = dto.RowVersion;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+                return Ok(new { success = true, rowVersion = inventory.RowVersion });
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                return Conflict(new { success = false, message = "Конфликт изменений" });
+            }
+        }
+        public async Task<IActionResult> Settings(int id)
+        {
+            if (!await HasWriteAccess(id))
+                return Forbid();
+
+            var inv = await _context.Inventories.FindAsync(id);
+
+            var model = new InventorySettingsViewModel
+            {
+                InventoryId = inv.Id,
+                Title = inv.Title,
+                Description = inv.Description,
+                Category = inv.Category,
+                AvailableCategories = new List<string> { "Оборудование", "Мебель", "Книга", "Другое" },
+                RowVersion = inv.RowVersion
+            };
+
+            return PartialView("_TabSettings", model);
         }
 
     }

@@ -1,0 +1,37 @@
+﻿@model InventorySettingsViewModel
+
+<div class="mb-3">
+    <label class="form-label">Название</label>
+    <input id="inv-title" class="form-control" value="@Model.Title" />
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Описание (Markdown)</label>
+    <textarea id="inv-desc" class="form-control" rows="5">@Model.Description</textarea>
+</div>
+<div class="mb-3">
+    <label class="form-label">Теги (через запятую)</label>
+    <input id="inv-tags" value='@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tags)' />
+</div>
+
+<div class="mb-3">
+    <label class="form-label">Категория</label>
+    <select id="inv-category" class="form-select">
+        @foreach (var c in Model.AvailableCategories)
+        {
+            <option value="@c" selected="@(c == Model.Category)">@c</option>
+        }
+    </select>
+</div>
+
+<div class="form-check mb-3">
+    <input class="form-check-input" type="checkbox" id="inv-public" @(Model.IsPublic ? "checked" : "") />
+    <label class="form-check-label" for="inv-public">Публичная книга</label>
+</div>
+
+<input type="hidden" id="inv-id" value="@Model.InventoryId" />
+<input type="hidden" id="inv-rowversion" value="@Convert.ToBase64String(Model.RowVersion)" />
+
+<div id="autosave-status" class="text-muted small mt-2"></div>
+
+<script src="~/js/inventory-autosave.js"></script>

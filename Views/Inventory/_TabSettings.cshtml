@@ -7,7 +7,8 @@
 
 <div class="mb-3">
     <label class="form-label">Описание (Markdown)</label>
-    <textarea id="inv-desc" class="form-control" rows="5">@Model.Description</textarea>
+    <textarea id="inv-desc" class="form-control" rows="5">@(Model.Description ?? "")
+</textarea>
 </div>
 <div class="mb-3">
     <label class="form-label">Теги (через запятую)</label>

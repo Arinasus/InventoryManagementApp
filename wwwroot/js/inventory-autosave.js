@@ -16,7 +16,7 @@ const tagify = new Tagify(input, {
 
 tagify.on('input', function (e) {
     fetch('/Tags/SearchTags?query=' + e.detail.value)
-        .then(r => r.json())
+        .then(async r => r.ok ? r.json() : [])
         .then(list => {
             tagify.settings.whitelist = list;
             tagify.dropdown.show(e.detail.value);
@@ -54,7 +54,11 @@ setInterval(() => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(current)
     })
-        .then(r => r.json())
+        .then(async r => {
+            try { return await r.json(); }
+            catch { return { success: false }; }
+        })
+
         .then(res => {
             if (res.success) {
                 lastSavedState = current;

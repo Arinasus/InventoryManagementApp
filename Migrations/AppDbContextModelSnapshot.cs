@@ -157,7 +157,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("DiscussionPosts");
+                    b.ToTable("DiscussionPosts", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Model.Inventory", b =>
@@ -220,7 +220,7 @@ namespace InventoryManagerApp.Migrations
 
                     NpgsqlIndexBuilderExtensions.HasMethod(b.HasIndex("SearchVector"), "GIN");
 
-                    b.ToTable("Inventories");
+                    b.ToTable("Inventories", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Model.InventoryAccess", b =>
@@ -250,7 +250,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("InventoryAccesses");
+                    b.ToTable("InventoryAccesses", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Model.InventoryField", b =>
@@ -284,7 +284,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasIndex("InventoryId");
 
-                    b.ToTable("InventoryFields");
+                    b.ToTable("InventoryFields", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Model.InventoryItem", b =>
@@ -322,7 +322,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasIndex("InventoryId");
 
-                    b.ToTable("InventoryItems");
+                    b.ToTable("InventoryItems", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Model.ItemFieldValue", b =>
@@ -349,7 +349,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasIndex("ItemId");
 
-                    b.ToTable("ItemFieldValue");
+                    b.ToTable("ItemFieldValue", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Model.ItemLike", b =>
@@ -376,7 +376,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("ItemLikes");
+                    b.ToTable("ItemLikes", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Models.InventoryCustomIdPart", b =>
@@ -403,7 +403,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasIndex("InventoryId");
 
-                    b.ToTable("InventoryCustomIdParts");
+                    b.ToTable("InventoryCustomIdParts", (string)null);
                 });
 
             modelBuilder.Entity("InventoryManagementApp.Models.InventoryTag", b =>
@@ -420,7 +420,7 @@ namespace InventoryManagerApp.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("InventoryTags");
+                    b.ToTable("InventoryTags", (string)null);
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>

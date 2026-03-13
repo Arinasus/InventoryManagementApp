@@ -21,73 +21,66 @@ namespace InventoryManagementApp.Controllers
             _userManager = userManager;
         }
 
-        public async Task<IActionResult> Profile(string sortOrder, string search)
+        public async Task<IActionResult> Profile(string? sortOrder, string? search)
         {
             var user = await _userManager.GetUserAsync(User);
+            if (user == null)
+                return RedirectToAction("Login", "Account");
 
             var ownedQuery = _context.Inventories
-                .Include(i => i.Items)
-                .Where(i => i.CreatedByUserId == user.Id);
+                .Where(i => i.CreatedByUserId == user.Id)
+                .Select(i => new InventoryCardViewModel
+                {
+                    Id = i.Id,
+                    Title = i.Title,
+                    Description = i.Description,
+                    ItemsCount = i.Items.Count,
+                    CreatorName = user.UserName,
+                    CreatedAt = i.CreatedAt
+                });
 
-            var accessQuery = _context.InventoryAccesses
-                .Include(a => a.Inventory)
-                .ThenInclude(i => i.Items)
+            var accessibleQuery = _context.InventoryAccesses
                 .Where(a => a.UserId == user.Id)
-                .Select(a => a.Inventory);
+                .Select(a => new InventoryCardViewModel
+                {
+                    Id = a.Inventory.Id,
+                    Title = a.Inventory.Title,
+                    Description = a.Inventory.Description,
+                    ItemsCount = a.Inventory.Items.Count,
+                    CreatorName = a.Inventory.CreatedByUser.UserName,
+                    CreatedAt = a.Inventory.CreatedAt
+                });
 
             if (!string.IsNullOrWhiteSpace(search))
             {
-                ownedQuery = ownedQuery.Where(i => i.Title.Contains(search));
-                accessQuery = accessQuery.Where(i => i.Title.Contains(search));
+                ownedQuery = ownedQuery.Where(i =>
+                    i.Title.Contains(search) || i.Description.Contains(search));
+
+                accessibleQuery = accessibleQuery.Where(i =>
+                    i.Title.Contains(search) || i.Description.Contains(search));
             }
+
+            sortOrder ??= "";
 
             ownedQuery = sortOrder switch
             {
                 "title_desc" => ownedQuery.OrderByDescending(i => i.Title),
-                "items_asc" => ownedQuery.OrderBy(i => i.Items.Count),
-                "items_desc" => ownedQuery.OrderByDescending(i => i.Items.Count),
-                _ => ownedQuery.OrderBy(i => i.Title)
+                "items_asc" => ownedQuery.OrderBy(i => i.ItemsCount),
+                "items_desc" => ownedQuery.OrderByDescending(i => i.ItemsCount),
+                "title_asc" => ownedQuery.OrderBy(i => i.Title),
+                _ => ownedQuery.OrderBy(i => i.CreatedAt)
             };
 
-            accessQuery = sortOrder switch
-            {
-                "title_desc" => accessQuery.OrderByDescending(i => i.Title),
-                "items_asc" => accessQuery.OrderBy(i => i.Items.Count),
-                "items_desc" => accessQuery.OrderByDescending(i => i.Items.Count),
-                _ => accessQuery.OrderBy(i => i.Title)
-            };
+            accessibleQuery = accessibleQuery.OrderBy(i => i.Title);
 
             var model = new UserProfileViewModel
             {
                 UserName = user.UserName,
-                SearchQuery = search,
+                SearchQuery = search ?? "",
                 SortOrder = sortOrder,
-
-                OwnedInventories = await ownedQuery
-                    .Select(i => new InventoryCardViewModel
-                    {
-                        Id = i.Id,
-                        Title = i.Title,
-                        Description = i.Description,
-                        ItemsCount = i.Items.Count,
-                        CreatorName = user.UserName,
-                        CreatedAt = i.CreatedAt
-                    })
-                    .ToListAsync(),
-
-                AccessibleInventories = await accessQuery
-                    .Select(i => new InventoryCardViewModel
-                    {
-                        Id = i.Id,
-                        Title = i.Title,
-                        Description = i.Description,
-                        ItemsCount = i.Items.Count,
-                        CreatorName = i.CreatedByUser.UserName,
-                        CreatedAt = i.CreatedAt
-                    })
-                    .ToListAsync()
+                OwnedInventories = await ownedQuery.ToListAsync(),
+                AccessibleInventories = await accessibleQuery.ToListAsync()
             };
-
             return View(model);
         }
     }

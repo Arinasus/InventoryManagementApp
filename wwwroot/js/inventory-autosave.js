@@ -15,7 +15,7 @@ const tagify = new Tagify(input, {
 
 
 tagify.on('input', function (e) {
-    fetch('/Inventory/SearchTags?query=' + e.detail.value)
+    fetch('/Tags/SearchTags?query=' + e.detail.value)
         .then(r => r.json())
         .then(list => {
             tagify.settings.whitelist = list;

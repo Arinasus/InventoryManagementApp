@@ -1,4 +1,6 @@
-﻿let lastSavedState = null;
+﻿console.log("autosave loaded");
+
+let lastSavedState = null;
 
 const input = document.getElementById('inv-tags');
 const tagify = new Tagify(input, {

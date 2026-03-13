@@ -15,9 +15,20 @@
 
 <hr />
 
-<h5>Пользователи с доступом</h5>
+<h5 class="d-flex justify-content-between align-items-center">
+    <span>Пользователи с доступом</span>
 
-<table class="table table-striped">
+    <div class="btn-group">
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="sort-name">
+            Сортировать по имени
+        </button>
+        <button type="button" class="btn btn-outline-secondary btn-sm" id="sort-email">
+            Сортировать по email
+        </button>
+    </div>
+</h5>
+
+<table class="table table-striped" id="access-table">
     <thead>
         <tr>
             <th>Имя</th>
@@ -31,8 +42,8 @@
         @foreach (var a in Model.AccessList)
         {
             <tr>
-                <td>@a.User.UserName</td>
-                <td>@a.User.Email</td>
+                <td class="col-name">@a.User.UserName</td>
+                <td class="col-email">@a.User.Email</td>
                 <td>@a.GrantedAt.ToString("yyyy-MM-dd HH:mm")</td>
                 <td>Запись</td>
                 <td>
@@ -81,6 +92,28 @@
                         });
                     });
             }, 300);
+        });
+
+        const table = document.getElementById("access-table").querySelector("tbody");
+
+        function sortTable(selector) {
+            const rows = Array.from(table.querySelectorAll("tr"));
+
+            rows.sort((a, b) => {
+                const A = a.querySelector(selector).innerText.toLowerCase();
+                const B = b.querySelector(selector).innerText.toLowerCase();
+                return A.localeCompare(B);
+            });
+
+            rows.forEach(r => table.appendChild(r));
+        }
+
+        document.getElementById("sort-name").addEventListener("click", () => {
+            sortTable(".col-name");
+        });
+
+        document.getElementById("sort-email").addEventListener("click", () => {
+            sortTable(".col-email");
         });
     </script>
 }

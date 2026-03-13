@@ -19,9 +19,9 @@
             <a class="nav-link" href="#settings" data-bs-toggle="tab">Общие настройки</a>
         </li>
         
-        @*<li class="nav-item">
+        <li class="nav-item">
             <a class="nav-link" href="#access" data-bs-toggle="tab">Доступ</a>
-        </li>*@
+        </li>
         <li class="nav-item">
             <a class="nav-link" href="#stats" data-bs-toggle="tab">Статистика</a>
         </li>
@@ -46,10 +46,10 @@
             @await Html.PartialAsync("_TabSettings", Model.Settings)
         </div>
 
-        @*<div class="tab-pane fade" id="access">
+        <div class="tab-pane fade" id="access">
             @await Html.PartialAsync("_TabAccess", Model.Access)
         </div>
-        *@ 
+        
         <div class="tab-pane fade" id="stats">
             @await Html.PartialAsync("_TabStats", Model.Stats)
         </div>

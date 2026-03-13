@@ -2,6 +2,7 @@
 using InventoryManagementApp.DTOs;
 using InventoryManagementApp.Model;
 using InventoryManagementApp.Models;
+using InventoryManagementApp.Services;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -14,10 +15,12 @@ namespace InventoryManagementApp.Controllers
     {
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-        public InventoryController(AppDbContext db, UserManager<ApplicationUser> userManager)
+        private readonly CustomIdService _customIdService;
+        public InventoryController(AppDbContext db, UserManager<ApplicationUser> userManager, CustomIdService customIdService)
         {
             _context = db;
             _userManager = userManager;
+            _customIdService = customIdService;
         }
 
         private async Task<ApplicationUser?> GetCurrentUser()
@@ -308,22 +311,23 @@ namespace InventoryManagementApp.Controllers
         {
             var item = await _context.InventoryItems
                 .Include(i => i.FieldValues)
-                .Include(i => i.Inventory)
+                .Include(i => i.Inventory).ThenInclude(inv => inv.Fields)
                 .FirstOrDefaultAsync(i => i.Id == id);
 
             if (item == null)
                 return NotFound();
 
-            var fields = await _context.InventoryFields
-                .Where(f => f.InventoryId == item.InventoryId)
-                .OrderBy(f => f.Order)
-                .ToListAsync();
+            if (!await HasWriteAccess(item.InventoryId))
+                return Forbid();
+
+            var fields = item.Inventory.Fields.OrderBy(f => f.Order).ToList();
 
             var model = new EditItemViewModel
             {
                 ItemId = item.Id,
                 InventoryId = item.InventoryId,
                 Version = item.Version,
+                CustomId = item.CustomId,
                 Fields = fields,
                 Values = fields.ToDictionary(
                     f => f.Id,
@@ -331,8 +335,9 @@ namespace InventoryManagementApp.Controllers
                 )
             };
 
-            return View(model);
+            return View("Item", model);
         }
+
 
         public async Task<IActionResult> AddItem(int id)
         {
@@ -480,6 +485,7 @@ namespace InventoryManagementApp.Controllers
 
             var item = await _context.InventoryItems
                 .Include(i => i.FieldValues)
+                .Include(i => i.Inventory).ThenInclude(inv => inv.CustomIdParts)
                 .FirstOrDefaultAsync(i => i.Id == model.ItemId);
 
             if (item == null)
@@ -514,12 +520,27 @@ namespace InventoryManagementApp.Controllers
                 }
             }
 
+            var customId = model.CustomId?.Trim() ?? "";
+
+            if (!_customIdService.Validate(customId, item.Inventory))
+            {
+                ModelState.AddModelError("CustomId", "ID не соответствует формату книги.");
+            }
+
+            bool exists = await _context.InventoryItems
+                .AnyAsync(i => i.InventoryId == model.InventoryId &&
+                               i.CustomId == customId &&
+                               i.Id != model.ItemId);
+
+            if (exists)
+                ModelState.AddModelError("CustomId", "Такой ID уже существует в этой книге.");
+
             if (!ModelState.IsValid)
             {
                 model.Fields = fields;
                 return View("Item", model);
             }
-            
+
             if (item.Version != model.Version)
             {
                 ModelState.AddModelError("", "Этот предмет был изменён другим пользователем. Обновите страницу.");
@@ -532,6 +553,8 @@ namespace InventoryManagementApp.Controllers
 
                 return View("Item", model);
             }
+
+            item.CustomId = customId;
 
             foreach (var kvp in model.Values)
             {
@@ -558,10 +581,33 @@ namespace InventoryManagementApp.Controllers
             item.Version++;
             item.UpdatedAt = DateTime.UtcNow;
 
-            await _context.SaveChangesAsync();
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateException ex)
+            {
+                if (ex.InnerException?.Message.Contains("duplicate") == true)
+                {
+                    ModelState.AddModelError("CustomId", "Конфликт: такой ID уже существует.");
+                    model.Fields = fields;
+                    return View("Item", model);
+                }
+
+                throw;
+            }
 
             return RedirectToAction("Item", new { id = item.Id });
         }
+
+        private bool ValidateCustomIdFormat(string customId, Inventory inventory)
+        {
+            if (string.IsNullOrWhiteSpace(customId))
+                return false;
+            return true;
+        }
+
+
         public async Task<IActionResult> DeleteItem(int id)
         {
 

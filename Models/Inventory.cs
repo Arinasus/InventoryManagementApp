@@ -16,7 +16,7 @@ namespace InventoryManagementApp.Model
         public int Version { get; set; } //номер версии для автосохранения
         public List<InventoryField> Fields { get; set; } = new();// список кастомных полей
         public List<InventoryItem> Items { get; set; } = new();//список элементов
-        public ApplicationUser CreatedByUser { get; set; } = new();
+        public ApplicationUser? CreatedByUser { get; set; }
         public List<InventoryAccess> InventoryAccesses { get; set; } = new();
         public List<InventoryTag> Tags { get; set; } = new();
         public string CustomIdPrefix { get; set; } = "";

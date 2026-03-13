@@ -61,13 +61,13 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
-    const list = document.getElementById('id-parts');
+    const idPartsList  = document.getElementById('id-parts');
 
-    new Sortable(list, {
+    new Sortable(idPartsList , {
         animation: 150,
         handle: '.handle',
         onEnd: function () {
-            const ids = [...list.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
+            const ids = [...idPartsList .querySelectorAll('li')].map(li => parseInt(li.dataset.id));
 
             fetch('/Inventory/ReorderCustomIdParts', {
                 method: 'POST',

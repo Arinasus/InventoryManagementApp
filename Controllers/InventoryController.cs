@@ -900,19 +900,21 @@ namespace InventoryManagementApp.Controllers
         public async Task<IActionResult> AutoSave([FromBody] InventoryAutoSaveDto dto)
         {
             var inventory = await _context.Inventories
+                .Include(i => i.Tags)
                 .FirstOrDefaultAsync(i => i.Id == dto.Id);
+
             if (inventory == null)
                 return NotFound();
+
             if (!await HasWriteAccess(dto.Id))
                 return Forbid();
+
             inventory.Title = dto.Title;
             inventory.Description = dto.Description;
             inventory.Category = dto.Category;
+
             if (dto.Tags != null)
             {
-                await _context.Entry(inventory)
-                    .Collection(i => i.Tags)
-                    .LoadAsync();
 
                 inventory.Tags.Clear();
 
@@ -920,26 +922,33 @@ namespace InventoryManagementApp.Controllers
                 {
                     var tag = await _context.InventoryTags
                         .FirstOrDefaultAsync(t => t.Name == tagName);
+
                     if (tag == null)
                     {
                         tag = new InventoryTag { Name = tagName };
                         _context.InventoryTags.Add(tag);
                     }
+
                     inventory.Tags.Add(tag);
                 }
             }
-            _context.Entry(inventory).Property("RowVersion").OriginalValue = dto.RowVersion;
-
+            _context.Entry(inventory).Property("RowVersion").OriginalValue =
+                Convert.FromBase64String(dto.RowVersion);
             try
             {
                 await _context.SaveChangesAsync();
-                return Ok(new { success = true, rowVersion = inventory.RowVersion });
+                return Ok(new
+                {
+                    success = true,
+                    rowVersion = Convert.ToBase64String(inventory.RowVersion)
+                });
             }
             catch (DbUpdateConcurrencyException)
             {
                 return Conflict(new { success = false, message = "Конфликт изменений" });
             }
         }
+
         public async Task<IActionResult> Settings(int id)
         {
             if (!await HasWriteAccess(id))

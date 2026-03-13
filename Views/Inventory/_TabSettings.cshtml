@@ -7,12 +7,18 @@
 
 <div class="mb-3">
     <label class="form-label">Описание (Markdown)</label>
-    <textarea id="inv-desc" class="form-control" rows="5">@(Model.Description ?? "")
-</textarea>
+    <textarea id="inv-desc" class="form-control" rows="5">@(Model.Description ?? "")</textarea>
 </div>
+
 <div class="mb-3">
-    <label class="form-label">Теги (через запятую)</label>
-    <input id="inv-tags" value='@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tags ?? new List<string>())' />
+    <label class="form-label">Теги</label>
+
+    <!-- Поле Tagify -->
+    <input id="inv-tags"
+           value='@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tags ?? new List<string>())' />
+
+    <!-- Скрытое поле, которое реально отправляется -->
+    <input type="hidden" id="inv-tags-hidden" />
 </div>
 
 <div class="mb-3">
@@ -33,9 +39,18 @@
 <input type="hidden" id="inv-id" value="@Model.InventoryId" />
 <input type="hidden" id="inv-rowversion" value="@(Model.RowVersion != null ? Convert.ToBase64String(Model.RowVersion) : "")" />
 
-
 <div id="autosave-status" class="text-muted small mt-2"></div>
 
 @section Scripts {
+    <script src="@Html.Raw("https://cdn.jsdelivr.net/npm/@yaireo/tagify")"></script>
     <script src="~/js/inventory-autosave.js"></script>
+
+    <script>
+        const tagInput = document.getElementById('inv-tags');
+        const tagify = new Tagify(tagInput);
+        tagify.on('change', () => {
+            const tags = tagify.value.map(t => t.value);
+            document.getElementById('inv-tags-hidden').value = JSON.stringify(tags);
+        });
+    </script>
 }

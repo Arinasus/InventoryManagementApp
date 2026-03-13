@@ -6,6 +6,8 @@
     <form asp-action="AddItem" method="post">
         <input type="hidden" asp-for="InventoryId" />
 
+        <div asp-validation-summary="All" class="text-danger mb-3"></div>
+
         @if (Model.Fields == null || !Model.Fields.Any())
         {
             <p class="text-muted">Для этой инвентарной книги пока нет пользовательских полей.</p>
@@ -16,6 +18,7 @@
             {
                 <div class="mb-3">
                     <label class="form-label">@field.Title</label>
+
                     @if (!string.IsNullOrEmpty(field.Description))
                     {
                         <div class="form-text">@field.Description</div>
@@ -29,6 +32,7 @@
                                        name="Values[@field.Id]" />
                                 break;
                             }
+
                         case FieldType.MultiLineText:
                             {
                                 <textarea class="form-control"
@@ -36,6 +40,7 @@
                       rows="3"></textarea>
                                 break;
                             }
+
                         case FieldType.Number:
                             {
                                 <input class="form-control"
@@ -43,6 +48,7 @@
                                        name="Values[@field.Id]" />
                                 break;
                             }
+
                         case FieldType.DocumentLink:
                             {
                                 <input class="form-control"
@@ -50,6 +56,7 @@
                                        name="Values[@field.Id]" />
                                 break;
                             }
+
                         case FieldType.Boolean:
                             {
                                 <div class="form-check">
@@ -61,6 +68,7 @@
                                 </div>
                                 break;
                             }
+
                         default:
                             {
                                 <input class="form-control"
@@ -68,6 +76,10 @@
                                 break;
                             }
                     }
+
+                    <span class="text-danger">
+                        @Html.ValidationMessage($"Values[{field.Id}]")
+                    </span>
                 </div>
             }
         }
@@ -76,3 +88,7 @@
         <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">Отмена</a>
     </form>
 </div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

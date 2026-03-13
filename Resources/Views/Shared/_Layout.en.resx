@@ -135,4 +135,7 @@
   <data name="Logout" xml:space="preserve">
     <value>Logout</value>
   </data>
+  <data name="AdminPanel" xml:space="preserve">
+    <value>AdminPanel</value>
+  </data>
 </root>

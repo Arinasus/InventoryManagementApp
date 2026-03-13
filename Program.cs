@@ -1,5 +1,6 @@
 using InventoryManagementApp.Data;
 using InventoryManagementApp.Model;
+using InventoryManagementApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -48,6 +49,7 @@ builder.Services.AddAuthentication()
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
+builder.Services.AddScoped<CustomIdService>();
 
 /*.AddFacebook(options =>
 {

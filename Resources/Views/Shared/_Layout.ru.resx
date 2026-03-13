@@ -135,4 +135,7 @@
   <data name="Logout" xml:space="preserve">
     <value>Выход</value>
   </data>
+  <data name="AdminPanel" xml:space="preserve">
+    <value>Панель администратора</value>
+  </data>
 </root>

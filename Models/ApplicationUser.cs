@@ -4,7 +4,6 @@ namespace InventoryManagementApp.Model
 {
     public class ApplicationUser : IdentityUser
     {
-        public bool IsAdmin { get; set; }
         public bool IsBlocked { get; set; }
         public string? BlockedByUser { get; set; }
         public string PrefferedLanguage { get; set; } ="en";

@@ -42,13 +42,4 @@
 @section Scripts {
     <script src="@Html.Raw("https://cdn.jsdelivr.net/npm/@yaireo/tagify")"></script>
     <script src="~/js/inventory-autosave.js"></script>
-
-    <script>
-        const tagInput = document.getElementById('inv-tags');
-        const tagify = new Tagify(tagInput);
-        tagify.on('change', () => {
-            const tags = tagify.value.map(t => t.value);
-            document.getElementById('inv-tags-hidden').value = JSON.stringify(tags);
-        });
-    </script>
 }

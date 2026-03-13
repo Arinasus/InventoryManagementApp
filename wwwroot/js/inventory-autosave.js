@@ -59,7 +59,7 @@ setInterval(() => {
                 document.getElementById("inv-rowversion").value = res.rowVersion;
                 showStatus("Сохранено: " + new Date().toLocaleTimeString());
             } else {
-                showStatus("⚠ Конфликт изменений! Обновите страницу.");
+                showStatus("Конфликт изменений! Обновите страницу.");
             }
         });
 

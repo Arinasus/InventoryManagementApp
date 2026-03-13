@@ -1,0 +1,86 @@
+﻿@model InventoryAccessViewModel
+
+<h4>Управление доступом</h4>
+
+<div class="mb-3">
+    <label class="form-label">Добавить пользователя</label>
+    <input id="user-search" class="form-control" placeholder="Введите email или имя пользователя..." />
+    <div id="user-results" class="list-group mt-1"></div>
+</div>
+
+<form id="add-access-form" method="post" action="/Inventory/AddAccess">
+    <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+    <input type="hidden" id="selected-user-id" name="userId" />
+</form>
+
+<hr />
+
+<h5>Пользователи с доступом</h5>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Имя</th>
+            <th>Email</th>
+            <th>Дата выдачи</th>
+            <th>Доступ</th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var a in Model.AccessList)
+        {
+            <tr>
+                <td>@a.User.UserName</td>
+                <td>@a.User.Email</td>
+                <td>@a.GrantedAt.ToString("yyyy-MM-dd HH:mm")</td>
+                <td>Запись</td>
+                <td>
+                    <form method="post" action="/Inventory/RemoveAccess/@a.Id">
+                        <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+                        <button class="btn btn-sm btn-danger">Удалить</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+@section Scripts {
+    <script>
+        const searchInput = document.getElementById("user-search");
+        const results = document.getElementById("user-results");
+        const selectedUser = document.getElementById("selected-user-id");
+        const form = document.getElementById("add-access-form");
+
+        let timer = null;
+
+        searchInput.addEventListener("input", () => {
+            clearTimeout(timer);
+            const q = searchInput.value.trim();
+            if (q.length < 2) {
+                results.innerHTML = "";
+                return;
+            }
+
+            timer = setTimeout(() => {
+                fetch(`/Inventory/SearchUsers?query=${encodeURIComponent(q)}`)
+                    .then(r => r.json())
+                    .then(list => {
+                        results.innerHTML = "";
+                        list.forEach(u => {
+                            const item = document.createElement("button");
+                            item.type = "button";
+                            item.className = "list-group-item list-group-item-action";
+                            item.textContent = `${u.userName} (${u.email})`;
+                            item.onclick = () => {
+                                selectedUser.value = u.id;
+                                form.submit();
+                            };
+                            results.appendChild(item);
+                        });
+                    });
+            }, 300);
+        });
+    </script>
+}

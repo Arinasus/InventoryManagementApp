@@ -121,9 +121,8 @@ namespace InventoryManagementApp.Controllers
                 CustomId = await GetCustomIdModel(inventory),
                 Discussion = await GetDiscussionModel(id),
                 Stats = await GetStatsModel(id),
-                Settings = GetSettingsModel(inventory)
-                /*Access = await GetAccessModel(id),
-                */
+                Settings = GetSettingsModel(inventory),
+                Access = await GetAccessModel(id)
             };
 
             return View(vm);
@@ -913,6 +912,67 @@ namespace InventoryManagementApp.Controllers
             };
 
             return PartialView("_TabSettings", model);
+        }
+        public async Task<IActionResult> SearchUsers(string query)
+        {
+            if (string.IsNullOrWhiteSpace(query))
+                return Json(new List<object>());
+
+            var users = await _context.Users
+                .Where(u => u.Email.Contains(query) || u.UserName.Contains(query))
+                .Select(u => new { u.Id, u.Email, u.UserName })
+                .Take(10)
+                .ToListAsync();
+
+            return Json(users);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> AddAccess(int inventoryId, string userId)
+        {
+            if (!await HasOwnerAccess(inventoryId))
+                return Forbid();
+
+            if (!_context.InventoryAccesses
+                .Any(a => a.InventoryId == inventoryId && a.UserId == userId))
+            {
+                _context.InventoryAccesses.Add(new InventoryAccess
+                {
+                    InventoryId = inventoryId,
+                    UserId = userId,
+                    CanWrite = true,
+                    GrantedAt = DateTime.UtcNow
+                });
+
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", new { id = inventoryId });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> RemoveAccess(int id, int inventoryId)
+        {
+            if (!await HasOwnerAccess(inventoryId))
+                return Forbid();
+
+            var access = await _context.InventoryAccesses.FindAsync(id);
+            if (access != null)
+            {
+                _context.InventoryAccesses.Remove(access);
+                await _context.SaveChangesAsync();
+            }
+
+            return RedirectToAction("Details", new { id = inventoryId });
+        }
+
+        public async Task<IActionResult> Access(int id)
+        {
+            if (!await HasOwnerAccess(id))
+                return Forbid();
+
+            var model = await GetAccessModel(id);
+            return PartialView("_TabAccess", model);
         }
 
     }

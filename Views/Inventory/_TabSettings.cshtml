@@ -13,11 +13,9 @@
 <div class="mb-3">
     <label class="form-label">Теги</label>
 
-    <!-- Поле Tagify -->
     <input id="inv-tags"
            value='@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tags ?? new List<string>())' />
 
-    <!-- Скрытое поле, которое реально отправляется -->
     <input type="hidden" id="inv-tags-hidden" />
 </div>
 

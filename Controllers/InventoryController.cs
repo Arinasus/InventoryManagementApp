@@ -87,6 +87,7 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(Inventory model)
         {
+            model.Description ??= "";
             var user = await _userManager.GetUserAsync(User);
             if (user == null)
             {

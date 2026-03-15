@@ -13,6 +13,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddScoped<IInventoryAccessService, InventoryAccessService>();
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {

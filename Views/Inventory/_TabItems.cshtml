@@ -45,7 +45,12 @@ else
                         <td>@item.FieldValues[field.Title]</td>
                     }
 
-                    <td>@item.Likes</td>
+                    <td>
+                        <button class="btn btn-sm btn-outline-danger like-btn" data-id="@item.Id" onclick="event.stopPropagation();">
+                            ❤️ <span class="like-count">@item.Likes</span>
+                        </button>
+                    </td>
+
 
                     <td class="text-end">
                         <div class="actions" style="display:none;">
@@ -67,6 +72,21 @@ else
         });
         row.addEventListener("mouseleave", () => {
             row.querySelector(".actions").style.display = "none";
+        });
+    });
+
+        document.querySelectorAll(".like-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+            const id = btn.dataset.id;
+
+            fetch(`/InventoryItem/ToggleLike?itemId=${id}`, {
+                method: "POST",
+                headers: { "X-Requested-With": "XMLHttpRequest" }
+            })
+            .then(r => r.json())
+            .then(data => {
+                btn.querySelector(".like-count").innerText = data.likes;
+            });
         });
     });
 </script>

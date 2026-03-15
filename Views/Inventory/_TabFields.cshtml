@@ -60,7 +60,7 @@ else
 
 <script>
     const list = document.getElementById('fields-list');
-
+    if (list) {
     new Sortable(list, {
         animation: 150,
         handle: '.handle',
@@ -76,4 +76,5 @@ else
             });
         }
     });
+    }
 </script>

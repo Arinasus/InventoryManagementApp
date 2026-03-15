@@ -63,7 +63,8 @@
 <script>
     const idPartsList  = document.getElementById('id-parts');
 
-    new Sortable(idPartsList , {
+    if (idPartsList) {
+        new Sortable(idPartsList, {
         animation: 150,
         handle: '.handle',
         onEnd: function () {
@@ -76,4 +77,5 @@
             });
         }
     });
+    }
 </script>

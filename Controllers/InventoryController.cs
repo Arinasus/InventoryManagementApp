@@ -965,6 +965,7 @@ namespace InventoryManagementApp.Controllers
 
             return PartialView("_TabSettings", model);
         }
+        [AllowAnonymous]
         [HttpGet]
         public async Task<IActionResult> SearchUsers(string query)
         {

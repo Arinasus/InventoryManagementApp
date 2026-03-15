@@ -22,10 +22,16 @@
                 {
                     <span class="text-muted">(@part.Value)</span>
                 }
+
+                @if (part.Type == CustomIdPartType.Sequence && part.Padding != null)
+                {
+                    <span class="text-muted">(длина: @part.Padding)</span>
+                }
             </div>
         </li>
     }
 </ul>
+
 <div id="delete-zone"
      class="border border-danger text-center p-3 mb-3 rounded"
      style="background:#ffe5e5;">
@@ -61,7 +67,7 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
-        const idPartsList = document.getElementById('id-parts');
+    const idPartsList = document.getElementById('id-parts');
     const deleteZone = document.getElementById('delete-zone');
 
     if (idPartsList) {
@@ -71,28 +77,25 @@
             group: { name: 'idparts', pull: true, put: false },
 
             onEnd: function (evt) {
+
                 if (evt.to === deleteZone) {
                     const id = evt.item.dataset.id;
 
-                    fetch(`/Inventory/DeleteCustomIdPart/${id}`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ inventoryId: @Model.InventoryId })
+                    fetch(`/Inventory/DeleteCustomIdPart/${id}?inventoryId=@Model.InventoryId`, {
+                        method: 'POST'
                     }).then(() => {
                         evt.item.remove();
                     });
 
                     return;
                 }
-
                 const ids = [...idPartsList.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
 
-                    fetch(`/Inventory/DeleteCustomIdPart/${id}?inventoryId=@Model.InventoryId`, {
-        method: 'POST'
-    }).then(() => {
-        evt.item.remove();
-    });
-
+                fetch('/Inventory/ReorderCustomIdParts', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(ids)
+                });
             }
         });
     }
@@ -102,5 +105,4 @@
             group: { name: 'idparts', pull: false, put: true }
         });
     }
-
 </script>

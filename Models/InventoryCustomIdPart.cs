@@ -14,5 +14,6 @@ namespace InventoryManagementApp.Models
         public CustomIdPartType Type { get; set; }
 
         public string? Value { get; set; }
+        public int? Padding { get; set; }
     }
 }

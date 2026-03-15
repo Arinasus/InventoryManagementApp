@@ -428,6 +428,7 @@ namespace InventoryManagementApp.Controllers
                 .Where(p => p.InventoryId == inventoryId)
                 .OrderBy(p => p.Order)
                 .ToListAsync();
+
             if (!parts.Any())
                 return Guid.NewGuid().ToString("N");
 
@@ -470,13 +471,20 @@ namespace InventoryManagementApp.Controllers
                             .Where(i => i.InventoryId == inventoryId)
                             .MaxAsync(i => (int?)i.SequenceNumber) ?? 0;
 
-                        sb.Append(max + 1);
+                        var next = max + 1;
+
+                        if (p.Padding.HasValue)
+                            sb.Append(next.ToString("D" + p.Padding.Value));
+                        else
+                            sb.Append(next);
+
                         break;
                 }
             }
 
             return sb.ToString();
         }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> EditItem(EditItemViewModel model)

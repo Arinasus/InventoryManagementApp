@@ -25,22 +25,19 @@
                        class="text-white text-decoration-none">Предметов</a>
                 </th>
                 <th>Создано</th>
-                <th class="text-end">Действия</th>
+                <th class="text-end"></th>
             </tr>
         </thead>
         <tbody>
             @foreach (var inv in Model.OwnedInventories)
             {
-                <tr onclick="location.href='/Inventory/Details/@inv.Id'" style="cursor:pointer;">
+                <tr class="inv-row" onclick="location.href='/Inventory/Details/@inv.Id'" style="cursor:pointer;">
                     <td>@inv.Title</td>
                     <td>@inv.Description</td>
                     <td>@inv.ItemsCount</td>
                     <td>@inv.CreatedAt.ToShortDateString()</td>
                     <td class="text-end">
                         <div class="actions" style="display:none;">
-                            <a href="/Inventory/Edit/@inv.Id" class="text-secondary me-2">
-                                <i class="bi bi-pencil"></i>
-                            </a>
                             <a href="/Inventory/Delete/@inv.Id" class="text-danger">
                                 <i class="bi bi-trash"></i>
                             </a>

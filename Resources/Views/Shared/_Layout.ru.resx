@@ -138,4 +138,10 @@
   <data name="AdminPanel" xml:space="preserve">
     <value>Панель администратора</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Регистрация</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Вход</value>
+  </data>
 </root>

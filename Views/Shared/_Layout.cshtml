@@ -92,6 +92,10 @@
                                 <option value="en" selected="@(culture == "en")">English</option>
                             </select>
                         </form>
+                        <form class="d-flex" method="get" action="/Search">
+                            <input class="form-control me-2" type="search" name="q" placeholder="Поиск..." />
+                            <button class="btn btn-outline-light" type="submit">Найти</button>
+                        </form>
 
                         <partial name="_LoginPartial" />
                     </div>

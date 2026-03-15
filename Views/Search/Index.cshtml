@@ -1,0 +1,23 @@
+﻿<h2>Результаты поиска: "@Model.Query"</h2>
+
+<h4>Инвентарные книги</h4>
+<table class="table">
+    @foreach (var b in Model.Books)
+    {
+        <tr>
+            <td><a href="/Inventory/Details/@b.Id">@b.Title</a></td>
+            <td>@b.Description</td>
+        </tr>
+    }
+</table>
+
+<h4>Предметы</h4>
+<table class="table">
+    @foreach (var i in Model.Items)
+    {
+        <tr>
+            <td><a href="/Inventory/Item/@i.Id">@i.CustomId</a></td>
+            <td>@i.CreatedAt</td>
+        </tr>
+    }
+</table>

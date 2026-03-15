@@ -138,4 +138,10 @@
   <data name="AdminPanel" xml:space="preserve">
     <value>AdminPanel</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Register</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Login</value>
+  </data>
 </root>

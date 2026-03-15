@@ -965,19 +965,29 @@ namespace InventoryManagementApp.Controllers
 
             return PartialView("_TabSettings", model);
         }
+        [HttpGet]
         public async Task<IActionResult> SearchUsers(string query)
         {
             if (string.IsNullOrWhiteSpace(query))
                 return Json(new List<object>());
 
+            query = query.ToLower();
+
             var users = await _context.Users
-                .Where(u => u.Email.Contains(query) || u.UserName.Contains(query))
-                .Select(u => new { u.Id, u.Email, u.UserName })
+                .Where(u =>
+                    u.Email.ToLower().StartsWith(query) ||
+                    u.UserName.ToLower().StartsWith(query))
+                .Select(u => new {
+                    id = u.Id,
+                    email = u.Email,
+                    userName = u.UserName
+                })
                 .Take(10)
                 .ToListAsync();
 
             return Json(users);
         }
+
         [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddAccess(int inventoryId, string userId)

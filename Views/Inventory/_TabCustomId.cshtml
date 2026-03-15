@@ -23,14 +23,14 @@
                     <span class="text-muted">(@part.Value)</span>
                 }
             </div>
-
-            <form method="post" action="/Inventory/DeleteCustomIdPart/@part.Id">
-                <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
-                <button class="btn btn-sm btn-danger">Удалить</button>
-            </form>
         </li>
     }
 </ul>
+<div id="delete-zone"
+     class="border border-danger text-center p-3 mb-3 rounded"
+     style="background:#ffe5e5;">
+    Перетащите элемент сюда, чтобы удалить
+</div>
 
 <h5>Добавить элемент</h5>
 
@@ -61,21 +61,46 @@
 <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
 
 <script>
-    const idPartsList  = document.getElementById('id-parts');
+        const idPartsList = document.getElementById('id-parts');
+    const deleteZone = document.getElementById('delete-zone');
 
     if (idPartsList) {
         new Sortable(idPartsList, {
-        animation: 150,
-        handle: '.handle',
-        onEnd: function () {
-            const ids = [...idPartsList .querySelectorAll('li')].map(li => parseInt(li.dataset.id));
+            animation: 150,
+            handle: '.handle',
+            group: { name: 'idparts', pull: true, put: false },
 
-            fetch('/Inventory/ReorderCustomIdParts', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(ids)
-            });
-        }
+            onEnd: function (evt) {
+                if (evt.to === deleteZone) {
+                    const id = evt.item.dataset.id;
+
+                    fetch(`/Inventory/DeleteCustomIdPart/${id}`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ inventoryId: @Model.InventoryId })
+                    }).then(() => {
+                        evt.item.remove();
+                    });
+
+                    return;
+                }
+
+                const ids = [...idPartsList.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
+
+                    fetch(`/Inventory/DeleteCustomIdPart/${id}?inventoryId=@Model.InventoryId`, {
+        method: 'POST'
+    }).then(() => {
+        evt.item.remove();
     });
+
+            }
+        });
     }
+
+    if (deleteZone) {
+        new Sortable(deleteZone, {
+            group: { name: 'idparts', pull: false, put: true }
+        });
+    }
+
 </script>

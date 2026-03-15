@@ -10,7 +10,6 @@ using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApp.Controllers
 {
-    [Authorize]
     public class InventoryController : Controller
     {
         private readonly AppDbContext _context;
@@ -78,11 +77,12 @@ namespace InventoryManagementApp.Controllers
 
             return await IsOwner(inventoryId, user);
         }
+        [Authorize]
         public IActionResult Create()
         {
             return View();
         }
-
+        [Authorize]
         // POST: Inventory/Create
         [HttpPost]
         public async Task<IActionResult> Create(Inventory model)
@@ -103,7 +103,7 @@ namespace InventoryManagementApp.Controllers
 
             return RedirectToAction("Details", new { id = model.Id });
         }
-
+        [AllowAnonymous]
         // GET: Inventory/Details/5
         public async Task<IActionResult> Details(int id)
         {
@@ -262,7 +262,7 @@ namespace InventoryManagementApp.Controllers
             };
         }
 
-
+        [AllowAnonymous]
         public async Task<IActionResult> Items(int id)
         {
             var inventory = await _context.Inventories
@@ -477,7 +477,7 @@ namespace InventoryManagementApp.Controllers
 
             return sb.ToString();
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> EditItem(EditItemViewModel model)
         {
@@ -601,14 +601,7 @@ namespace InventoryManagementApp.Controllers
             return RedirectToAction("Item", new { id = item.Id });
         }
 
-        private bool ValidateCustomIdFormat(string customId, Inventory inventory)
-        {
-            if (string.IsNullOrWhiteSpace(customId))
-                return false;
-            return true;
-        }
-
-
+        [Authorize]
         public async Task<IActionResult> DeleteItem(int id)
         {
 
@@ -703,6 +696,7 @@ namespace InventoryManagementApp.Controllers
 
             return RedirectToAction("Details", new { id = field.InventoryId });
         }
+        [Authorize]
         public async Task<IActionResult> DeleteField(int id, int inventoryId)
         {
             if (!await HasOwnerAccess(inventoryId))
@@ -730,6 +724,7 @@ namespace InventoryManagementApp.Controllers
 
             return RedirectToAction("Details", new { id = inventoryId });
         }
+        [Authorize]
         public async Task<IActionResult> CustomId(int id)
         {
             if (!await HasOwnerAccess(id))
@@ -889,6 +884,7 @@ namespace InventoryManagementApp.Controllers
 
             return RedirectToAction("Details", new { id = inventoryId });
         }
+        [Authorize]
         public async Task<IActionResult> DiscussionPosts(int id)
         {
             if (!await HasReadAccess(id))
@@ -982,7 +978,7 @@ namespace InventoryManagementApp.Controllers
 
             return Json(users);
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> AddAccess(int inventoryId, string userId)
         {
@@ -1005,7 +1001,7 @@ namespace InventoryManagementApp.Controllers
 
             return RedirectToAction("Details", new { id = inventoryId });
         }
-
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> RemoveAccess(int id, int inventoryId)
         {

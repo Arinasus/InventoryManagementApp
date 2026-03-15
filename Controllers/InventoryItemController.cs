@@ -1,5 +1,6 @@
 ﻿using InventoryManagementApp.Data;
 using InventoryManagementApp.Model;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,7 @@ namespace InventoryManagementApp.Controllers
             _context = context;
             _userManager = userManager;
         }
+        [Authorize]
         [HttpPost]
         public async Task<IActionResult> ToggleLike(int itemId)
         {

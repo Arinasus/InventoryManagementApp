@@ -472,7 +472,6 @@ namespace InventoryManagementApp.Controllers
                             .MaxAsync(i => (int?)i.SequenceNumber) ?? 0;
 
                         var next = max + 1;
-
                         if (p.Padding.HasValue)
                             sb.Append(next.ToString("D" + p.Padding.Value));
                         else
@@ -483,6 +482,18 @@ namespace InventoryManagementApp.Controllers
             }
 
             return sb.ToString();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> UpdatePadding(int id, int padding, int inventoryId)
+        {
+            var part = await _context.InventoryCustomIdParts.FindAsync(id);
+            if (part == null) return NotFound();
+
+            part.Padding = padding;
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id = inventoryId });
         }
 
         [Authorize]

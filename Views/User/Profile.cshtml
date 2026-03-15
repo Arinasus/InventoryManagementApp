@@ -11,7 +11,7 @@
     </form>
 
     <h3 class="mb-3">Мои инвентарные книги</h3>
-
+    <a href="/Inventory/Create" class="btn btn-primary mb-3">Создать инвентарную книгу</a>
     <table class="table table-hover">
         <thead class="table-dark">
             <tr>
@@ -25,6 +25,7 @@
                        class="text-white text-decoration-none">Предметов</a>
                 </th>
                 <th>Создано</th>
+                <th class="text-end">Действия</th>
             </tr>
         </thead>
         <tbody>
@@ -35,6 +36,16 @@
                     <td>@inv.Description</td>
                     <td>@inv.ItemsCount</td>
                     <td>@inv.CreatedAt.ToShortDateString()</td>
+                    <td class="text-end">
+                        <div class="actions" style="display:none;">
+                            <a href="/Inventory/Edit/@inv.Id" class="text-secondary me-2">
+                                <i class="bi bi-pencil"></i>
+                            </a>
+                            <a href="/Inventory/Delete/@inv.Id" class="text-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </div>
+                    </td>
                 </tr>
             }
         </tbody>
@@ -65,3 +76,13 @@
     </table>
 
 </div>
+<script>
+    document.querySelectorAll(".inv-row").forEach(row => {
+        row.addEventListener("mouseenter", () => {
+            row.querySelector(".actions").style.display = "inline-block";
+        });
+        row.addEventListener("mouseleave", () => {
+            row.querySelector(".actions").style.display = "none";
+        });
+    });
+</script>

@@ -1,54 +1,34 @@
-﻿@model InventoryCustomIdViewModel
-@using Microsoft.AspNetCore.Mvc.Localization
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model InventoryCustomIdViewModel
 @inject IViewLocalizer Localizer
 
-@functions {
-    public string GetPopoverText(InventoryCustomIdPart part)
-    {
-        return part.Type switch
-        {
-            CustomIdPartType.FixedText =>
-                Localizer["FixedTextDescription"].Value,
-
-            CustomIdPartType.Random20Bit =>
-                Localizer["Random20BitDescription"].Value,
-
-            CustomIdPartType.Random32Bit =>
-                Localizer["Random32BitDescription"].Value,
-
-            CustomIdPartType.Random6Digits =>
-                Localizer["Random6DigitsDescription"].Value,
-
-            CustomIdPartType.Random9Digits =>
-                Localizer["Random9DigitsDescription"].Value,
-
-            CustomIdPartType.Guid =>
-                Localizer["GuidDescription"].Value,
-
-            CustomIdPartType.DateTime =>
-                Localizer["DateTimeDescription"].Value,
-
-            CustomIdPartType.Sequence =>
-                Localizer["SequenceDescription"].Value,
-
-            _ => Localizer["DefaultDescription"].Value
-        };
-    }
-}
-
-<h4>@Localizer["CustomId"]</h4>
+<h4>@Localizer["CustomId"].Value</h4>
 
 <div class="alert alert-info">
-    @Localizer["Example"]: <strong>@Model.Preview</strong>
+    @Localizer["Example"].Value: <strong>@Model.Preview</strong>
 </div>
 
-<h5>@Localizer["IdParts"]</h5>
+<h5>@Localizer["IdParts"].Value</h5>
 
 <ul id="id-parts" class="list-group mb-3">
     @foreach (var part in Model.Parts)
     {
+        var descKey = part.Type switch
+        {
+            CustomIdPartType.FixedText => "FixedTextDescription",
+            CustomIdPartType.Random20Bit => "Random20BitDescription",
+            CustomIdPartType.Random32Bit => "Random32BitDescription",
+            CustomIdPartType.Random6Digits => "Random6DigitsDescription",
+            CustomIdPartType.Random9Digits => "Random9DigitsDescription",
+            CustomIdPartType.Guid => "GuidDescription",
+            CustomIdPartType.DateTime => "DateTimeDescription",
+            CustomIdPartType.Sequence => "SequenceDescription",
+            _ => "DefaultDescription"
+        };
+
         <li class="list-group-item" data-id="@part.Id">
             <div class="d-flex justify-content-between align-items-center">
+
                 <div>
                     <span class="handle me-2">☰</span>
                     <strong>@part.Type</strong>
@@ -58,8 +38,8 @@
                        data-bs-toggle="popover"
                        data-bs-trigger="focus"
                        data-bs-placement="right"
-                       data-bs-title="@Localizer["Description"]"
-                       data-bs-content="@GetPopoverText(part)">
+                       data-bs-title="@Localizer["Description"].Value"
+                       data-bs-content="@Localizer[descKey].Value">
                     </i>
 
                     @if (part.Type == CustomIdPartType.FixedText)
@@ -80,10 +60,11 @@
                                    value="@(part.Padding ?? 4)"
                                    class="form-control form-control-sm d-inline-block"
                                    style="width:80px;"
-                                   title="@Localizer["Padding"]" />
+                                   title="@Localizer["Padding"].Value" />
                         </form>
                     }
                 </div>
+
             </div>
         </li>
     }
@@ -92,24 +73,80 @@
 <div id="delete-zone"
      class="border border-danger text-center p-3 mb-3 rounded"
      style="background:#ffe5e5;">
-    @Localizer["DragToDelete"]
+    @Localizer["DragToDelete"].Value
 </div>
 
-<h5>@Localizer["AddPart"]</h5>
+<h5>@Localizer["AddPart"].Value</h5>
 
 <form method="post" action="/Inventory/AddCustomIdPart">
     <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
 
     <select name="type" class="form-select mb-2">
-        <option value="FixedText">@Localizer["FixedText"]</option>
-        <option value="Random20Bit">@Localizer["Random20Bit"]</option>
-        <option value="Random32Bit">@Localizer["Random32Bit"]</option>
-        <option value="Random6Digits">@Localizer["Random6Digits"]</option>
-        <option value="Random9Digits">@Localizer["Random9Digits"]</option>
-        <option value="Guid">@Localizer["Guid"]</option>
-        <option value="DateTime">@Localizer["DateTime"]</option>
-        <option value="Sequence">@Localizer["Sequence"]</option>
+        <option value="FixedText">@Localizer["FixedText"].Value</option>
+        <option value="Random20Bit">@Localizer["Random20Bit"].Value</option>
+        <option value="Random32Bit">@Localizer["Random32Bit"].Value</option>
+        <option value="Random6Digits">@Localizer["Random6Digits"].Value</option>
+        <option value="Random9Digits">@Localizer["Random9Digits"].Value</option>
+        <option value="Guid">@Localizer["Guid"].Value</option>
+        <option value="DateTime">@Localizer["DateTime"].Value</option>
+        <option value="Sequence">@Localizer["Sequence"].Value</option>
     </select>
 
-    <button class="btn btn-primary">@Localizer["Add"]</button>
+    <button class="btn btn-primary">@Localizer["Add"].Value</button>
 </form>
+
+<style>
+    .handle {
+        cursor: grab;
+        font-size: 18px;
+    }
+</style>
+
+<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+
+        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
+            new bootstrap.Popover(el);
+        });
+
+        const idPartsList = document.getElementById('id-parts');
+        const deleteZone = document.getElementById('delete-zone');
+
+        if (idPartsList) {
+            new Sortable(idPartsList, {
+                animation: 150,
+                handle: '.handle',
+                group: { name: 'idparts', pull: true, put: false },
+
+                onEnd: function (evt) {
+
+                    if (evt.to === deleteZone) {
+                        const id = evt.item.dataset.id;
+
+                        fetch(`/Inventory/DeleteCustomIdPart/${id}?inventoryId=@Model.InventoryId`, {
+                            method: 'POST'
+                        }).then(() => evt.item.remove());
+
+                        return;
+                    }
+
+                    const ids = [...idPartsList.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
+
+                    fetch('/Inventory/ReorderCustomIdParts', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(ids)
+                    });
+                }
+            });
+        }
+
+        if (deleteZone) {
+            new Sortable(deleteZone, {
+                group: { name: 'idparts', pull: false, put: true }
+            });
+        }
+    });
+</script>

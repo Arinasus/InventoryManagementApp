@@ -9,10 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
+builder.Services.AddScoped<IInventoryAccessService, InventoryAccessService>();
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -51,12 +50,7 @@ builder.Services.AddAuthentication()
     });
 builder.Services.AddScoped<CustomIdService>();
 
-/*.AddFacebook(options =>
-{
-    options.AppId = "...";
-    options.AppSecret = "...";
-});
-*/
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 

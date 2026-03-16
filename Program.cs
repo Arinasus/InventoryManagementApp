@@ -12,6 +12,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddScoped<IInventoryAccessService, InventoryAccessService>();
+builder.Services.AddScoped<CustomIdService>();
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -32,6 +33,7 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders()
 .AddDefaultUI();
+
 builder.Services.AddControllersWithViews()
     .AddViewLocalization()
     .AddDataAnnotationsLocalization();
@@ -54,8 +56,6 @@ builder.Services.AddAuthentication()
         options.ClientSecret = builder.Configuration["Authentication:Discord:ClientSecret"];
         options.Scope.Add("email");
     });
-builder.Services.AddScoped<CustomIdService>();
-
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

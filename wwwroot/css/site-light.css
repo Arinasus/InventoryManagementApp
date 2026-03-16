@@ -1,4 +1,25 @@
-﻿body {
-    background-color: #ffffff;
-    color: #000000;
+﻿/* cite-light */
+body {
+    background-color: #D1ECE7;
+    color: #22352C;
 }
+
+.navbar, .table {
+    background-color: #ffffff;
+    color: #22352C;
+}
+
+a {
+    color: #BD7F01;
+}
+
+button, .btn-primary {
+    background-color: #BD7F01;
+    border-color: #BD7F01;
+    color: #ffffff;
+}
+
+    button:hover, .btn-primary:hover {
+        background-color: #A23D01;
+        border-color: #A23D01;
+    }

@@ -1,13 +1,25 @@
-﻿body {
-    background-color: #121212 !important;
-    color: #e0e0e0 !important;
+﻿/* cite-dark */
+body {
+    background-color: #22352C !important;
+    color: #D1ECE7 !important;
 }
 
 .navbar, .table {
-    background-color: #1e1e1e !important;
-    color: #fff !important;
+    background-color: #1A2924 !important; /* чуть темнее для глубины */
+    color: #D1ECE7 !important;
 }
 
 a {
-    color: #9ecbff !important;
+    color: #FEE16C !important;
 }
+
+button, .btn-primary {
+    background-color: #BD7F01 !important;
+    border-color: #BD7F01 !important;
+    color: #22352C !important;
+}
+
+    button:hover, .btn-primary:hover {
+        background-color: #A23D01 !important;
+        border-color: #A23D01 !important;
+    }

@@ -1,6 +1,10 @@
-﻿<h2>Результаты поиска: "@Model.Query"</h2>
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model SearchResultsViewModel
+@inject IViewLocalizer Localizer
 
-<h4>Инвентарные книги</h4>
+<h2>@Localizer["SearchResults"].Value: "@Model.Query"</h2>
+
+<h4>@Localizer["Inventories"].Value</h4>
 <table class="table">
     @foreach (var b in Model.Books)
     {
@@ -11,7 +15,7 @@
     }
 </table>
 
-<h4>Предметы</h4>
+<h4>@Localizer["Items"].Value</h4>
 <table class="table">
     @foreach (var i in Model.Items)
     {

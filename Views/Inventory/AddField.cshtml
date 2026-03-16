@@ -1,8 +1,10 @@
 ﻿@using InventoryManagementApp.Model
+@using Microsoft.AspNetCore.Mvc.Localization
 @model InventoryField
+@inject IViewLocalizer Localizer
 
 <div class="container mt-4">
-    <h2>Добавить поле</h2>
+    <h2>@Localizer["AddField"].Value</h2>
 
     <form asp-action="AddField" method="post">
 
@@ -10,36 +12,34 @@
         <input type="hidden" asp-for="InventoryId" />
 
         <div class="mb-3">
-            <label class="form-label">Название поля</label>
+            <label class="form-label">@Localizer["FieldName"].Value</label>
             <input asp-for="Title" class="form-control" required />
-            <span class="text-muted">Например: Цена, Цвет, Вес, Состояние</span>
+            <span class="text-muted">@Localizer["FieldNameHint"].Value</span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Описание</label>
+            <label class="form-label">@Localizer["Description"].Value</label>
             <textarea asp-for="Description" class="form-control" rows="2"></textarea>
-            <span class="text-muted">Необязательно. Показывается как подсказка при вводе значения.</span>
+            <span class="text-muted">@Localizer["DescriptionHint"].Value</span>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Тип поля</label>
+            <label class="form-label">@Localizer["FieldType"].Value</label>
             <select asp-for="Type" class="form-select">
-                <option value="SingleLineText">Однострочный текст</option>
-                <option value="MultiLineText">Многострочный текст</option>
-                <option value="Number">Число</option>
-                <option value="Boolean">Да/Нет</option>
-                <option value="DocumentLink">Ссылка на документ</option>
+                <option value="SingleLineText">@Localizer["SingleLineText"].Value</option>
+                <option value="MultiLineText">@Localizer["MultiLineText"].Value</option>
+                <option value="Number">@Localizer["Number"].Value</option>
+                <option value="Boolean">@Localizer["Boolean"].Value</option>
+                <option value="DocumentLink">@Localizer["DocumentLink"].Value</option>
             </select>
         </div>
 
         <div class="form-check mb-3">
             <input asp-for="ShowInTable" class="form-check-input" />
-            <label class="form-check-label">Показывать в таблице предметов</label>
+            <label class="form-check-label">@Localizer["ShowInTable"].Value</label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Добавить</button>
-        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">Отмена</a>
+        <button type="submit" class="btn btn-primary">@Localizer["Add"].Value</button>
+        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">@Localizer["Cancel"].Value</a>
     </form>
 </div>
-
-

@@ -1,36 +1,38 @@
 ﻿@using InventoryManagementApp.Model
+@using Microsoft.AspNetCore.Mvc.Localization
 @model Inventory
+@inject IViewLocalizer Localizer
 
 <div class="container mt-4">
-    <h2>Создать инвентарную книгу</h2>
+    <h2>@Localizer["CreateInventory"].Value</h2>
 
     <form method="post">
         <div class="mb-3">
-            <label class="form-label">Название</label>
+            <label class="form-label">@Localizer["Title"].Value</label>
             <input asp-for="Title" class="form-control" required />
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Описание</label>
+            <label class="form-label">@Localizer["Description"].Value</label>
             <textarea asp-for="Description" class="form-control"></textarea>
         </div>
 
         <div class="mb-3">
-            <label class="form-label">Категория</label>
+            <label class="form-label">@Localizer["Category"].Value</label>
             <select asp-for="Category" class="form-select">
-                <option>Оборудование</option>
-                <option>Мебель</option>
-                <option>Книга</option>
-                <option>Документы</option>
-                <option>Другое</option>
+                <option>@Localizer["Equipment"].Value</option>
+                <option>@Localizer["Furniture"].Value</option>
+                <option>@Localizer["Book"].Value</option>
+                <option>@Localizer["Documents"].Value</option>
+                <option>@Localizer["Other"].Value</option>
             </select>
         </div>
 
         <div class="form-check mb-3">
             <input asp-for="IsPublic" class="form-check-input" />
-            <label class="form-check-label">Публичная книга</label>
+            <label class="form-check-label">@Localizer["PublicInventory"].Value</label>
         </div>
 
-        <button type="submit" class="btn btn-primary">Создать</button>
+        <button type="submit" class="btn btn-primary">@Localizer["Create"].Value</button>
     </form>
 </div>

@@ -1,18 +1,22 @@
 ﻿@using InventoryManagementApp.Model
+@using Microsoft.AspNetCore.Mvc.Localization
 @model EditItemViewModel
+@inject IViewLocalizer Localizer
 
 <div class="container mt-4">
-    <h2>Редактировать предмет</h2>
+    <h2>@Localizer["EditItem"].Value</h2>
 
     <form asp-action="EditItem" method="post">
         <input type="hidden" asp-for="ItemId" />
         <input type="hidden" asp-for="InventoryId" />
         <input type="hidden" asp-for="Version" />
+
         <div class="mb-3">
-            <label class="form-label">Пользовательский ID</label>
+            <label class="form-label">@Localizer["CustomId"].Value</label>
             <input class="form-control" name="CustomId" value="@Model.CustomId" />
             <span class="text-danger">@Html.ValidationMessage("CustomId")</span>
         </div>
+
         @foreach (var field in Model.Fields)
         {
             <div class="mb-3">
@@ -21,47 +25,33 @@
                 @switch (field.Type)
                 {
                     case FieldType.SingleLineText:
-                        <input class="form-control"
-                               name="Values[@field.Id]"
-                               value="@Model.Values[field.Id]" />
+                        <input class="form-control" name="Values[@field.Id]" value="@Model.Values[field.Id]" />
                         break;
 
                     case FieldType.MultiLineText:
-                        <textarea class="form-control"
-                      name="Values[@field.Id]"
-                      rows="3">@Model.Values[field.Id]</textarea>
+                        <textarea class="form-control" name="Values[@field.Id]" rows="3">@Model.Values[field.Id]</textarea>
                         break;
 
                     case FieldType.Number:
-                        <input class="form-control"
-                               type="number"
-                               name="Values[@field.Id]"
-                               value="@Model.Values[field.Id]" />
+                        <input class="form-control" type="number" name="Values[@field.Id]" value="@Model.Values[field.Id]" />
                         break;
 
                     case FieldType.DocumentLink:
-                        <input class="form-control"
-                               type="url"
-                               name="Values[@field.Id]"
-                               value="@Model.Values[field.Id]" />
+                        <input class="form-control" type="url" name="Values[@field.Id]" value="@Model.Values[field.Id]" />
                         break;
 
                     case FieldType.Boolean:
                         var isChecked = Model.Values[field.Id] == "true";
                         <div class="form-check">
-                            <input class="form-check-input"
-                                   type="checkbox"
-                                   name="Values[@field.Id]"
-                                   value="true"
-                                   @(isChecked ? "checked" : "") />
-                            <label class="form-check-label">Да</label>
+                            <input class="form-check-input" type="checkbox" name="Values[@field.Id]" value="true" @(isChecked ? "checked" : "") />
+                            <label class="form-check-label">@Localizer["Yes"].Value</label>
                         </div>
                         break;
                 }
             </div>
         }
 
-        <button type="submit" class="btn btn-primary">Сохранить</button>
-        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">Назад</a>
+        <button type="submit" class="btn btn-primary">@Localizer["Save"].Value</button>
+        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">@Localizer["Back"].Value</a>
     </form>
 </div>

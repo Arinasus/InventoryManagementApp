@@ -1,7 +1,9 @@
 ﻿@model AddItemViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <div class="container mt-4">
-    <h2>Добавить предмет</h2>
+    <h2>@Localizer["AddItem"].Value</h2>
 
     <form asp-action="AddItem" method="post">
         <input type="hidden" asp-for="InventoryId" />
@@ -10,7 +12,7 @@
 
         @if (Model.Fields == null || !Model.Fields.Any())
         {
-            <p class="text-muted">Для этой инвентарной книги пока нет пользовательских полей.</p>
+            <p class="text-muted">@Localizer["NoCustomFields"].Value</p>
         }
         else
         {
@@ -27,65 +29,40 @@
                     @switch ((InventoryManagementApp.Models.FieldType)field.Type)
                     {
                         case FieldType.SingleLineText:
-                            {
-                                <input class="form-control"
-                                       name="Values[@field.Id]" />
-                                break;
-                            }
+                            <input class="form-control" name="Values[@field.Id]" />
+                            break;
 
                         case FieldType.MultiLineText:
-                            {
-                                <textarea class="form-control"
-                      name="Values[@field.Id]"
-                      rows="3"></textarea>
-                                break;
-                            }
+                            <textarea class="form-control" name="Values[@field.Id]" rows="3"></textarea>
+                            break;
 
                         case FieldType.Number:
-                            {
-                                <input class="form-control"
-                                       type="number"
-                                       name="Values[@field.Id]" />
-                                break;
-                            }
+                            <input class="form-control" type="number" name="Values[@field.Id]" />
+                            break;
 
                         case FieldType.DocumentLink:
-                            {
-                                <input class="form-control"
-                                       type="url"
-                                       name="Values[@field.Id]" />
-                                break;
-                            }
+                            <input class="form-control" type="url" name="Values[@field.Id]" />
+                            break;
 
                         case FieldType.Boolean:
-                            {
-                                <div class="form-check">
-                                    <input class="form-check-input"
-                                           type="checkbox"
-                                           value="true"
-                                           name="Values[@field.Id]" />
-                                    <label class="form-check-label">Да</label>
-                                </div>
-                                break;
-                            }
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" value="true" name="Values[@field.Id]" />
+                                <label class="form-check-label">@Localizer["Yes"].Value</label>
+                            </div>
+                            break;
 
                         default:
-                            {
-                                <input class="form-control"
-                                       name="Values[@field.Id]" />
-                                break;
-                            }
+                            <input class="form-control" name="Values[@field.Id]" />
+                            break;
                     }
 
-                    <span class="text-danger">
-                        @Html.ValidationMessage($"Values[{field.Id}]")
-                    </span>
+                    <span class="text-danger">@Html.ValidationMessage($"Values[{field.Id}]")</span>
                 </div>
             }
         }
 
-        <button type="submit" class="btn btn-primary">Создать предмет</button>
-        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">Отмена</a>
+        <button type="submit" class="btn btn-primary">@Localizer["CreateItem"].Value</button>
+        <a href="/Inventory/Details/@Model.InventoryId" class="btn btn-secondary">@Localizer["Cancel"].Value</a>
     </form>
 </div>
 

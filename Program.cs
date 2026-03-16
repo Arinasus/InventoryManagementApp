@@ -3,7 +3,7 @@ using InventoryManagementApp.Model;
 using InventoryManagementApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
-using AspNet.Security.OAuth.GitHub;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -48,12 +48,12 @@ builder.Services.AddAuthentication()
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    })
-    .AddGitHub(options =>
+    });
+/*    .AddGitHub(options =>
     {
         options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
-    });
+    });*/
 
 
 builder.Logging.ClearProviders();

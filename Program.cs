@@ -9,8 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-
-
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
 builder.Services.AddScoped<IInventoryAccessService, InventoryAccessService>();
@@ -52,12 +50,13 @@ builder.Services.AddAuthentication()
     });
 builder.Services.AddScoped<CustomIdService>();
 
-/*.AddFacebook(options =>
-{
-    options.AppId = "...";
-    options.AppSecret = "...";
-});
-*/
+builder.Services.AddAuthentication()
+    .AddGitHub(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
+    });
+
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 

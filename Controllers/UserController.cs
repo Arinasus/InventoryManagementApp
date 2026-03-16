@@ -83,5 +83,17 @@ namespace InventoryManagementApp.Controllers
             };
             return View(model);
         }
+        [AllowAnonymous]
+        public async Task<IActionResult> PublicProfile(string id)
+        {
+            var user = await _context.Users
+                .FirstOrDefaultAsync(u => u.Id == id);
+
+            if (user == null)
+                return NotFound();
+
+            return View("PublicProfile", user);
+        }
+
     }
 }

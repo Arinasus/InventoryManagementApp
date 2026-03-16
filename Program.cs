@@ -96,18 +96,16 @@ if (!app.Environment.IsProduction())
 }
 
 app.UseRouting();
-//app.MapStaticAssets();
 app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-//    .WithStaticAssets();
-app.UseStaticFiles();
 
+app.UseStaticFiles();
 app.MapRazorPages();
-//    .WithStaticAssets();
+
 using (var scope = app.Services.CreateScope())
 {
     var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();

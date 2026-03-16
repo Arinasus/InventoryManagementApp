@@ -4,15 +4,15 @@ using InventoryManagementApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
-
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 builder.Services.AddLocalization(options => options.ResourcesPath = "Resources");
-builder.Services.AddScoped<IInventoryAccessService, InventoryAccessService>();
 
 builder.Services.Configure<RequestLocalizationOptions>(options =>
 {
@@ -49,13 +49,14 @@ builder.Services.AddAuthentication()
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
     });
-/*    .AddGitHub(options =>
-    {
-        options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
-        options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
-    });*/
+builder.Services.AddScoped<CustomIdService>();
 
-
+/*.AddFacebook(options =>
+{
+    options.AppId = "...";
+    options.AppSecret = "...";
+});
+*/
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 

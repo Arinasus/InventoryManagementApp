@@ -1,17 +1,19 @@
 ﻿@model InventorySettingsViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 <div class="mb-3">
-    <label class="form-label">Название</label>
+    <label class="form-label">@Localizer["Title"].Value</label>
     <input id="inv-title" class="form-control" value="@Model.Title" />
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Описание (Markdown)</label>
+    <label class="form-label">@Localizer["Description"].Value (@Localizer["Markdown"].Value)</label>
     <textarea id="inv-desc" class="form-control" rows="5">@(Model.Description ?? "")</textarea>
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Теги</label>
+    <label class="form-label">@Localizer["Tags"].Value</label>
 
     <input id="inv-tags"
            value='@Newtonsoft.Json.JsonConvert.SerializeObject(Model.Tags ?? new List<string>())' />
@@ -20,7 +22,7 @@
 </div>
 
 <div class="mb-3">
-    <label class="form-label">Категория</label>
+    <label class="form-label">@Localizer["Category"].Value</label>
     <select id="inv-category" class="form-select">
         @foreach (var c in Model.AvailableCategories)
         {
@@ -31,13 +33,14 @@
 
 <div class="form-check mb-3">
     <input class="form-check-input" type="checkbox" id="inv-public" @(Model.IsPublic ? "checked" : "") />
-    <label class="form-check-label" for="inv-public">Публичная книга</label>
+    <label class="form-check-label" for="inv-public">@Localizer["PublicInventory"].Value</label>
 </div>
 
 <input type="hidden" id="inv-id" value="@Model.InventoryId" />
 <input type="hidden" id="inv-rowversion" value="@(Model.RowVersion != null ? Convert.ToBase64String(Model.RowVersion) : "")" />
 
 <div id="autosave-status" class="text-muted small mt-2"></div>
+
 @section Scripts {
     <script src="~/js/inventory-autosave.js"></script>
 }

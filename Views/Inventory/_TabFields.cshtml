@@ -1,23 +1,25 @@
-﻿@model InventoryFieldsViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model InventoryFieldsViewModel
+@inject IViewLocalizer Localizer
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Поля инвентаря</h4>
+    <h4>@Localizer["InventoryFields"].Value</h4>
 
     <a class="btn btn-primary" href="/Inventory/AddField/@Model.InventoryId">
-        + Добавить поле
+        + @Localizer["AddField"].Value
     </a>
 </div>
 
 @if (Model.Fields == null || !Model.Fields.Any())
 {
-    <p class="text-muted">Пока нет ни одного поля.</p>
+    <p class="text-muted">@Localizer["NoFields"].Value</p>
 }
 else
 {
     <ul id="fields-list" class="list-group">
         @foreach (var field in Model.Fields)
         {
-            <li class="list-group-item d-flex justify-content-between align-items-center"
+            <li class="list-group-item d-flex justify-content-between align-items-center field-row"
                 data-id="@field.Id">
 
                 <div>
@@ -35,10 +37,15 @@ else
                                @(field.ShowInTable ? "checked" : "") />
                     </form>
 
-                    <a href="/Inventory/DeleteField/@field.Id?inventoryId=@Model.InventoryId"
-                       class="btn btn-sm btn-danger">
-                        Удалить
-                    </a>
+                    <div class="actions" style="display:none;">
+                        <form method="post" action="/Inventory/DeleteField/@field.Id" class="d-inline">
+                            <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+                            <a href="#" onclick="this.closest('form').submit(); return false;" class="text-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </form>
+                    </div>
+
                 </div>
             </li>
         }
@@ -51,6 +58,14 @@ else
         font-size: 18px;
     }
 
+    .field-row .actions {
+        display: none;
+    }
+
+    .field-row:hover .actions {
+        display: inline-block;
+    }
+
     #fields-list .list-group-item {
         user-select: none;
     }
@@ -61,20 +76,18 @@ else
 <script>
     const list = document.getElementById('fields-list');
     if (list) {
-    new Sortable(list, {
-        animation: 150,
-        handle: '.handle',
-        onEnd: function () {
-            const ids = [...list.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
+        new Sortable(list, {
+            animation: 150,
+            handle: '.handle',
+            onEnd: function () {
+                const ids = [...list.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
 
-            fetch('/Inventory/ReorderFields', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify(ids)
-            });
-        }
-    });
+                fetch('/Inventory/ReorderFields', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(ids)
+                });
+            }
+        });
     }
 </script>

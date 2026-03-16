@@ -1,17 +1,19 @@
 ﻿@using InventoryManagementApp.Models
+@using Microsoft.AspNetCore.Mvc.Localization
 @model InventoryItemsViewModel
+@inject IViewLocalizer Localizer
 
 <div class="d-flex justify-content-between align-items-center mb-3">
-    <h4>Предметы</h4>
+    <h4>@Localizer["Items"].Value</h4>
 
     <a href="/Inventory/AddItem/@Model.InventoryId" class="btn btn-primary">
-        Добавить предмет
+        @Localizer["AddItem"].Value
     </a>
 </div>
 
 @if (Model.Items == null || !Model.Items.Any())
 {
-    <p class="text-muted">В этом инвентаре пока нет предметов.</p>
+    <p class="text-muted">@Localizer["NoItems"].Value</p>
 }
 else
 {
@@ -20,14 +22,14 @@ else
             <tr>
                 <th>ID</th>
                 <th>Custom ID</th>
-                <th>Создан</th>
+                <th>@Localizer["Created"].Value</th>
 
                 @foreach (var field in Model.TableFields)
                 {
                     <th>@field.Title</th>
                 }
 
-                <th>Лайки</th>
+                <th>@Localizer["Likes"].Value</th>
                 <th></th>
             </tr>
         </thead>
@@ -46,11 +48,13 @@ else
                     }
 
                     <td>
-                        <button class="btn btn-sm btn-outline-danger like-btn" data-id="@item.Id" onclick="event.stopPropagation();">
-                            ❤️ <span class="like-count">@item.Likes</span>
+                        <button class="btn btn-sm btn-outline-danger like-btn"
+                                data-id="@item.Id"
+                                onclick="event.stopPropagation();">
+                            <i class="bi bi-heart-fill"></i>
+                            <span class="like-count">@item.Likes</span>
                         </button>
                     </td>
-
 
                     <td class="text-end">
                         <div class="actions" style="display:none;">
@@ -65,6 +69,25 @@ else
     </table>
 }
 
+<style>
+    .item-row .actions {
+        display: none;
+    }
+
+    .item-row:hover .actions {
+        display: inline-block;
+    }
+
+    .like-btn i {
+        transition: transform 0.15s ease, color 0.15s ease;
+    }
+
+    .like-btn:hover i {
+        transform: scale(1.2);
+        color: #dc3545;
+    }
+</style>
+
 <script>
     document.querySelectorAll(".item-row").forEach(row => {
         row.addEventListener("mouseenter", () => {
@@ -75,7 +98,7 @@ else
         });
     });
 
-        document.querySelectorAll(".like-btn").forEach(btn => {
+    document.querySelectorAll(".like-btn").forEach(btn => {
         btn.addEventListener("click", () => {
             const id = btn.dataset.id;
 

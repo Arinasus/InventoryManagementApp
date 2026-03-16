@@ -2,11 +2,11 @@
 @using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
 
-<h4>@Localizer["AccessManagement"]</h4>
+<h4>@Localizer["AccessManagement"].Value</h4>
 
 <div class="mb-3">
-    <label class="form-label">@Localizer["AddUser"]</label>
-    <input id="user-search" class="form-control" placeholder="@Localizer["SearchUserPlaceholder"]" />
+    <label class="form-label">@Localizer["AddUser"].Value</label>
+    <input id="user-search" class="form-control" placeholder="@Localizer["SearchUserPlaceholder"].Value" />
     <div id="user-results" class="list-group mt-1"></div>
 </div>
 
@@ -18,14 +18,14 @@
 <hr />
 
 <h5 class="d-flex justify-content-between align-items-center">
-    <span>@Localizer["UsersWithAccess"]</span>
+    <span>@Localizer["UsersWithAccess"].Value</span>
 
     <div class="btn-group">
         <button type="button" class="btn btn-outline-secondary btn-sm" id="sort-name">
-            @Localizer["SortByName"]
+            @Localizer["SortByName"].Value
         </button>
         <button type="button" class="btn btn-outline-secondary btn-sm" id="sort-email">
-            @Localizer["SortByEmail"]
+            @Localizer["SortByEmail"].Value
         </button>
     </div>
 </h5>
@@ -33,28 +33,46 @@
 <table class="table table-striped" id="access-table">
     <thead>
         <tr>
-            <th>@Localizer["Name"]</th>
+            <th>@Localizer["Name"].Value</th>
             <th>Email</th>
-            <th>@Localizer["GrantedAt"]</th>
-            <th>@Localizer["AccessLevel"]</th>
+            <th>@Localizer["GrantedAt"].Value</th>
+            <th>@Localizer["AccessLevel"].Value</th>
             <th></th>
         </tr>
     </thead>
     <tbody>
         @foreach (var a in Model.AccessList)
         {
-            <tr>
+            <tr class="access-row">
                 <td class="col-name">@a.User.UserName</td>
                 <td class="col-email">@a.User.Email</td>
                 <td>@a.GrantedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>@Localizer["WriteAccess"]</td>
-                <td>
-                    <form method="post" action="/Inventory/RemoveAccess/@a.Id">
-                        <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
-                        <button class="btn btn-sm btn-danger">@Localizer["Remove"]</button>
-                    </form>
+                <td>@Localizer["WriteAccess"].Value</td>
+
+                <td class="text-end">
+                    <div class="actions" style="display:none;">
+                        <form method="post" action="/Inventory/RemoveAccess/@a.Id" class="d-inline">
+                            <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
+                            <a href="#" onclick="this.closest('form').submit(); return false;" class="text-danger">
+                                <i class="bi bi-trash"></i>
+                            </a>
+                        </form>
+                    </div>
                 </td>
             </tr>
         }
     </tbody>
 </table>
+
+<style>
+    .access-row .actions {
+        display: none;
+    }
+
+    .access-row:hover .actions {
+        display: inline-block;
+    }
+</style>
+
+@section Scripts {
+}

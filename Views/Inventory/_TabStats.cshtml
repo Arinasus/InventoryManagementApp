@@ -1,25 +1,27 @@
-﻿@model InventoryStatsViewModel
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model InventoryStatsViewModel
+@inject IViewLocalizer Localizer
 
-<h4>Общая статистика</h4>
+<h4>@Localizer["GeneralStats"].Value</h4>
 
 <ul class="list-group mb-4">
     <li class="list-group-item d-flex justify-content-between">
-        <span>Количество предметов</span>
+        <span>@Localizer["TotalItems"].Value</span>
         <strong>@Model.TotalItems</strong>
     </li>
     <li class="list-group-item d-flex justify-content-between">
-        <span>Количество лайков</span>
+        <span>@Localizer["TotalLikes"].Value</span>
         <strong>@Model.TotalLikes</strong>
     </li>
     <li class="list-group-item d-flex justify-content-between">
-        <span>Количество сообщений в обсуждении</span>
+        <span>@Localizer["TotalPosts"].Value</span>
         <strong>@Model.TotalPosts</strong>
     </li>
 </ul>
 
 @if (Model.AverageNumericFields.Any())
 {
-    <h5>Средние значения числовых полей</h5>
+    <h5>@Localizer["AverageNumericFields"].Value</h5>
     <ul class="list-group mb-4">
         @foreach (var kv in Model.AverageNumericFields)
         {
@@ -33,7 +35,7 @@
 
 @if (Model.MostCommonStringFields.Any())
 {
-    <h5>Частые значения текстовых полей</h5>
+    <h5>@Localizer["CommonStringFields"].Value</h5>
     <ul class="list-group">
         @foreach (var kv in Model.MostCommonStringFields)
         {
@@ -44,4 +46,3 @@
         }
     </ul>
 }
-

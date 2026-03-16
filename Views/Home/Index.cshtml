@@ -2,15 +2,12 @@
 @model HomePageViewModel
 
 <div class="container mt-4">
-
-    <!-- Поиск -->
     <form method="get" class="mb-4">
         <input type="text" name="search" value="@Model.SearchQuery"
                class="form-control form-control-lg"
                placeholder="Поиск по инвентарным книгам..." />
     </form>
 
-    <!-- Последние книги -->
     <h3 class="mb-3">Последние инвентарные книги</h3>
     <table class="table table-hover">
         <thead class="table-dark">
@@ -36,7 +33,6 @@
         </tbody>
     </table>
 
-    <!-- Популярные книги -->
     <h3 class="mt-5 mb-3">Популярные книги</h3>
     <table class="table table-hover">
         <thead class="table-dark">
@@ -60,17 +56,15 @@
         </tbody>
     </table>
 
-    <!-- Облако тегов -->
     <h3 class="mt-5 mb-3">Теги</h3>
     <div>
         @foreach (var tag in Model.Tags)
         {
-            <a href="/Home/Index?search=@tag.Name"
+            <a href="/Search?tag=@tag.Name"
                class="badge bg-primary text-white me-2 mb-2"
                style="font-size: 1.1rem;">
                 @tag.Name (@tag.Count)
             </a>
         }
     </div>
-
 </div>

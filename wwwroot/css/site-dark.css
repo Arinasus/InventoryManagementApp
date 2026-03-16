@@ -1,60 +1,13 @@
-﻿[data-theme="dark"] {
-    --bs-body-bg: #000000;
-    --bs-body-color: #ffffff;
-    --bs-navbar-bg: #000000;
-    --bs-navbar-color: #ffffff;
-    --bs-table-bg: #111111;
-    --bs-table-striped-bg: #1a1a1a;
-    --bs-table-hover-bg: #222222;
-    --bs-card-bg: #111111;
-    --bs-card-color: #ffffff;
-    --bs-border-color: #333333;
-    --bs-link-color: #4da3ff;
-    --bs-link-hover-color: #82c0ff;
-    --bs-primary: #4da3ff;
-    --bs-primary-rgb: 77, 163, 255;
-    --bs-danger: #ff4d4d;
-    --bs-danger-rgb: 255, 77, 77;
+﻿body {
+    background-color: #121212 !important;
+    color: #e0e0e0 !important;
 }
 
-    [data-theme="dark"] body {
-        background-color: var(--bs-body-bg) !important;
-        color: var(--bs-body-color) !important;
-    }
+.navbar, .table {
+    background-color: #1e1e1e !important;
+    color: #fff !important;
+}
 
-    [data-theme="dark"] .navbar {
-        background-color: var(--bs-navbar-bg) !important;
-        color: var(--bs-navbar-color) !important;
-    }
-
-    [data-theme="dark"] .table {
-        background-color: var(--bs-table-bg) !important;
-        color: var(--bs-body-color) !important;
-    }
-
-        [data-theme="dark"] .table td,
-        [data-theme="dark"] .table th {
-            border-color: var(--bs-border-color) !important;
-        }
-
-    [data-theme="dark"] .card {
-        background-color: var(--bs-card-bg) !important;
-        color: var(--bs-card-color) !important;
-    }
-
-    [data-theme="dark"] input,
-    [data-theme="dark"] textarea,
-    [data-theme="dark"] select {
-        background-color: #111111 !important;
-        color: #ffffff !important;
-        border: 1px solid #333333 !important;
-    }
-
-    [data-theme="dark"] .dropdown-menu {
-        background-color: #111111 !important;
-        color: #ffffff !important;
-    }
-
-    [data-theme="dark"] .dropdown-item:hover {
-        background-color: #222222 !important;
-    }
+a {
+    color: #9ecbff !important;
+}

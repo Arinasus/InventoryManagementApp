@@ -1,25 +1,34 @@
-﻿/* cite-light */
-body {
-    background-color: #D1ECE7;
-    color: #22352C;
+﻿/* Светлая тема с белым фоном */
+:root {
+    /* Фон и текст */
+    --bs-body-bg: #ffffff;
+    --bs-body-color: #22352C;
+    /* Основной акцент (кнопки, ссылки, primary) */
+    --bs-primary: #BD7F01;
+    --bs-primary-rgb: 189, 127, 1;
+    /* Светлый акцент (подсветки, выделения) */
+    --bs-warning: #FEE16C;
+    --bs-warning-rgb: 254, 225, 108;
+    /* Опасное */
+    --bs-danger: #A23D01;
+    --bs-danger-rgb: 162, 61, 1;
+    /* Ссылки */
+    --bs-link-color: #BD7F01;
+    --bs-link-hover-color: #A23D01;
+    /* Навбар */
+    --bs-navbar-bg: #ffffff;
+    --bs-navbar-color: #22352C;
+    --bs-navbar-hover-color: #BD7F01;
+    /* Таблицы */
+    --bs-table-bg: #ffffff;
+    --bs-table-striped-bg: #D1ECE733; /* мягкая мята */
+    --bs-table-hover-bg: #D1ECE766;
+    /* Кнопки */
+    --bs-btn-bg: #BD7F01;
+    --bs-btn-border-color: #BD7F01;
+    --bs-btn-hover-bg: #A23D01;
+    --bs-btn-hover-border-color: #A23D01;
+    /* Карточки, панели */
+    --bs-card-bg: #D1ECE7;
+    --bs-card-border-color: #BD7F0122;
 }
-
-.navbar, .table {
-    background-color: #ffffff;
-    color: #22352C;
-}
-
-a {
-    color: #BD7F01;
-}
-
-button, .btn-primary {
-    background-color: #BD7F01;
-    border-color: #BD7F01;
-    color: #ffffff;
-}
-
-    button:hover, .btn-primary:hover {
-        background-color: #A23D01;
-        border-color: #A23D01;
-    }

@@ -117,19 +117,31 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="CreateInventory" xml:space="preserve">
-    <value>Создать инвентарь</value>
+  <data name="Title" xml:space="preserve">
+    <value>Название</value>
   </data>
-  <data name="Home" xml:space="preserve">
-    <value>Главная</value>
+  <data name="Tags" xml:space="preserve">
+    <value>Tags</value>
   </data>
-  <data name="Inventories" xml:space="preserve">
-    <value>Инвентари</value>
+  <data name="PopularInventories" xml:space="preserve">
+    <value>Популярные книги</value>
   </data>
-  <data name="Privacy" xml:space="preserve">
-    <value>Политика конфиденциальности</value>
+  <data name="LatestInventories" xml:space="preserve">
+    <value>Последние инвентарные книги</value>
   </data>
-  <data name="Profile" xml:space="preserve">
-    <value>Профиль</value>
+  <data name="SearchPlaceholder" xml:space="preserve">
+    <value>Поиск по инвентарным книгам…</value>
+  </data>
+  <data name="Description" xml:space="preserve">
+    <value>Описание</value>
+  </data>
+  <data name="Creator" xml:space="preserve">
+    <value>Создатель</value>
+  </data>
+  <data name="ItemsCount" xml:space="preserve">
+    <value>Предметы</value>
+  </data>
+  <data name="CreatedAt" xml:space="preserve">
+    <value>Создано</value>
   </data>
 </root>

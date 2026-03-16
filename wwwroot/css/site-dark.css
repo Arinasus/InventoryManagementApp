@@ -23,3 +23,26 @@ button, .btn-primary {
         background-color: #A23D01 !important;
         border-color: #A23D01 !important;
     }
+/* Тёмная тема — адаптация твоей палитры */
+[data-theme="dark"] {
+    --bs-body-bg: #22352C;
+    --bs-body-color: #D1ECE7;
+    --bs-primary: #BD7F01;
+    --bs-primary-rgb: 189, 127, 1;
+    --bs-warning: #FEE16C;
+    --bs-warning-rgb: 254, 225, 108;
+    --bs-danger: #A23D01;
+    --bs-danger-rgb: 162, 61, 1;
+    --bs-link-color: #FEE16C;
+    --bs-link-hover-color: #BD7F01;
+    --bs-table-bg: #1A2924;
+    --bs-table-striped-bg: #FEE16C22;
+    --bs-table-hover-bg: #FEE16C33;
+    --bs-navbar-bg: #1A2924;
+    --bs-navbar-color: #D1ECE7;
+    --bs-navbar-hover-color: #FEE16C;
+    --bs-btn-bg: #BD7F01;
+    --bs-btn-border-color: #BD7F01;
+    --bs-btn-hover-bg: #A23D01;
+    --bs-btn-hover-border-color: #A23D01;
+}

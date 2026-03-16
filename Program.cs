@@ -47,15 +47,13 @@ builder.Services.AddAuthentication()
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
-    });
-builder.Services.AddScoped<CustomIdService>();
-
-builder.Services.AddAuthentication()
+    })
     .AddGitHub(options =>
     {
         options.ClientId = builder.Configuration["Authentication:GitHub:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:GitHub:ClientSecret"];
     });
+
 
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();

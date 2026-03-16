@@ -3,6 +3,7 @@ using InventoryManagementApp.Model;
 using InventoryManagementApp.Services;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
+using AspNet.Security.OAuth.GitHub;
 
 var builder = WebApplication.CreateBuilder(args);
 

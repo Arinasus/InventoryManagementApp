@@ -7,6 +7,6 @@
         public DateTime CreatedAt { get; set; }
         public int Likes { get; set; }
 
-        public Dictionary<string, string> FieldValues { get; set; } = new(); // Title -> Value
+        public Dictionary<string, string> FieldValues { get; set; } = new(); 
     }
 }

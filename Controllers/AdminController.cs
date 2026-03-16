@@ -31,7 +31,6 @@ namespace InventoryManagementApp.Controllers
                 .Include(u => u.Posts)
                 .ToListAsync();
 
-            // Формируем модель вручную, чтобы корректно вызвать IsInRoleAsync
             var model = new List<UserManagementViewModel>();
 
             foreach (var u in users)

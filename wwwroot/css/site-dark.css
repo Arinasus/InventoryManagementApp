@@ -1,48 +1,117 @@
-﻿/* cite-dark */
-body {
-    background-color: #22352C !important;
-    color: #D1ECE7 !important;
-}
+﻿[data-theme="dark"] {
+    --bg-main: #1A2420;
+    --bg-secondary: #22352C;
+    --bg-tertiary: #1A2924;
+    --text-main: #D1ECE7;
+    --text-muted: #9FB8B3;
+    --accent: #BD7F01;
+    --accent-hover: #A23D01;
+    --accent-light: #FEE16C;
 
-.navbar, .table {
-    background-color: #1A2924 !important; /* чуть темнее для глубины */
-    color: #D1ECE7 !important;
-}
-
-a {
-    color: #FEE16C !important;
-}
-
-button, .btn-primary {
-    background-color: #BD7F01 !important;
-    border-color: #BD7F01 !important;
-    color: #22352C !important;
-}
-
-    button:hover, .btn-primary:hover {
-        background-color: #A23D01 !important;
-        border-color: #A23D01 !important;
-    }
-/* Тёмная тема — адаптация твоей палитры */
-[data-theme="dark"] {
-    --bs-body-bg: #22352C;
-    --bs-body-color: #D1ECE7;
-    --bs-primary: #BD7F01;
+    --bs-body-bg: var(--bg-main);
+    --bs-body-color: var(--text-main);
+    --bs-primary: var(--accent);
     --bs-primary-rgb: 189, 127, 1;
-    --bs-warning: #FEE16C;
-    --bs-warning-rgb: 254, 225, 108;
-    --bs-danger: #A23D01;
+    --bs-danger: var(--accent-hover);
     --bs-danger-rgb: 162, 61, 1;
-    --bs-link-color: #FEE16C;
-    --bs-link-hover-color: #BD7F01;
-    --bs-table-bg: #1A2924;
-    --bs-table-striped-bg: #FEE16C22;
-    --bs-table-hover-bg: #FEE16C33;
-    --bs-navbar-bg: #1A2924;
-    --bs-navbar-color: #D1ECE7;
-    --bs-navbar-hover-color: #FEE16C;
-    --bs-btn-bg: #BD7F01;
-    --bs-btn-border-color: #BD7F01;
-    --bs-btn-hover-bg: #A23D01;
-    --bs-btn-hover-border-color: #A23D01;
+    --bs-link-color: var(--accent-light);
+    --bs-link-hover-color: var(--accent);
+    --bs-border-color: #2E3F38;
+
+    --bs-table-bg: var(--bg-tertiary);
+    --bs-table-striped-bg: rgba(254, 225, 108, 0.08);
+    --bs-table-hover-bg: rgba(254, 225, 108, 0.15);
 }
+
+    [data-theme="dark"] body {
+        background-color: var(--bg-main) !important;
+        color: var(--text-main) !important;
+    }
+
+    [data-theme="dark"] .navbar {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-main) !important;
+    }
+
+        [data-theme="dark"] .navbar a {
+            color: var(--accent-light) !important;
+        }
+
+            [data-theme="dark"] .navbar a:hover {
+                color: var(--accent) !important;
+            }
+
+    [data-theme="dark"] .table {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-main) !important;
+    }
+
+        [data-theme="dark"] .table td,
+        [data-theme="dark"] .table th {
+            border-color: #2E3F38 !important;
+        }
+
+    [data-theme="dark"] .btn-primary {
+        background-color: var(--accent) !important;
+        border-color: var(--accent) !important;
+        color: #1A2420 !important;
+    }
+
+        [data-theme="dark"] .btn-primary:hover {
+            background-color: var(--accent-hover) !important;
+            border-color: var(--accent-hover) !important;
+        }
+
+    [data-theme="dark"] .btn-danger {
+        background-color: var(--accent-hover) !important;
+        border-color: var(--accent-hover) !important;
+    }
+
+        [data-theme="dark"] .btn-danger:hover {
+            background-color: #7A2E00 !important;
+        }
+
+    [data-theme="dark"] input,
+    [data-theme="dark"] textarea,
+    [data-theme="dark"] select {
+        background-color: var(--bg-secondary) !important;
+        color: var(--text-main) !important;
+        border: 1px solid #2E3F38 !important;
+    }
+
+        [data-theme="dark"] input::placeholder,
+        [data-theme="dark"] textarea::placeholder {
+            color: var(--text-muted) !important;
+        }
+
+    [data-theme="dark"] .card {
+        background-color: var(--bg-secondary) !important;
+        color: var(--text-main) !important;
+        border-color: #2E3F38 !important;
+    }
+
+    [data-theme="dark"] .dropdown-menu {
+        background-color: var(--bg-tertiary) !important;
+        color: var(--text-main) !important;
+    }
+
+    [data-theme="dark"] .dropdown-item {
+        color: var(--text-main) !important;
+    }
+
+        [data-theme="dark"] .dropdown-item:hover {
+            background-color: var(--accent-hover) !important;
+            color: #fff !important;
+        }
+
+    [data-theme="dark"] a {
+        color: var(--accent-light) !important;
+    }
+
+        [data-theme="dark"] a:hover {
+            color: var(--accent) !important;
+        }
+
+    [data-theme="dark"] hr {
+        border-color: #2E3F38 !important;
+    }

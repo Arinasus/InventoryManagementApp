@@ -1,5 +1,6 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@RenderSection("Styles", required: false)
 
 @{
     var culture = Context.Features

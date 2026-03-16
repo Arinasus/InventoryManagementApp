@@ -1,15 +1,17 @@
 ﻿@model IEnumerable<InventoryManagementApp.Model.Inventory>
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
-<h2>Мои инвентари</h2>
+<h2>@Localizer["MyInventories"]</h2>
 
-<a class="btn btn-primary" href="/Inventory/Create">Создать новый инвентарь</a>
+<a class="btn btn-primary" href="/Inventory/Create">@Localizer["CreateNewInventory"]</a>
 
 <table class="table mt-3">
     <thead>
         <tr>
-            <th>Название</th>
-            <th>Описание</th>
-            <th></th>
+            <th>@Localizer["Title"]</th>
+            <th>@Localizer["Description"]</th>
+            <th>@Localizer["Actions"]</th>
         </tr>
     </thead>
     <tbody>
@@ -19,7 +21,7 @@
                 <td>@inv.Title</td>
                 <td>@inv.Description</td>
                 <td>
-                    <a href="/Inventory/Details/@inv.Id" class="btn btn-sm btn-info">Открыть</a>
+                    <a href="/Inventory/Details/@inv.Id" class="btn btn-sm btn-info">@Localizer["Open"]</a>
                 </td>
             </tr>
         }

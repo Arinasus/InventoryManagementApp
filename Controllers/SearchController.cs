@@ -11,13 +11,12 @@ namespace InventoryManagementApp.Controllers
     [AllowAnonymous]
     public class SearchController : Controller
     {
+        private readonly AppDbContext _context;
 
-            private readonly AppDbContext _context;
-
-            public SearchController(AppDbContext context)
-            {
-                _context = context;
-            }
+        public SearchController(AppDbContext context)
+        {
+            _context = context;
+        }
 
         public async Task<IActionResult> Index(string q, string tag)
         {
@@ -36,6 +35,17 @@ namespace InventoryManagementApp.Controllers
                 });
             }
 
+            if (!string.IsNullOrWhiteSpace(q))
+            {
+                q = q.Trim()
+                     .Replace("…", "")  
+                     .Replace("...", "") 
+                     .Replace(".", "");  
+
+                if (q.StartsWith("Поиск", StringComparison.OrdinalIgnoreCase))
+                    q = null;
+            }
+
             if (string.IsNullOrWhiteSpace(q))
                 return View(new SearchResultsViewModel());
 
@@ -43,7 +53,6 @@ namespace InventoryManagementApp.Controllers
                 .Where(i => EF.Functions.ToTsVector("russian", i.Title + " " + i.Description)
                     .Matches(EF.Functions.PlainToTsQuery("russian", q)))
                 .ToListAsync();
-
             var items = await _context.InventoryItems
                 .Include(i => i.FieldValues)
                 .Where(i => EF.Functions.ToTsVector("russian", i.CustomId)

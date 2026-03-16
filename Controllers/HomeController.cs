@@ -18,6 +18,16 @@ namespace InventoryManagementApp.Controllers
 
         public async Task<IActionResult> Index(string search)
         {
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                search = search.Trim()
+                               .Replace("…", "") 
+                               .Replace("...", "") 
+                               .Replace(".", ""); 
+                if (search.StartsWith("Поиск", StringComparison.OrdinalIgnoreCase))
+                    search = null;
+            }
+
             var query = _context.Inventories
                 .Include(i => i.CreatedByUser)
                 .Include(i => i.Items)
@@ -31,12 +41,15 @@ namespace InventoryManagementApp.Controllers
                 var normalized = string.Join(" & ",
                     search.Split(' ', StringSplitOptions.RemoveEmptyEntries));
 
-                tsQuery = EF.Functions.ToTsQuery(normalized);
+                if (!string.IsNullOrWhiteSpace(normalized))
+                {
+                    tsQuery = EF.Functions.ToTsQuery(normalized);
 
-                query = query
-                    .Where(i => i.SearchVector != null &&
-                                i.SearchVector.Matches(tsQuery))
-                    .OrderByDescending(i => i.SearchVector.Rank(tsQuery));
+                    query = query
+                        .Where(i => i.SearchVector != null &&
+                                    i.SearchVector.Matches(tsQuery))
+                        .OrderByDescending(i => i.SearchVector.Rank(tsQuery));
+                }
             }
             else
             {
@@ -90,6 +103,5 @@ namespace InventoryManagementApp.Controllers
 
             return View(model);
         }
-
     }
 }

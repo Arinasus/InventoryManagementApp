@@ -1,10 +1,12 @@
 ﻿@model InventoryAccessViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
-<h4>Управление доступом</h4>
+<h4>@Localizer["AccessManagement"]</h4>
 
 <div class="mb-3">
-    <label class="form-label">Добавить пользователя</label>
-    <input id="user-search" class="form-control" placeholder="Введите email или имя пользователя..." />
+    <label class="form-label">@Localizer["AddUser"]</label>
+    <input id="user-search" class="form-control" placeholder="@Localizer["SearchUserPlaceholder"]" />
     <div id="user-results" class="list-group mt-1"></div>
 </div>
 
@@ -16,14 +18,14 @@
 <hr />
 
 <h5 class="d-flex justify-content-between align-items-center">
-    <span>Пользователи с доступом</span>
+    <span>@Localizer["UsersWithAccess"]</span>
 
     <div class="btn-group">
         <button type="button" class="btn btn-outline-secondary btn-sm" id="sort-name">
-            Сортировать по имени
+            @Localizer["SortByName"]
         </button>
         <button type="button" class="btn btn-outline-secondary btn-sm" id="sort-email">
-            Сортировать по email
+            @Localizer["SortByEmail"]
         </button>
     </div>
 </h5>
@@ -31,10 +33,10 @@
 <table class="table table-striped" id="access-table">
     <thead>
         <tr>
-            <th>Имя</th>
+            <th>@Localizer["Name"]</th>
             <th>Email</th>
-            <th>Дата выдачи</th>
-            <th>Доступ</th>
+            <th>@Localizer["GrantedAt"]</th>
+            <th>@Localizer["AccessLevel"]</th>
             <th></th>
         </tr>
     </thead>
@@ -45,18 +47,14 @@
                 <td class="col-name">@a.User.UserName</td>
                 <td class="col-email">@a.User.Email</td>
                 <td>@a.GrantedAt.ToString("yyyy-MM-dd HH:mm")</td>
-                <td>Запись</td>
+                <td>@Localizer["WriteAccess"]</td>
                 <td>
                     <form method="post" action="/Inventory/RemoveAccess/@a.Id">
                         <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
-                        <button class="btn btn-sm btn-danger">Удалить</button>
+                        <button class="btn btn-sm btn-danger">@Localizer["Remove"]</button>
                     </form>
                 </td>
             </tr>
         }
     </tbody>
 </table>
-
-@section Scripts {
-
-}

@@ -5,9 +5,10 @@
 
 <div class="container mt-4">
     <form method="get" class="mb-4">
-        <input type="text" name="search" value="@Model.SearchQuery"
-               class="form-control form-control-lg"
+        <input type="text" name="search"
+               value="@(Model.SearchQuery ?? "")"
                placeholder="@Localizer["SearchPlaceholder"]" />
+
     </form>
 
     <h3 class="mb-3">@Localizer["LatestInventories"]</h3>

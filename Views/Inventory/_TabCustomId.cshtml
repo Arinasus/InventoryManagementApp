@@ -1,4 +1,6 @@
 ﻿@model InventoryCustomIdViewModel
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @functions {
     public string GetPopoverText(InventoryCustomIdPart part)
@@ -6,50 +8,47 @@
         return part.Type switch
         {
             CustomIdPartType.FixedText =>
-                "Фиксированный текст — неизменяемая часть ID. Например: 'INV', 'PC'.",
+                Localizer["FixedTextDescription"].Value,
 
             CustomIdPartType.Random20Bit =>
-                "20‑битное случайное число. Диапазон: 0–1 048 575.",
+                Localizer["Random20BitDescription"].Value,
 
             CustomIdPartType.Random32Bit =>
-                "32‑битное случайное число. Диапазон: 0–4 294 967 295.",
+                Localizer["Random32BitDescription"].Value,
 
             CustomIdPartType.Random6Digits =>
-                "Случайное число из 6 цифр. Форматируется с ведущими нулями.",
+                Localizer["Random6DigitsDescription"].Value,
 
             CustomIdPartType.Random9Digits =>
-                "Случайное число из 9 цифр. Форматируется с ведущими нулями.",
+                Localizer["Random9DigitsDescription"].Value,
 
             CustomIdPartType.Guid =>
-                "Глобально уникальный идентификатор (GUID).",
+                Localizer["GuidDescription"].Value,
 
             CustomIdPartType.DateTime =>
-                "Текущая дата и время в формате yyyyMMddHHmmss.",
+                Localizer["DateTimeDescription"].Value,
 
             CustomIdPartType.Sequence =>
-                "Последовательность — увеличивающееся число. Можно задать длину (например: 0001).",
+                Localizer["SequenceDescription"].Value,
 
-            _ => "Элемент ID."
+            _ => Localizer["DefaultDescription"].Value
         };
     }
 }
 
-<h4>Пользовательский ID</h4>
+<h4>@Localizer["CustomId"]</h4>
 
 <div class="alert alert-info">
-    Пример: <strong>@Model.Preview</strong>
+    @Localizer["Example"]: <strong>@Model.Preview</strong>
 </div>
 
-<h5>Элементы ID</h5>
+<h5>@Localizer["IdParts"]</h5>
 
 <ul id="id-parts" class="list-group mb-3">
     @foreach (var part in Model.Parts)
     {
-        <li class="list-group-item"
-            data-id="@part.Id">
-
+        <li class="list-group-item" data-id="@part.Id">
             <div class="d-flex justify-content-between align-items-center">
-
                 <div>
                     <span class="handle me-2">☰</span>
                     <strong>@part.Type</strong>
@@ -59,7 +58,7 @@
                        data-bs-toggle="popover"
                        data-bs-trigger="focus"
                        data-bs-placement="right"
-                       data-bs-title="Описание"
+                       data-bs-title="@Localizer["Description"]"
                        data-bs-content="@GetPopoverText(part)">
                     </i>
 
@@ -81,13 +80,11 @@
                                    value="@(part.Padding ?? 4)"
                                    class="form-control form-control-sm d-inline-block"
                                    style="width:80px;"
-                                   title="Количество цифр" />
+                                   title="@Localizer["Padding"]" />
                         </form>
                     }
                 </div>
-
             </div>
-
         </li>
     }
 </ul>
@@ -95,80 +92,24 @@
 <div id="delete-zone"
      class="border border-danger text-center p-3 mb-3 rounded"
      style="background:#ffe5e5;">
-    Перетащите элемент сюда, чтобы удалить
+    @Localizer["DragToDelete"]
 </div>
 
-<h5>Добавить элемент</h5>
+<h5>@Localizer["AddPart"]</h5>
 
 <form method="post" action="/Inventory/AddCustomIdPart">
     <input type="hidden" name="inventoryId" value="@Model.InventoryId" />
 
     <select name="type" class="form-select mb-2">
-        <option value="FixedText">Фиксированный текст</option>
-        <option value="Random20Bit">20‑битное случайное число</option>
-        <option value="Random32Bit">32‑битное случайное число</option>
-        <option value="Random6Digits">6 цифр</option>
-        <option value="Random9Digits">9 цифр</option>
-        <option value="Guid">GUID</option>
-        <option value="DateTime">Дата/время</option>
-        <option value="Sequence">Последовательность</option>
+        <option value="FixedText">@Localizer["FixedText"]</option>
+        <option value="Random20Bit">@Localizer["Random20Bit"]</option>
+        <option value="Random32Bit">@Localizer["Random32Bit"]</option>
+        <option value="Random6Digits">@Localizer["Random6Digits"]</option>
+        <option value="Random9Digits">@Localizer["Random9Digits"]</option>
+        <option value="Guid">@Localizer["Guid"]</option>
+        <option value="DateTime">@Localizer["DateTime"]</option>
+        <option value="Sequence">@Localizer["Sequence"]</option>
     </select>
 
-    <button class="btn btn-primary">Добавить</button>
+    <button class="btn btn-primary">@Localizer["Add"]</button>
 </form>
-
-<style>
-    .handle {
-        cursor: grab;
-        font-size: 18px;
-    }
-</style>
-
-<script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
-
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-
-        document.querySelectorAll('[data-bs-toggle="popover"]').forEach(el => {
-            new bootstrap.Popover(el);
-        });
-
-        const idPartsList = document.getElementById('id-parts');
-        const deleteZone = document.getElementById('delete-zone');
-
-        if (idPartsList) {
-            new Sortable(idPartsList, {
-                animation: 150,
-                handle: '.handle',
-                group: { name: 'idparts', pull: true, put: false },
-
-                onEnd: function (evt) {
-
-                    if (evt.to === deleteZone) {
-                        const id = evt.item.dataset.id;
-
-                        fetch(`/Inventory/DeleteCustomIdPart/${id}?inventoryId=@Model.InventoryId`, {
-                            method: 'POST'
-                        }).then(() => evt.item.remove());
-
-                        return;
-                    }
-
-                    const ids = [...idPartsList.querySelectorAll('li')].map(li => parseInt(li.dataset.id));
-
-                    fetch('/Inventory/ReorderCustomIdParts', {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify(ids)
-                    });
-                }
-            });
-        }
-
-        if (deleteZone) {
-            new Sortable(deleteZone, {
-                group: { name: 'idparts', pull: false, put: true }
-            });
-        }
-    });
-</script>

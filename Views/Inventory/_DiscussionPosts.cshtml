@@ -1,5 +1,7 @@
 ﻿@model InventoryDiscussionViewModel
 @using Markdig
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     var pipeline = new MarkdownPipelineBuilder().UseAdvancedExtensions().Build();
@@ -11,7 +13,11 @@
         <a href="/User/PublicProfile/@post.UserId" class="fw-bold">
             @post.User.UserName
         </a>
+
         <div>@Html.Raw(Markdown.ToHtml(post.Content, pipeline))</div>
-        <div class="text-muted small">@post.CreatedAt.ToString("g")</div>
+
+        <div class="text-muted small">
+            @Localizer["PostedAt"]: @post.CreatedAt.ToString("g")
+        </div>
     </div>
 }

@@ -1,6 +1,8 @@
 ﻿@using InventoryManagementApp.Services
 @model InventoryDetailsViewModel
 @inject IInventoryAccessService Access
+@using Microsoft.AspNetCore.Mvc.Localization
+@inject IViewLocalizer Localizer
 
 @{
     int invId = Model.Inventory.Id;
@@ -13,22 +15,24 @@
 
     <ul class="nav nav-tabs mt-4" id="inventoryTabs">
         <li class="nav-item">
-            <a class="nav-link active" href="#items" data-bs-toggle="tab">Предметы</a>
+            <a class="nav-link active" href="#items" data-bs-toggle="tab">@Localizer["TabItems"]</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#discussion" data-bs-toggle="tab">Обсуждение</a>
+            <a class="nav-link" href="#discussion" data-bs-toggle="tab">@Localizer["TabDiscussion"]</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="#stats" data-bs-toggle="tab">Статистика</a>
+            <a class="nav-link" href="#stats" data-bs-toggle="tab">@Localizer["TabStats"]</a>
         </li>
+
         @if (canEditInventory)
         {
-            <li class="nav-item"><a class="nav-link" href="#settings" data-bs-toggle="tab">Общие настройки</a></li>
-            <li class="nav-item"><a class="nav-link" href="#customid" data-bs-toggle="tab">Пользовательские ID</a></li>
-            <li class="nav-item"><a class="nav-link" href="#fields" data-bs-toggle="tab">Поля</a></li>
-            <li class="nav-item"><a class="nav-link" href="#access" data-bs-toggle="tab">Доступ</a></li>
+            <li class="nav-item"><a class="nav-link" href="#settings" data-bs-toggle="tab">@Localizer["TabSettings"]</a></li>
+            <li class="nav-item"><a class="nav-link" href="#customid" data-bs-toggle="tab">@Localizer["TabCustomId"]</a></li>
+            <li class="nav-item"><a class="nav-link" href="#fields" data-bs-toggle="tab">@Localizer["TabFields"]</a></li>
+            <li class="nav-item"><a class="nav-link" href="#access" data-bs-toggle="tab">@Localizer["TabAccess"]</a></li>
         }
     </ul>
+
 
     <div class="tab-content mt-3">
 

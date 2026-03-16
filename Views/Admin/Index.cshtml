@@ -1,49 +1,51 @@
 ﻿@using InventoryManagementApp.Models
+@using Microsoft.AspNetCore.Mvc.Localization
 @model IEnumerable<UserManagementViewModel>
+@inject IViewLocalizer Localizer
 
-<h2 class="mb-4">Управление пользователями</h2>
+<h2 class="mb-4">@Localizer["UserManagement"]</h2>
 
 <table class="table table-hover align-middle">
     <thead class="table-dark">
         <tr>
             <th>
                 <a href="?sortOrder=@ViewData["EmailSort"]" class="text-white text-decoration-none">
-                    Email
+                    @Localizer["Email"]
                 </a>
             </th>
 
             <th>
                 <a href="?sortOrder=@ViewData["RoleSort"]" class="text-white text-decoration-none">
-                    Роль
+                    @Localizer["Role"]
                 </a>
             </th>
 
             <th>
                 <a href="?sortOrder=@ViewData["StatusSort"]" class="text-white text-decoration-none">
-                    Статус
+                    @Localizer["Status"]
                 </a>
             </th>
 
             <th>
                 <a href="?sortOrder=@ViewData["InvSort"]" class="text-white text-decoration-none">
-                    Инвентари
+                    @Localizer["Inventories"]
                 </a>
             </th>
 
             <th>
                 <a href="?sortOrder=@ViewData["PostsSort"]" class="text-white text-decoration-none">
-                    Посты
+                    @Localizer["Posts"]
                 </a>
             </th>
 
             <th>
                 <a href="?sortOrder=@ViewData["CreatedSort"]" class="text-white text-decoration-none">
-                    Создан
+                    @Localizer["Created"]
                 </a>
             </th>
 
-            <th>Последний вход</th>
-            <th class="text-end">Действия</th>
+            <th>@Localizer["LastLogin"]</th>
+            <th class="text-end">@Localizer["Actions"]</th>
         </tr>
     </thead>
 
@@ -56,22 +58,22 @@
                 <td>
                     @if (user.IsAdmin)
                     {
-                        <span class="badge bg-success">Admin</span>
+                        <span class="badge bg-success">@Localizer["Admin"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-secondary">User</span>
+                        <span class="badge bg-secondary">@Localizer["User"]</span>
                     }
                 </td>
 
                 <td>
                     @if (user.IsBlocked)
                     {
-                        <span class="badge bg-danger">Заблокирован</span>
+                        <span class="badge bg-danger">@Localizer["Blocked"]</span>
                     }
                     else
                     {
-                        <span class="badge bg-primary">Активен</span>
+                        <span class="badge bg-primary">@Localizer["Active"]</span>
                     }
                 </td>
 
@@ -82,33 +84,34 @@
                 <td>@(user.LastLogin?.ToString("g") ?? "—")</td>
 
                 <td class="text-end">
+
                     @if (!user.IsAdmin)
                     {
-                        <a href="/Admin/MakeAdmin/@user.Id" class="btn btn-sm btn-outline-success me-1">
+                        <a href="/Admin/MakeAdmin/@user.Id" class="btn btn-sm btn-outline-success me-1" title="@Localizer["MakeAdmin"]">
                             <i class="bi bi-shield-lock"></i>
                         </a>
                     }
                     else
                     {
-                        <a href="/Admin/RemoveAdmin/@user.Id" class="btn btn-sm btn-outline-warning me-1">
+                        <a href="/Admin/RemoveAdmin/@user.Id" class="btn btn-sm btn-outline-warning me-1" title="@Localizer["RemoveAdmin"]">
                             <i class="bi bi-shield-slash"></i>
                         </a>
                     }
 
                     @if (!user.IsBlocked)
                     {
-                        <a href="/Admin/Block/@user.Id" class="btn btn-sm btn-outline-danger me-1">
+                        <a href="/Admin/Block/@user.Id" class="btn btn-sm btn-outline-danger me-1" title="@Localizer["BlockUser"]">
                             <i class="bi bi-person-x"></i>
                         </a>
                     }
                     else
                     {
-                        <a href="/Admin/Unblock/@user.Id" class="btn btn-sm btn-outline-primary me-1">
+                        <a href="/Admin/Unblock/@user.Id" class="btn btn-sm btn-outline-primary me-1" title="@Localizer["UnblockUser"]">
                             <i class="bi bi-person-check"></i>
                         </a>
                     }
 
-                    <a href="/Admin/Delete/@user.Id" class="btn btn-sm btn-outline-danger">
+                    <a href="/Admin/Delete/@user.Id" class="btn btn-sm btn-outline-danger" title="@Localizer["Delete"]">
                         <i class="bi bi-trash"></i>
                     </a>
                 </td>

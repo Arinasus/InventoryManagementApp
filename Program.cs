@@ -47,6 +47,12 @@ builder.Services.AddAuthentication()
     {
         options.ClientId = builder.Configuration["Authentication:Google:ClientId"];
         options.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    })
+    .AddDiscord(options =>
+    {
+        options.ClientId = builder.Configuration["Authentication:Discord:ClientId"];
+        options.ClientSecret = builder.Configuration["Authentication:Discord:ClientSecret"];
+        options.Scope.Add("email");
     });
 builder.Services.AddScoped<CustomIdService>();
 

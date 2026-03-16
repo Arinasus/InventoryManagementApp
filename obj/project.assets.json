@@ -2,6 +2,22 @@
   "version": 3,
   "targets": {
     "net8.0": {
+      "AspNet.Security.OAuth.Discord/8.0.0": {
+        "type": "package",
+        "compile": {
+          "lib/net8.0/AspNet.Security.OAuth.Discord.dll": {
+            "related": ".xml"
+          }
+        },
+        "runtime": {
+          "lib/net8.0/AspNet.Security.OAuth.Discord.dll": {
+            "related": ".xml"
+          }
+        },
+        "frameworkReferences": [
+          "Microsoft.AspNetCore.App"
+        ]
+      },
       "AspNet.Security.OAuth.GitHub/8.0.0": {
         "type": "package",
         "compile": {
@@ -3163,6 +3179,21 @@
     }
   },
   "libraries": {
+    "AspNet.Security.OAuth.Discord/8.0.0": {
+      "sha512": "+MtOHPctq1QT1c03h+7g4oBWtZ/buQYUJg4AR0DG+qjmD2cQRMGWXC1J6/ITeCc6xa5BcXzJmt1L/8pVXIB4kw==",
+      "type": "package",
+      "path": "aspnet.security.oauth.discord/8.0.0",
+      "files": [
+        ".nupkg.metadata",
+        ".signature.p7s",
+        "Icon.png",
+        "README.md",
+        "aspnet.security.oauth.discord.8.0.0.nupkg.sha512",
+        "aspnet.security.oauth.discord.nuspec",
+        "lib/net8.0/AspNet.Security.OAuth.Discord.dll",
+        "lib/net8.0/AspNet.Security.OAuth.Discord.xml"
+      ]
+    },
     "AspNet.Security.OAuth.GitHub/8.0.0": {
       "sha512": "FuxtaXIjpG9bWHhfkZKHJZtYHH58/uI+EvBEPiBhc176dFr+dknfpljWV5ou8c98mXN5XGkbe5nm1OKqiGRKlw==",
       "type": "package",
@@ -8618,6 +8649,7 @@
   },
   "projectFileDependencyGroups": {
     "net8.0": [
+      "AspNet.Security.OAuth.Discord >= 8.0.0",
       "AspNet.Security.OAuth.GitHub >= 8.0.0",
       "Markdig >= 1.1.1",
       "Microsoft.AspNetCore.Authentication.Google >= 8.0.0",
@@ -8681,6 +8713,10 @@
       "net8.0": {
         "targetAlias": "net8.0",
         "dependencies": {
+          "AspNet.Security.OAuth.Discord": {
+            "target": "Package",
+            "version": "[8.0.0, )"
+          },
           "AspNet.Security.OAuth.GitHub": {
             "target": "Package",
             "version": "[8.0.0, )"

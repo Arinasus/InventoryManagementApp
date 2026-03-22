@@ -1,6 +1,8 @@
 ﻿using InventoryManagementApp.Data;
 using InventoryManagementApp.Model;
 using InventoryManagementApp.Models;
+using InventoryManagementApp.Services;
+using InventoryManagementApp.ViewModels;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -12,13 +14,15 @@ namespace InventoryManagementApp.Controllers
     [Authorize]
     public class UserController : Controller
     {
+        private readonly IConfiguration _config;
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
 
-        public UserController(AppDbContext context, UserManager<ApplicationUser> userManager)
+        public UserController(IConfiguration config, AppDbContext context, UserManager<ApplicationUser> userManager)
         {
             _context = context;
             _userManager = userManager;
+            _config = config;
         }
 
         public async Task<IActionResult> Profile(string? sortOrder, string? search)
@@ -93,6 +97,26 @@ namespace InventoryManagementApp.Controllers
                 return NotFound();
 
             return View("PublicProfile", user);
+        }
+        [HttpGet]
+        public IActionResult Salesforce()
+        {
+            return View(new SalesforceViewModel());
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Salesforce(SalesforceViewModel model)
+        {
+            var user = await _userManager.GetUserAsync(User);
+
+            var sf = new SalesforceService(_config);
+
+            var accountId = await sf.CreateAccount(model.CompanyName, model.Phone, model.Website, model.Industry, model.Description);
+
+            await sf.CreateContact(user.Email, user.UserName, accountId);
+
+            TempData["Success"] = "Salesforce integration completed!";
+            return RedirectToAction("Index");
         }
 
     }

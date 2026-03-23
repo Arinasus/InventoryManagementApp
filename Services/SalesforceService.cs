@@ -11,7 +11,6 @@ namespace InventoryManagementApp.Services
         public SalesforceService(IConfiguration config)
         {
             var auth = Authenticate(config);
-            _instanceUrl = auth.instance_url;
             _accessToken = auth.access_token;
         }
 

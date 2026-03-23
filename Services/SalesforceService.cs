@@ -19,13 +19,11 @@ namespace InventoryManagementApp.Services
         {
             var client = new HttpClient();
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
-        {
-            {"grant_type", "password"},
-            {"client_id", config["Salesforce:ClientId"]},
-            {"client_secret", config["Salesforce:ClientSecret"]},
-            {"username", config["Salesforce:Username"]},
-            {"password", config["Salesforce:Password"] + config["Salesforce:Token"]}
-        });
+            {
+                {"grant_type", "client_credentials"},
+                {"client_id", config["Salesforce:ClientId"]},
+                {"client_secret", config["Salesforce:ClientSecret"]}
+            });
 
             var response = client.PostAsync("https://login.salesforce.com/services/oauth2/token", content).Result;
             var json = response.Content.ReadAsStringAsync().Result;

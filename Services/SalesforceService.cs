@@ -48,8 +48,14 @@ namespace InventoryManagementApp.Services
             var json = await response.Content.ReadAsStringAsync();
             dynamic result = JsonConvert.DeserializeObject(json);
 
+            if (result is Newtonsoft.Json.Linq.JArray)
+            {
+                throw new Exception($"Salesforce error: {result[0].message} ({result[0].errorCode})");
+            }
+
             return result.id;
         }
+
 
         public async Task CreateContact(string email, string name, string accountId)
         {

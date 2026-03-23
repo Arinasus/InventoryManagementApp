@@ -5,7 +5,7 @@ namespace InventoryManagementApp.Services
 {
     public class SalesforceService
     {
-        private readonly string _instanceUrl;
+        private readonly string _instanceUrl = "https://orgfarm-30c4fcbd70-dev-ed.develop.my.salesforce.com";
         private readonly string _accessToken;
 
         public SalesforceService(IConfiguration config)

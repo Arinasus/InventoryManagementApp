@@ -105,19 +105,41 @@ namespace InventoryManagementApp.Controllers
         }
 
         [HttpPost]
-        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Salesforce(SalesforceViewModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                if (user == null)
+                    return RedirectToAction("Login", "Account");
 
-            var sf = new SalesforceService(_config);
+                var sf = new SalesforceService(_config);
 
-            var accountId = await sf.CreateAccount(model.CompanyName, model.Phone, model.Website, model.Industry, model.Description);
+                // Создаем Account с данными из формы
+                var accountId = await sf.CreateAccountAsync(
+                    model.CompanyName,
+                    model.Phone,
+                    model.Website,
+                    model.Industry,
+                    model.Description
+                );
 
-            await sf.CreateContact(user.Email, user.UserName, accountId);
+                // Связываем Contact с пользователем и созданным Account
+                await sf.CreateContactAsync(
+                    user.Email,
+                    user.UserName,
+                    accountId
+                );
 
-            TempData["Success"] = "Salesforce integration completed!";
-            return RedirectToAction("Index");
+                TempData["Success"] = "Данные успешно отправлены в Salesforce!";
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Ошибка интеграции: {ex.Message}";
+                // Логируйте ex.ToString() для деталей
+            }
+
+            return RedirectToAction("Profile");
         }
 
     }

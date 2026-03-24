@@ -5,38 +5,47 @@ namespace InventoryManagementApp.Services
 {
     public class SalesforceService
     {
-        private readonly string _instanceUrl = "https://orgfarm-30c4fcbd70-dev-ed.develop.my.salesforce.com";
         private readonly string _accessToken;
+        private readonly string _instanceUrl;
 
         public SalesforceService(IConfiguration config)
         {
-            var auth = Authenticate(config);
+            var auth = AuthenticateAsync(config).GetAwaiter().GetResult();
             _accessToken = auth.access_token;
+            _instanceUrl = auth.instance_url;
         }
 
-        private dynamic Authenticate(IConfiguration config)
+        private async Task<dynamic> AuthenticateAsync(IConfiguration config)
         {
-            var client = new HttpClient();
+            using var client = new HttpClient();
+
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
-    {
-        {"grant_type", "client_credentials"},
-        {"client_id", config["Salesforce:ClientId"]},
-        {"client_secret", config["Salesforce:ClientSecret"]}
-    });
+            {
+                {"grant_type", "password"},
+                {"client_id", config["Salesforce:ClientId"]},
+                {"client_secret", config["Salesforce:ClientSecret"]},
+                {"username", config["Salesforce:Username"]},
+                {"password", config["Salesforce:Password"]} 
+            });
 
-            var response = client.PostAsync("https://orgfarm-30c4fcbd70-dev-ed.develop.my.salesforce.com/services/oauth2/token", content).Result;
+            var tokenUrl = "https://login.salesforce.com/services/oauth2/token";
 
-            var json = response.Content.ReadAsStringAsync().Result;
+            var response = await client.PostAsync(tokenUrl, content);
+            var json = await response.Content.ReadAsStringAsync();
 
-            File.WriteAllText("/app/token-log.txt", json);
+            Console.WriteLine($"Salesforce Auth Response: {json}");
 
-            return JsonConvert.DeserializeObject(json);
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Ошибка аутентификации Salesforce: {json}");
+            }
+
+            return JsonConvert.DeserializeObject<dynamic>(json);
         }
 
-
-        public async Task<string> CreateAccount(string name, string phone, string website, string industry, string description)
+        public async Task<string> CreateAccountAsync(string name, string phone, string website, string industry, string description)
         {
-            var client = new HttpClient();
+            using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
 
             var body = new
@@ -50,30 +59,42 @@ namespace InventoryManagementApp.Services
 
             var response = await client.PostAsJsonAsync($"{_instanceUrl}/services/data/v57.0/sobjects/Account", body);
             var json = await response.Content.ReadAsStringAsync();
-            dynamic result = JsonConvert.DeserializeObject(json);
 
-            if (result is Newtonsoft.Json.Linq.JArray)
+            Console.WriteLine($"Create Account Response: {json}");
+
+            if (!response.IsSuccessStatusCode)
             {
-                throw new Exception($"Salesforce error: {result[0].message} ({result[0].errorCode})");
+                throw new Exception($"Ошибка создания Account: {json}");
             }
 
+            dynamic result = JsonConvert.DeserializeObject(json);
             return result.id;
         }
 
-
-        public async Task CreateContact(string email, string name, string accountId)
+        public async Task<string> CreateContactAsync(string email, string lastName, string accountId)
         {
-            var client = new HttpClient();
+            using var client = new HttpClient();
             client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
 
             var body = new
             {
-                LastName = name,
+                LastName = lastName,
                 Email = email,
                 AccountId = accountId
             };
 
-            await client.PostAsJsonAsync($"{_instanceUrl}/services/data/v57.0/sobjects/Contact", body);
+            var response = await client.PostAsJsonAsync($"{_instanceUrl}/services/data/v57.0/sobjects/Contact", body);
+            var json = await response.Content.ReadAsStringAsync();
+
+            Console.WriteLine($"Create Contact Response: {json}");
+
+            if (!response.IsSuccessStatusCode)
+            {
+                throw new Exception($"Ошибка создания Contact: {json}");
+            }
+
+            dynamic result = JsonConvert.DeserializeObject(json);
+            return result.id;
         }
     }
 }

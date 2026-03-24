@@ -1,6 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using InventoryManagementApp.Data;
+using InventoryManagementApp.Services;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using InventoryManagementApp.Data;
 namespace InventoryManagementApp.Controllers
 {
     [ApiController]
@@ -20,23 +21,20 @@ namespace InventoryManagementApp.Controllers
             var inv = await _context.Inventories
                 .Include(i => i.Fields)
                 .Include(i => i.Items)
+                    .ThenInclude(i => i.FieldValues)
                 .FirstOrDefaultAsync(i => i.ApiToken == token);
 
             if (inv == null)
                 return Unauthorized(new { error = "Invalid API token" });
+
+            var agg = new AggregationService().Build(inv);
 
             return Ok(new
             {
                 id = inv.Id,
                 title = inv.Title,
                 description = inv.Description,
-                fields = inv.Fields.Select(f => new
-                {
-                    f.Id,
-                    f.Title,
-                    f.Type
-                }),
-                itemsCount = inv.Items.Count
+                aggregated = agg
             });
         }
     }

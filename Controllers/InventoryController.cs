@@ -887,7 +887,7 @@ namespace InventoryManagementApp.Controllers
             inv.ApiToken = Guid.NewGuid().ToString("N");
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Details", new { id });
+            return RedirectToAction("Settings", new { id });
         }
 
         [HttpPost]

@@ -40,21 +40,24 @@
     <div class="card-body">
         <h5>API Token</h5>
 
-        @if (string.IsNullOrEmpty(Model.ApiToken))
-        {
-            <form method="post" asp-action="GenerateApiToken" asp-route-id="@Model.InventoryId">
-                <button class="btn btn-primary">Generate API Token</button>
-            </form>
-        }
-        else
-        {
-            <div class="alert alert-info mt-2">
-                <strong>Your API Token:</strong>
-                <code>@Model.ApiToken</code>
-            </div>
-        }
+        <div id="api-token-block">
+            @if (string.IsNullOrEmpty(Model.ApiToken))
+            {
+                <button id="generate-token-btn" class="btn btn-primary">
+                    Generate API Token
+                </button>
+            }
+            else
+            {
+                <div class="alert alert-info mt-2">
+                    <strong>Your API Token:</strong>
+                    <code>@Model.ApiToken</code>
+                </div>
+            }
+        </div>
     </div>
 </div>
+
 
 <input type="hidden" id="inv-id" value="@Model.InventoryId" />
 <input type="hidden" id="inv-rowversion" value="@(Model.RowVersion != null ? Convert.ToBase64String(Model.RowVersion) : "")" />
@@ -63,4 +66,34 @@
 
 @section Scripts {
     <script src="~/js/inventory-autosave.js"></script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const btn = document.getElementById("generate-token-btn");
+            if (!btn) return;
+
+            btn.addEventListener("click", () => {
+                const id = document.getElementById("inv-id").value;
+
+                fetch(`/Inventory/GenerateApiTokenAjax/${id}`, {
+                    method: "POST",
+                    headers: {
+                        "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']").value
+                    }
+                })
+                .then(r => r.json())
+                .then(data => {
+                    const block = document.getElementById("api-token-block");
+                    block.innerHTML = `
+                        <div class="alert alert-info mt-2">
+                            <strong>Your API Token:</strong>
+                            <code>${data.token}</code>
+                        </div>
+                    `;
+                })
+                .catch(err => console.error(err));
+            });
+        });
+    </script>
+
 }

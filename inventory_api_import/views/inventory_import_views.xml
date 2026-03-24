@@ -17,9 +17,22 @@
                                 class="btn-primary"/>
 					</group>
 
-					<group>
-						<field name="aggregated_data" nolabel="1"/>
-					</group>
+					<notebook>
+						<page string="Aggregated Data">
+							<field name="aggregate_ids">
+								<tree>
+									<field name="title"/>
+									<field name="type"/>
+									<field name="min_value"/>
+									<field name="max_value"/>
+									<field name="avg_value"/>
+									<field name="top_values"/>
+									<field name="percent_true"/>
+									<field name="percent_false"/>
+								</tree>
+							</field>
+						</page>
+					</notebook>
 				</sheet>
 			</form>
 		</field>
@@ -29,12 +42,10 @@
 		<field name="name">Inventory API Import</field>
 		<field name="res_model">inventory.import</field>
 		<field name="view_mode">form</field>
-		<field name="target">current</field>
 	</record>
 
 	<menuitem id="menu_inventory_import_root"
-              name="Inventory Import"
-              sequence="10"/>
+              name="Inventory Import"/>
 
 	<menuitem id="menu_inventory_import"
               name="Import from API"

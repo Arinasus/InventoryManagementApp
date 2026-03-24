@@ -887,7 +887,19 @@ namespace InventoryManagementApp.Controllers
             inv.ApiToken = Guid.NewGuid().ToString("N");
             await _context.SaveChangesAsync();
 
-            return RedirectToAction("Settings", new { id });
+            return RedirectToAction("Details", new { id });
+        }
+        [HttpPost]
+        public async Task<IActionResult> GenerateApiTokenAjax(int id)
+        {
+            var inv = await _context.Inventories.FindAsync(id);
+            if (inv == null)
+                return NotFound();
+
+            inv.ApiToken = Guid.NewGuid().ToString("N");
+            await _context.SaveChangesAsync();
+
+            return Json(new { token = inv.ApiToken });
         }
 
         [HttpPost]

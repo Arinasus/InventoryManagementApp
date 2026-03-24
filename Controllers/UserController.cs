@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.CodeAnalysis.Elfie.Diagnostics;
 using Microsoft.EntityFrameworkCore;
 
 namespace InventoryManagementApp.Controllers
@@ -17,12 +18,15 @@ namespace InventoryManagementApp.Controllers
         private readonly IConfiguration _config;
         private readonly AppDbContext _context;
         private readonly UserManager<ApplicationUser> _userManager;
-
-        public UserController(IConfiguration config, AppDbContext context, UserManager<ApplicationUser> userManager)
+        private readonly ILogger<UserController> _logger;
+        private readonly ILoggerFactory _loggerFactory;
+        public UserController(IConfiguration config, AppDbContext context, UserManager<ApplicationUser> userManager, ILogger<UserController> logger, ILoggerFactory loggerFactory)
         {
             _context = context;
             _userManager = userManager;
             _config = config;
+            _logger = logger;
+            _loggerFactory = loggerFactory;
         }
 
         public async Task<IActionResult> Profile(string? sortOrder, string? search)
@@ -107,19 +111,21 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Salesforce(SalesforceViewModel model)
         {
-            Console.WriteLine("=== UserController.Salesforce START ===");
-            Console.WriteLine($"Model: {model.CompanyName}, {model.Phone}");
+            _logger.LogInformation("=== UserController.Salesforce START ===");
+            _logger.LogInformation($"Model: {model.CompanyName}, {model.Phone}");
 
             try
             {
                 var user = await _userManager.GetUserAsync(User);
-                Console.WriteLine($"User found: {user?.UserName}, Email: {user?.Email}");
+                _logger.LogInformation($"User found: {user?.UserName}, Email: {user?.Email}");
 
-                Console.WriteLine("Creating SalesforceService...");
-                var sf = new SalesforceService(_config);
-                Console.WriteLine("SalesforceService created successfully");
+                _logger.LogInformation("Creating SalesforceService...");
+                
+                var sfLogger = _loggerFactory.CreateLogger<SalesforceService>();
+                var sf = new SalesforceService(_config, sfLogger); 
+                _logger.LogInformation("SalesforceService created successfully");
 
-                Console.WriteLine("Creating Account...");
+                _logger.LogInformation("Creating Account...");
                 var accountId = await sf.CreateAccount(
                     model.CompanyName,
                     model.Phone,
@@ -127,24 +133,22 @@ namespace InventoryManagementApp.Controllers
                     model.Industry,
                     model.Description
                 );
-                Console.WriteLine($"Account created with ID: {accountId}");
+                _logger.LogInformation($"Account created with ID: {accountId}");
 
-                Console.WriteLine("Creating Contact...");
+                _logger.LogInformation("Creating Contact...");
                 await sf.CreateContact(user.Email, user.UserName, accountId);
-                Console.WriteLine("Contact created successfully");
+                _logger.LogInformation("Contact created successfully");
 
                 TempData["Success"] = "Salesforce integration completed!";
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"ERROR in Salesforce action: {ex.Message}");
-                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                _logger.LogError(ex, "ERROR in Salesforce action");
                 TempData["Error"] = $"Salesforce error: {ex.Message}";
             }
 
-            Console.WriteLine("=== UserController.Salesforce END ===");
+            _logger.LogInformation("=== UserController.Salesforce END ===");
             return RedirectToAction("Profile");
         }
-
     }
 }

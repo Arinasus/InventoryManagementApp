@@ -1,0 +1,43 @@
+﻿<odoo>
+	<record id="view_inventory_import_form" model="ir.ui.view">
+		<field name="name">inventory.import.form</field>
+		<field name="model">inventory.import</field>
+		<field name="arch" type="xml">
+			<form string="Inventory Import">
+				<sheet>
+					<group>
+						<field name="api_url"/>
+						<field name="api_token"/>
+					</group>
+
+					<group>
+						<button name="action_import"
+                                type="object"
+                                string="Import from API"
+                                class="btn-primary"/>
+					</group>
+
+					<group>
+						<field name="aggregated_data" nolabel="1"/>
+					</group>
+				</sheet>
+			</form>
+		</field>
+	</record>
+
+	<record id="action_inventory_import" model="ir.actions.act_window">
+		<field name="name">Inventory API Import</field>
+		<field name="res_model">inventory.import</field>
+		<field name="view_mode">form</field>
+		<field name="target">current</field>
+	</record>
+
+	<menuitem id="menu_inventory_import_root"
+              name="Inventory Import"
+              sequence="10"/>
+
+	<menuitem id="menu_inventory_import"
+              name="Import from API"
+              parent="menu_inventory_import_root"
+              action="action_inventory_import"/>
+</odoo>

@@ -144,8 +144,10 @@ namespace InventoryManagementApp.Controllers
             catch (Exception ex)
             {
                 _logger.LogError(ex, "ERROR in Salesforce action");
-                TempData["Error"] = $"Salesforce error: {ex.Message}";
+                ModelState.AddModelError("", $"Salesforce error: {ex.Message}");
+                return View(model); // ← остаёмся на форме
             }
+
 
             _logger.LogInformation("=== UserController.Salesforce END ===");
             return RedirectToAction("Profile");

@@ -50,6 +50,7 @@ namespace InventoryManagementApp.Services
                 </env:Envelope>";
 
             using var client = new HttpClient();
+            client.DefaultRequestHeaders.Add("SOAPAction", "login");
             var content = new StringContent(soapBody, Encoding.UTF8, "text/xml");
 
             _logger.LogInformation("=== Salesforce SOAP Login ===");

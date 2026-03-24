@@ -107,39 +107,16 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Salesforce(SalesforceViewModel model)
         {
-            try
-            {
-                var user = await _userManager.GetUserAsync(User);
-                if (user == null)
-                    return RedirectToAction("Login", "Account");
+            var user = await _userManager.GetUserAsync(User);
 
-                var sf = new SalesforceService(_config);
+            var sf = new SalesforceService(_config);
 
-                // Создаем Account с данными из формы
-                var accountId = await sf.CreateAccountAsync(
-                    model.CompanyName,
-                    model.Phone,
-                    model.Website,
-                    model.Industry,
-                    model.Description
-                );
+            var accountId = await sf.CreateAccount(model.CompanyName, model.Phone, model.Website, model.Industry, model.Description);
 
-                // Связываем Contact с пользователем и созданным Account
-                await sf.CreateContactAsync(
-                    user.Email,
-                    user.UserName,
-                    accountId
-                );
+            await sf.CreateContact(user.Email, user.UserName, accountId);
 
-                TempData["Success"] = "Данные успешно отправлены в Salesforce!";
-            }
-            catch (Exception ex)
-            {
-                TempData["Error"] = $"Ошибка интеграции: {ex.Message}";
-                // Логируйте ex.ToString() для деталей
-            }
-
-            return RedirectToAction("Profile");
+            TempData["Success"] = "Salesforce integration completed!";
+            return RedirectToAction("Index");
         }
 
     }

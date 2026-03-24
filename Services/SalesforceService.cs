@@ -38,13 +38,12 @@ namespace InventoryManagementApp.Services
             var password = config["Salesforce:Password"];
 
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                {"grant_type", "password"},
-                {"client_id", clientId},
-                {"client_secret", clientSecret},
-                {"username", username},
-                {"password", password}
-            });
+{
+    {"grant_type", "client_credentials"},
+    {"client_id", config["Salesforce:ClientId"]},
+    {"client_secret", config["Salesforce:ClientSecret"]}
+});
+
 
             _logger.LogInformation("=== Salesforce Authentication ===");
             _logger.LogInformation($"ClientId: {clientId?.Substring(0, 10)}...");

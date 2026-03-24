@@ -16,6 +16,7 @@ namespace InventoryManagementApp.Services
 
         private dynamic Authenticate(IConfiguration config)
         {
+
             var client = new HttpClient();
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
             {
@@ -26,6 +27,7 @@ namespace InventoryManagementApp.Services
 
             var response = client.PostAsync("https://login.salesforce.com/services/oauth2/token", content).Result;
             var json = response.Content.ReadAsStringAsync().Result;
+            Console.WriteLine(json);
 
             return JsonConvert.DeserializeObject(json);
         }

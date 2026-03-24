@@ -105,6 +105,7 @@ namespace InventoryManagementApp.Controllers
         }
 
         [HttpPost]
+        [IgnoreAntiforgeryToken]
         public async Task<IActionResult> Salesforce(SalesforceViewModel model)
         {
             var user = await _userManager.GetUserAsync(User);

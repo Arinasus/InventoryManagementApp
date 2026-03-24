@@ -11,6 +11,7 @@
         public byte[] RowVersion { get; set; }
         public List<string> AvailableCategories { get; set; }
         public List<string> Tags { get; set; } = new();
+        public string? ApiToken { get; set; }
 
     }
 }

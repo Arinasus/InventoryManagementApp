@@ -878,6 +878,19 @@ namespace InventoryManagementApp.Controllers
             return PartialView("_TabDiscussion", model);
         }
         [HttpPost]
+        public async Task<IActionResult> GenerateApiToken(int id)
+        {
+            var inv = await _context.Inventories.FindAsync(id);
+            if (inv == null)
+                return NotFound();
+
+            inv.ApiToken = Guid.NewGuid().ToString("N");
+            await _context.SaveChangesAsync();
+
+            return RedirectToAction("Details", new { id });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> AddPost(int inventoryId, string content)
         {
             if (!await HasWriteAccess(inventoryId))
@@ -979,7 +992,8 @@ namespace InventoryManagementApp.Controllers
                 Description = inv.Description,
                 Category = inv.Category,
                 AvailableCategories = new List<string> { "Оборудование", "Мебель", "Книга", "Другое" },
-                RowVersion = inv.RowVersion
+                RowVersion = inv.RowVersion,
+                ApiToken = inv.ApiToken
             };
 
             return PartialView("_TabSettings", model);

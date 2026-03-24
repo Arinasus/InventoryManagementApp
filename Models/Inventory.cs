@@ -25,6 +25,7 @@ namespace InventoryManagementApp.Model
         public NpgsqlTsVector? SearchVector { get; set; } = null!;
         [Timestamp]
         public byte[] RowVersion { get; set; } = Array.Empty<byte>();
+        public string? ApiToken { get; set; }
 
     }
 }

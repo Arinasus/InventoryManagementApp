@@ -16,21 +16,22 @@ namespace InventoryManagementApp.Services
 
         private dynamic Authenticate(IConfiguration config)
         {
-
             var client = new HttpClient();
             var content = new FormUrlEncodedContent(new Dictionary<string, string>
-            {
-                {"grant_type", "client_credentials"},
-                {"client_id", config["Salesforce:ClientId"]},
-                {"client_secret", config["Salesforce:ClientSecret"]}
-            });
+    {
+        {"grant_type", "client_credentials"},
+        {"client_id", config["Salesforce:ClientId"]},
+        {"client_secret", config["Salesforce:ClientSecret"]}
+    });
 
             var response = client.PostAsync("https://test.salesforce.com/services/oauth2/token", content).Result;
             var json = response.Content.ReadAsStringAsync().Result;
-            Console.WriteLine(json);
+
+            File.WriteAllText("/app/token-log.txt", json);
 
             return JsonConvert.DeserializeObject(json);
         }
+
 
         public async Task<string> CreateAccount(string name, string phone, string website, string industry, string description)
         {

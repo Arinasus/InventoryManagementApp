@@ -24,7 +24,8 @@ namespace InventoryManagementApp.Services
         {"client_secret", config["Salesforce:ClientSecret"]}
     });
 
-            var response = client.PostAsync("https://test.salesforce.com/services/oauth2/token", content).Result;
+            var response = client.PostAsync("https://orgfarm-30c4fcbd70-dev-ed.develop.my.salesforce.com/services/oauth2/token", content).Result;
+
             var json = response.Content.ReadAsStringAsync().Result;
 
             File.WriteAllText("/app/token-log.txt", json);

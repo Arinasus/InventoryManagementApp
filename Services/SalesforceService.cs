@@ -10,9 +10,20 @@ namespace InventoryManagementApp.Services
 
         public SalesforceService(IConfiguration config)
         {
-            var auth = AuthenticateAsync(config).GetAwaiter().GetResult();
-            _accessToken = auth.access_token;
-            _instanceUrl = auth.instance_url;
+            Console.WriteLine("=== SalesforceService constructor START ===");
+            try
+            {
+                var auth = AuthenticateAsync(config).GetAwaiter().GetResult();
+                _accessToken = auth.access_token;
+                _instanceUrl = auth.instance_url;
+                Console.WriteLine($"Instance URL: {_instanceUrl}");
+                Console.WriteLine("=== SalesforceService constructor SUCCESS ===");
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"=== SalesforceService constructor FAILED: {ex.Message} ===");
+                throw;
+            }
         }
 
         private async Task<dynamic> AuthenticateAsync(IConfiguration config)

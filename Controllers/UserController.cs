@@ -107,16 +107,43 @@ namespace InventoryManagementApp.Controllers
         [HttpPost]
         public async Task<IActionResult> Salesforce(SalesforceViewModel model)
         {
-            var user = await _userManager.GetUserAsync(User);
+            Console.WriteLine("=== UserController.Salesforce START ===");
+            Console.WriteLine($"Model: {model.CompanyName}, {model.Phone}");
 
-            var sf = new SalesforceService(_config);
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                Console.WriteLine($"User found: {user?.UserName}, Email: {user?.Email}");
 
-            var accountId = await sf.CreateAccount(model.CompanyName, model.Phone, model.Website, model.Industry, model.Description);
+                Console.WriteLine("Creating SalesforceService...");
+                var sf = new SalesforceService(_config);
+                Console.WriteLine("SalesforceService created successfully");
 
-            await sf.CreateContact(user.Email, user.UserName, accountId);
+                Console.WriteLine("Creating Account...");
+                var accountId = await sf.CreateAccount(
+                    model.CompanyName,
+                    model.Phone,
+                    model.Website,
+                    model.Industry,
+                    model.Description
+                );
+                Console.WriteLine($"Account created with ID: {accountId}");
 
-            TempData["Success"] = "Salesforce integration completed!";
-            return RedirectToAction("Index");
+                Console.WriteLine("Creating Contact...");
+                await sf.CreateContact(user.Email, user.UserName, accountId);
+                Console.WriteLine("Contact created successfully");
+
+                TempData["Success"] = "Salesforce integration completed!";
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"ERROR in Salesforce action: {ex.Message}");
+                Console.WriteLine($"Stack trace: {ex.StackTrace}");
+                TempData["Error"] = $"Salesforce error: {ex.Message}";
+            }
+
+            Console.WriteLine("=== UserController.Salesforce END ===");
+            return RedirectToAction("Profile");
         }
 
     }

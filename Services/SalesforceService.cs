@@ -1,12 +1,12 @@
-﻿using Microsoft.CodeAnalysis.Elfie.Diagnostics;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using System.Net.Http.Headers;
+using System.Text;
 
 namespace InventoryManagementApp.Services
 {
     public class SalesforceService
     {
-        private readonly string _accessToken;
+        private readonly string _sessionId;
         private readonly string _instanceUrl;
         private readonly ILogger<SalesforceService> _logger;
 
@@ -14,11 +14,13 @@ namespace InventoryManagementApp.Services
         {
             _logger = logger;
             _logger.LogInformation("=== SalesforceService constructor START ===");
+
             try
             {
-                var auth = AuthenticateAsync(config).GetAwaiter().GetResult();
-                _accessToken = auth.access_token;
-                _instanceUrl = auth.instance_url;
+                var login = LoginWithSoap(config).GetAwaiter().GetResult();
+                _sessionId = login.sessionId;
+                _instanceUrl = login.instanceUrl;
+
                 _logger.LogInformation($"Instance URL: {_instanceUrl}");
                 _logger.LogInformation("=== SalesforceService constructor SUCCESS ===");
             }
@@ -29,47 +31,59 @@ namespace InventoryManagementApp.Services
             }
         }
 
-        private async Task<dynamic> AuthenticateAsync(IConfiguration config)
+        private async Task<(string sessionId, string instanceUrl)> LoginWithSoap(IConfiguration config)
         {
-            using var client = new HttpClient();
-            var clientId = config["Salesforce:ClientId"];
-            var clientSecret = config["Salesforce:ClientSecret"];
             var username = config["Salesforce:Username"];
             var password = config["Salesforce:Password"];
+            var token = config["Salesforce:SecurityToken"];
 
-            var content = new FormUrlEncodedContent(new Dictionary<string, string>
-{
-    {"grant_type", "client_credentials"},
-    {"client_id", config["Salesforce:ClientId"]},
-    {"client_secret", config["Salesforce:ClientSecret"]}
-});
+            var soapBody = $@"
+                <env:Envelope xmlns:xsd='http://www.w3.org/2001/XMLSchema'
+                              xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
+                              xmlns:env='http://schemas.xmlsoap.org/soap/envelope/'>
+                  <env:Body>
+                    <n1:login xmlns:n1='urn:partner.soap.sforce.com'>
+                      <n1:username>{username}</n1:username>
+                      <n1:password>{password}{token}</n1:password>
+                    </n1:login>
+                  </env:Body>
+                </env:Envelope>";
 
+            using var client = new HttpClient();
+            var content = new StringContent(soapBody, Encoding.UTF8, "text/xml");
 
-            _logger.LogInformation("=== Salesforce Authentication ===");
-            _logger.LogInformation($"ClientId: {clientId?.Substring(0, 10)}...");
-            _logger.LogInformation($"Username: {username}");
+            _logger.LogInformation("=== Salesforce SOAP Login ===");
 
-            var response = await client.PostAsync("https://login.salesforce.com/services/oauth2/token", content);
-            var json = await response.Content.ReadAsStringAsync();
+            var response = await client.PostAsync("https://login.salesforce.com/services/Soap/u/61.0", content);
+            var xml = await response.Content.ReadAsStringAsync();
 
-            _logger.LogInformation($"Auth Response Status: {response.StatusCode}");
-            _logger.LogInformation($"Auth Response: {json}");
+            _logger.LogInformation($"SOAP Response Status: {response.StatusCode}");
+            _logger.LogInformation($"SOAP Response: {xml}");
 
             if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Ошибка аутентификации: {json}");
-            }
+                throw new Exception("Ошибка SOAP логина: " + xml);
 
-            return JsonConvert.DeserializeObject<dynamic>(json);
+            string sessionId = Extract(xml, "<sessionId>", "</sessionId>");
+            string serverUrl = Extract(xml, "<serverUrl>", "</serverUrl>");
+
+            string instanceUrl = serverUrl.Split("/services")[0];
+
+            return (sessionId, instanceUrl);
+        }
+
+        private string Extract(string source, string start, string end)
+        {
+            int s = source.IndexOf(start) + start.Length;
+            int e = source.IndexOf(end, s);
+            return source.Substring(s, e - s);
         }
 
         public async Task<string> CreateAccount(string name, string phone, string website, string industry, string description)
         {
             _logger.LogInformation("=== Creating Account in Salesforce ===");
-            _logger.LogInformation($"Account Name: {name}");
 
             using var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _sessionId);
 
             var body = new
             {
@@ -80,16 +94,13 @@ namespace InventoryManagementApp.Services
                 Description = description
             };
 
-            var response = await client.PostAsJsonAsync($"{_instanceUrl}/services/data/v57.0/sobjects/Account", body);
+            var response = await client.PostAsJsonAsync($"{_instanceUrl}/services/data/v61.0/sobjects/Account", body);
             var json = await response.Content.ReadAsStringAsync();
 
-            _logger.LogInformation($"Create Account Response Status: {response.StatusCode}");
             _logger.LogInformation($"Create Account Response: {json}");
 
             if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Ошибка создания Account: {json}");
-            }
+                throw new Exception("Ошибка создания Account: " + json);
 
             dynamic result = JsonConvert.DeserializeObject(json);
             return result.id;
@@ -98,10 +109,9 @@ namespace InventoryManagementApp.Services
         public async Task<string> CreateContact(string email, string lastName, string accountId)
         {
             _logger.LogInformation("=== Creating Contact in Salesforce ===");
-            _logger.LogInformation($"Contact Name: {lastName}, Email: {email}, AccountId: {accountId}");
 
             using var client = new HttpClient();
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _accessToken);
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", _sessionId);
 
             var body = new
             {
@@ -110,16 +120,13 @@ namespace InventoryManagementApp.Services
                 AccountId = accountId
             };
 
-            var response = await client.PostAsJsonAsync($"{_instanceUrl}/services/data/v57.0/sobjects/Contact", body);
+            var response = await client.PostAsJsonAsync($"{_instanceUrl}/services/data/v61.0/sobjects/Contact", body);
             var json = await response.Content.ReadAsStringAsync();
 
-            _logger.LogInformation($"Create Contact Response Status: {response.StatusCode}");
-             _logger.LogInformation($"Create Contact Response: {json}");
+            _logger.LogInformation($"Create Contact Response: {json}");
 
             if (!response.IsSuccessStatusCode)
-            {
-                throw new Exception($"Ошибка создания Contact: {json}");
-            }
+                throw new Exception("Ошибка создания Contact: " + json);
 
             dynamic result = JsonConvert.DeserializeObject(json);
             return result.id;

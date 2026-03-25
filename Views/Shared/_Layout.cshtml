@@ -105,6 +105,51 @@
             </div>
         </nav>
     </header>
+    <a href="#" id="open-support-ticket" class="text-muted small">
+        Create support ticket
+    </a>
+    <div class="modal fade" id="supportTicketModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+
+                <div class="modal-header">
+                    <h5 class="modal-title">Create Support Ticket</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+
+                <div class="modal-body">
+
+                    <div class="mb-3">
+                        <label class="form-label">Summary</label>
+                        <textarea id="ticket-summary" class="form-control"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Priority</label>
+                        <select id="ticket-priority" class="form-select">
+                            <option>High</option>
+                            <option>Average</option>
+                            <option>Low</option>
+                        </select>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label">Admin emails (comma separated)</label>
+                        <input id="ticket-admins" class="form-control" placeholder="admin@example.com" />
+                    </div>
+
+                    <input type="hidden" id="ticket-link" />
+                    <input type="hidden" id="ticket-inventory" />
+
+                </div>
+
+                <div class="modal-footer">
+                    <button id="submit-ticket" class="btn btn-primary">Submit</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
 
     <div class="container">
         <main role="main" class="pb-3">
@@ -121,6 +166,43 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
     <script src="@Html.Raw("https://cdn.jsdelivr.net/npm/@yaireo/tagify")"></script>
+    <script>
+        document.getElementById("open-support-ticket").addEventListener("click", function () {
+            document.getElementById("ticket-link").value = window.location.href;
+
+            // Если на странице есть InventoryId — добавим
+            const invTitle = document.getElementById("inv-title");
+            document.getElementById("ticket-inventory").value = invTitle ? invTitle.value : "";
+
+            new bootstrap.Modal(document.getElementById("supportTicketModal")).show();
+        });
+
+        document.getElementById("submit-ticket").addEventListener("click", function () {
+
+            const data = {
+                reportedBy: "@User.Identity.Name",
+                inventory: document.getElementById("ticket-inventory").value,
+                link: document.getElementById("ticket-link").value,
+                priority: document.getElementById("ticket-priority").value,
+                summary: document.getElementById("ticket-summary").value,
+                admins: document.getElementById("ticket-admins").value.split(",").map(x => x.trim())
+            };
+
+            fetch("/Support/UploadTicketToOneDrive", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']").value
+                },
+                body: JSON.stringify(data)
+            })
+            .then(r => r.json())
+            .then(r => {
+                alert("Ticket uploaded to OneDrive!");
+                location.reload();
+            });
+        });
+    </script>
 
     @await RenderSectionAsync("Scripts", required: false)
 </body>

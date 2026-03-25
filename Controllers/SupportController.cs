@@ -16,7 +16,7 @@ namespace InventoryManagementApp.Controllers
         public async Task<IActionResult> UploadTicket([FromBody] object json)
         {
             var client = _http.CreateClient();
-            var flowUrl = "https://defaultaf150ef089b940d69d3fe34a2212b7.d3.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/15097ad5d4d948198c086b7e577c129c/triggers/manual/paths/invoke?api-version=1";
+            var flowUrl = "https://17ee28007c19e902965b69764815f7.54.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/d304d765dc2a4f679b9af39e63db5508/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=-kHjs92RsRug4QwExd4JU87qj9Ry3NrpRE5_pkGsfms";
 
             var response = await client.PostAsync(
                 flowUrl,

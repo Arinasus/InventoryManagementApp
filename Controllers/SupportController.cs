@@ -43,7 +43,6 @@ namespace InventoryManagementApp.Controllers
 
             var rawJson = json.ToString();
             var content = new ByteArrayContent(Encoding.UTF8.GetBytes(rawJson));
-
             content.Headers.ContentType = null;
 
             var response = await client.PostAsync(
@@ -59,5 +58,6 @@ namespace InventoryManagementApp.Controllers
                 dropbox = dropboxResponse
             });
         }
+
     }
 }

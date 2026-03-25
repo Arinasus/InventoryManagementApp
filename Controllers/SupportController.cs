@@ -11,7 +11,7 @@ namespace InventoryManagementApp.Controllers
         {
             _http = http;
         }
-        /*[IgnoreAntiforgeryToken]
+        [IgnoreAntiforgeryToken]
         [HttpPost]
         public async Task<IActionResult> UploadTicket([FromBody] object json)
         {
@@ -24,8 +24,8 @@ namespace InventoryManagementApp.Controllers
             );
 
             return Json(new { ok = response.IsSuccessStatusCode });
-        }*/
-        [IgnoreAntiforgeryToken]
+        }
+        /*[IgnoreAntiforgeryToken]
         [HttpPost]
         public async Task<IActionResult> UploadTicket([FromBody] object json)
         {
@@ -62,6 +62,6 @@ namespace InventoryManagementApp.Controllers
                 dropbox = dropboxResponse
             });
         }
-
+*/
     }
 }

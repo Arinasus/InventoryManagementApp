@@ -170,7 +170,6 @@
         document.getElementById("open-support-ticket").addEventListener("click", function () {
             document.getElementById("ticket-link").value = window.location.href;
 
-            // Если на странице есть InventoryId — добавим
             const invTitle = document.getElementById("inv-title");
             document.getElementById("ticket-inventory").value = invTitle ? invTitle.value : "";
 
@@ -188,7 +187,7 @@
                 admins: document.getElementById("ticket-admins").value.split(",").map(x => x.trim())
             };
 
-            fetch("/Support/UploadTicketToOneDrive", {
+            fetch("/Support/UploadTicket", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"

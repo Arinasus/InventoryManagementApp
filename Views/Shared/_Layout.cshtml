@@ -184,7 +184,9 @@
                 link: document.getElementById("ticket-link").value,
                 priority: document.getElementById("ticket-priority").value,
                 summary: document.getElementById("ticket-summary").value,
-                admins: document.getElementById("ticket-admins").value.split(",").map(x => x.trim())
+                admins: document.getElementById("ticket-admins").value
+                    .split(",")
+                    .map(x => x.replace(/\r?\n|\r/g, "").trim())
             };
 
             fetch("/Support/UploadTicket", {

@@ -11,7 +11,7 @@ namespace InventoryManagementApp.Controllers
         {
             _http = http;
         }
-
+        [IgnoreAntiforgeryToken]
         [HttpPost]
         public async Task<IActionResult> UploadTicket([FromBody] object json)
         {

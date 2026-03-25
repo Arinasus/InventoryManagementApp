@@ -191,8 +191,7 @@
             fetch("/Support/UploadTicketToOneDrive", {
                 method: "POST",
                 headers: {
-                    "Content-Type": "application/json",
-                    "RequestVerificationToken": document.querySelector("input[name='__RequestVerificationToken']").value
+                    "Content-Type": "application/json"
                 },
                 body: JSON.stringify(data)
             })

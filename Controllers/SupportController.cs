@@ -41,15 +41,23 @@ namespace InventoryManagementApp.Controllers
             client.DefaultRequestHeaders.Add("Dropbox-API-Arg",
                 $"{{\"path\": \"{fileName}\", \"mode\": \"add\", \"autorename\": true}}");
 
-            var content = new StringContent(json.ToString(), Encoding.UTF8, "application/octet-stream");
+            var rawJson = json.ToString();
+            var content = new ByteArrayContent(Encoding.UTF8.GetBytes(rawJson));
+
+            content.Headers.ContentType = null;
 
             var response = await client.PostAsync(
                 "https://content.dropboxapi.com/2/files/upload",
                 content
             );
 
-            return Json(new { ok = response.IsSuccessStatusCode });
-        }
+            var dropboxResponse = await response.Content.ReadAsStringAsync();
 
+            return Json(new
+            {
+                ok = response.IsSuccessStatusCode,
+                dropbox = dropboxResponse
+            });
+        }
     }
 }
